@@ -1,0 +1,73 @@
+---
+output: 
+  pdf_document:
+    citation_package: natbib
+    template: ustemplate2.tex
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    keep_tex: no
+bibliography: libraryclean.bib
+documentclass: memoir
+lang: afrikaans,UKenglish
+fontsize: 12pt
+papersize: letter
+classoption: oneside, openany
+margin-ratio: goldenblock
+title: "Deep Learning for Tabular Data: An Empirical Study"
+titel: "Diepleer Tegnieke vir Gestruktrueerde Data: 'n Empiriese Studie"
+author: Jan André Marais
+author-short: J.\ A.\ Marais
+degree-short: MCom (Mathematical Statistics)
+degree: Master of Commerce (Mathematical Statistics)
+graad-short: MCom (Wiskundige Statistiek)
+graad: Magister in die Handelswetenskappe (Wiskundige Statistiek)
+faculty: Faculty of Economic and Management Sciences
+fakulteit: Fakulteit Ekonomiese en Bestuurswetenskappe
+supervisor: Dr.\ S.\ Bierman
+year: 2018
+month: 12
+abstract: abstract.Rmd
+acknowledgements: acknowledgements.Rmd
+lot: true
+lof: true
+nomenclature: nomenclature.Rmd
+loa: loa.Rmd
+header-includes:
+- \usepackage{tikz}
+- \usetikzlibrary{arrows,shapes,positioning,shadows,trees}
+---
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo=FALSE)
+```
+
+
+```{r child = 'chapter1.Rmd'}
+```
+
+
+```{r child = 'chapter2.Rmd'}
+```
+
+
+```{r child = 'chapter3.Rmd'}
+```
+
+<!-- ```{r child = 'chapter2.Rmd'} -->
+<!-- ``` -->
+
+<!-- ```{r child = 'chapter6.Rmd'} -->
+<!-- ``` -->
+
+\appendix
+\appendixpage\relax
+
+# Appendix A
+
+Description of each of the datasets used in Experiments.
+
+<!-- ```{r child = 'appendixA.Rmd'} --> 
+<!-- ``` -->
+
+\clearpage

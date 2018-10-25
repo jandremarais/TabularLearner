@@ -1,0 +1,125 @@
+# Deep Learning
+
++ Recent advancements in deep learning which could be useful to applying in tabular data
+
+# Neural Networks for Tabular Data
+
++ Considerations for applying DL to tabular data
+
+## Entity Embeddings
+
+## Normalising Continuous Variables
+
++ how to normalize continuous variables
+  - mean subtract and error divide
+  - rankGauss
+  - scale to 0-1
+
+## Regularisation Learning
+
++ https://arxiv.org/pdf/1805.06440.pdf
+
+# Interpreting Neural Networks
+
+## Model Agnostic
+
++ Permutation Importance
++ Partial Dependece
++ SHAP
+
+## Neural Network Specific
+
++ Distilling Neural Networks, i.e. training a decision tree on train neural network generated data. https://arxiv.org/pdf/1711.09784.pdf
++ Interpreting activations.
++ Plotting embeddings in lower dimensional space with PCA or t-sne
+
+# Experiments
+
+## Method
+
+### Datasets
+
++ regression
++ classification
++ need multiple datasets for robust conclusions
++ this project will not look at feature engineering so this part must be obtained from somewhere else if the data requires a lot of preprocessing.
+
+### Evalutation
+
++ 5-fold CV for standard errors
++ dataset specific metrics so that can compare to other work.
++ training and inference times because sometimes it takes a lot of computing power and then not useful to everyone.
+
+## Structure
+
+### Number of Layers
+
++ Evaluate training and performance as the number of layers increase
+
+### Size of Layers
+
++ Evaluate training and performance as the the size of the layers increas
+
+### Size of Embeddings
+
++ Evaluate training and performance at different embedding sizes.
++ Inspect embedding matrices by plotting in lower dimensions.
+
+### Skip Connections
+
++ ResNets and DenseNets
++ See what it does to performance if every layers is connected to every other layer.
+
+## Training
+
+### One-cycle Policy
+
++ Leslie Smith's 1 cycle and superconvergence work
++ Is it better than standard training procedures w.r.t training time and performance
+
+### Batch Size
+
++ how does batch size influence model metrics
+
+### Augmentation and Dropout
+
++ How can we augment inputs
++ Is dropout effective for regularising (and with above augmentations?)
+
+## Unsupervised Pre-training
+
+### Autoencoders
+
++ How does initialising the net with autoencoder learned weights compare to random initialisation?
+
+### Feature Extraction
+
++ Are these features useful for tree based methods.
+
+## Comparisons To Tree-based Methods
+
++ Compare Neural Networks to Gradient Boosted Machines and Random Forests.
+
+### Sample Size
+
++ Model perfomances at different number of samples
+
+### Number of Feature
+
++ Model perfomances at increasing number of feature
+
+### Noise
+
++ Model perfomances at different signal to noise ratios
++ Shuffle columns of datasets before training
+
+### Feature Importance
+
++ How does tree-based feature importance compare to permutation importance of neural net?
+
+# Conclusion
+
++ What was done in the thesis?
++ Is Deep Learning useful for tabular data? 
++ If it is, when?
++ Where should future work on the subject focus on?

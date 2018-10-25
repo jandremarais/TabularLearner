@@ -1,0 +1,39 @@
+# Notes
+
+Space to jot down ideas and thoughts.
+
+Move these to appropriate place in thesis once formulated.
+
+
+
+### Model inspection
+
++ drop out during prediction
+
+
+# Must reads and includes:
+
++ 1994 paper of the interface between statistics and neural networks: https://projecteuclid.org/download/pdf_1/euclid.ss/1177010638
+
+
+# Question Summary of Thesis
+
+# How to use deep learning for tabular data?
+
+## What is tabular data?
+### What does their inputs and outputs look like?
+### How is it different to images/audio/text?
+
+## What is deep learning?
+### What is a neural network?
+### How do you train a neural network?
+
+
+
+
+
+
+
+
+
+
