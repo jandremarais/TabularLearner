@@ -1,9 +1,0 @@
-\begin{abstract}[UKenglish]
-
-English abstract.
-
-\end{abstract}
-
-\begin{abstract}[afrikaans]
-Afrikaans abstract
-\end{abstract}
