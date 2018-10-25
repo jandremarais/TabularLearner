@@ -11,28 +11,16 @@
 
 ## Structure
 
-+ What is a neural network
-
-## Training
-
-+ how do you train a neural network
-+ https://www.youtube.com/watch?v=IHZwWFHWa-w
-
-## Representation Learning
-
-+ What is the Neural Network actually doing?
-
-## Summary
-
-**Previous Work**
-
-## Artifical Neural Networks \label{sec:NN}
-
-An ANN maps inputs to outputs according to series of simple functions or transformations stacked on-top of each other. One of the main building blocks of an ANN is the very common linear transformation. For an easy introduction to ANNs we first discuss the linear model. Consider the linear model for the task of binary classification where the target is coded as zeros and ones and thus $f:\mathbb{R}^{p}\to\{0,1\}$. The linear model assumes the the output, $y$, can be obtained from a weighted average of the input $\boldsymbol{x}$ and thus we can write:
+A NN maps inputs to outputs according to a series of simple functions or transformations stacked on-top of each other.
+One of the main building blocks of an NN is the very common linear transformation. 
+For an easy introduction to NNs we first discuss the linear model. 
+Consider the linear model for the task of binary classification where the target is coded as zeros and ones and thus $f:\mathbb{R}^{p}\to\{0,1\}$. 
+The linear model assumes the the output, $y$, can be obtained from a weighted average of the input $\boldsymbol{x}$ and thus we can write:
 $$
 f(\boldsymbol{x})=w_{0}+w_{1}x_{1}+w_{2}x_{2}+\dots + w_{p}x_{p}=w_{0}+\boldsymbol{w}^{\intercal}\boldsymbol{x},
 $$
-where $w_{j}$, $j=1,2,\dots,p$, is the *weight* applied to the $j$-th feature, also referred to as *coefficients* in classical statistics, and $w_{0}$ a scalar added to the weighted combination, known as the *bias* term in machine learning or the *intercept* in statistics. For convenience we usually write
+where $w_{j}$, $j=1,2,\dots,p$, is the *weight* applied to the $j$-th feature, also referred to as *coefficients* in classical statistics, and $w_{0}$ a scalar added to the weighted combination, known as the *bias* term in machine learning or the *intercept* in statistics. 
+For convenience we usually write
 $$
 f(\boldsymbol{x})=\boldsymbol{w}^{\intercal}\boldsymbol{x},
 $$
@@ -52,7 +40,8 @@ x_{p}
 \end{bmatrix}.
 $$
 
-The true values for $\boldsymbol{w}$ are unknown and therefore we need to estimate them from the data. The estimated weights are denoted as $\hat{\boldsymbol{w}}$ and the output obtained using the estimated weights (*i.e.* the predictions) is given by:
+The true values for $\boldsymbol{w}$ are unknown and therefore we need to estimate them from the data.
+The estimated weights are denoted as $\hat{\boldsymbol{w}}$ and the output obtained using the estimated weights (*i.e.* the predictions) is given by:
 $$
 \hat{y}=\hat{f}(\boldsymbol{x})=\hat{\boldsymbol{w}}^{\intercal}\boldsymbol{x}
 $$
@@ -60,93 +49,142 @@ Similar to the description in \Cref{sec:task}, we want the prediction $\hat{y}$ 
 $$
 \hat{\boldsymbol{w}}=\arg\min_{\boldsymbol{w^{*}}}\sum_{i}L(y_{i},\boldsymbol{w}^{*\intercal}\boldsymbol{x}),
 $$
-which can be found using an optimisation algorithm, discussed shortly. A common loss function, typically used for regression but used here for illustration purposes, is the *squared error* loss:
-
+which can be found using an optimisation algorithm, discussed shortly. 
+A common loss function, typically used for regression but used here for illustration purposes, is the *squared error* loss:
 $$
 L_{MSE}(y_{i},\hat{y}_{i})=(y_{i}-\hat{y}_{i})^{2}
 $$
 
-
-The simplest form (and also the origin) of DNNs is a *feedforward neural network*, also known as the *multilayer perceptron* (MLP). They are called *feedforward* because information flows through the function being evaluated from the inputs $\boldsymbol{X}$, through the intermediate computations used to define $f$, and finally to the output $\boldsymbol{Y}$ [@Goodfellow2016]. The *network* in the name refers to the structure of this type of model which is most naturally visualised as a network of inter-connected nodes.
+The simplest form (and also the origin) of DNNs is a *feedforward neural network*, also known as the *multilayer perceptron* (MLP). 
+They are called *feedforward* because information flows through the function being evaluated from the inputs $\boldsymbol{X}$, through the intermediate computations used to define $f$, and finally to the output $\boldsymbol{Y}$ [@Goodfellow2016]. 
+The *network* in the name refers to the structure of this type of model which is most naturally visualised as a network of inter-connected nodes.
 
 ### Single Layer Perceptron
 
-Like most other supervised learning models, a neural network is a mapping from an input to an output. The central idea of a neural network is to extract linear combinations of the inputs as derived features, and then model the target as a non-linear function of these features [@Hastie2009, Ch. 11]. This idea was developed separately in the fields of statistics and artificial intelligence. In statistics, the first methods built on this idea was called the Projection Pursuit Regression (PPR) model [see @Hastie2009, pp. 389-392]. This model can be written as
-
+Like most other supervised learning models, a neural network is a mapping from an input to an output. 
+The central idea of a neural network is to extract linear combinations of the inputs as derived features, and then model the target as a non-linear function of these features [@Hastie2009, Ch. 11]. 
+This idea was developed separately in the fields of statistics and artificial intelligence. 
+In statistics, the first methods built on this idea was called the Projection Pursuit Regression (PPR) model [see @Hastie2009, pp. 389-392].
+This model can be written as
 $$
 f(\boldsymbol{X})=\sum_{m=1}^{M}g_{m}(\boldsymbol{\omega}_{m}^{T}\boldsymbol{X}),
 $$
-where $\boldsymbol{X}$ is the usual input vector of $p$ components and $\boldsymbol{\omega}_{m}$, $m=1,\dots,M$, $p$-sized vectors with unknown parameters. Thus, the PPR model is an additive model in the derived features, $V_{m}=\boldsymbol{\omega}_{m}^{T}\boldsymbol{X}$. $g_{m}(\cdot)$ is called a ridge function and is to be estimated. $V_{m}$ is the projection of $\boldsymbol{X}$ onto the unit vector $\boldsymbol{\omega}_{m}$, and we seek $\boldsymbol{\omega}_{m}$ such that the model fits well, hence the name, Projection Pursuit. The details of this method is beyond the scope of this thesis and can be found at the reference above.
+where $\boldsymbol{X}$ is the usual input vector of $p$ components and $\boldsymbol{\omega}_{m}$, $m=1,\dots,M$, $p$-sized vectors with unknown parameters. Thus, the PPR model is an additive model in the derived features, $V_{m}=\boldsymbol{\omega}_{m}^{T}\boldsymbol{X}$. $g_{m}(\cdot)$ is called a ridge function and is to be estimated. $V_{m}$ is the projection of $\boldsymbol{X}$ onto the unit vector $\boldsymbol{\omega}_{m}$, and we seek $\boldsymbol{\omega}_{m}$ such that the model fits well, hence the name, Projection Pursuit. 
+The details of this method is beyond the scope of this thesis and can be found at the reference above.
 
-The term neural networks is used for a large class of models and learning methods. First, consider the "vanilla" neural network, known as the single layer perceptron. It is a neural network with a single hidden layer and trained by backpropogation. It can be applied to both regression and classification. It takes an input, $\boldsymbol{X}:1\times p$, transforms it to a hidden layer $\boldsymbol{Z}:1\times M$ and then uses $\boldsymbol{Z}$ as input to model the target, $\boldsymbol{Y}:1 \times K$. This structure can be represented as a network as shown in \autoref{fig:vannn}.
+The term neural networks is used for a large class of models and learning methods. 
+First, consider the "vanilla" neural network, known as the single layer perceptron. 
+It is a neural network with a single hidden layer and trained by backpropogation. 
+It can be applied to both regression and classification. 
+It takes an input, $\boldsymbol{X}:1\times p$, transforms it to a hidden layer $\boldsymbol{Z}:1\times M$ and then uses $\boldsymbol{Z}$ as input to model the target, $\boldsymbol{Y}:1 \times K$.
+This structure can be represented as a network as shown in \autoref{fig:vannn}.
 
 ![Graph structure of a vanilla neural network.\label{fig:vannn}](figures/vannn.png)
 
-The number of units in the final layer matches the dimensionality of the output, denoted by $K$. Thus for classic regression, $K=1$, and for multiclass classification, $K$ is the number of possible categories, where unit $k$, $k=1,\dots,K$, represents the score for class $k$. For this discussion we will describe neural networks for multiclass classification. Thus there are $K$ target measurements, $\boldsymbol{Y}=\{Y_{1},Y_{2},\dots,Y_{K}\}$. $Y_{k}$ is coded as 1 when class $k$ is present and as 0 otherwise.
+The number of units in the final layer matches the dimensionality of the output, denoted by $K$.
+Thus for classic regression, $K=1$, and for multiclass classification, $K$ is the number of possible categories, where unit $k$, $k=1,\dots,K$, represents the score for class $k$. For this discussion we will describe neural networks for multiclass classification. Thus there are $K$ target measurements, $\boldsymbol{Y}=\{Y_{1},Y_{2},\dots,Y_{K}\}$. $Y_{k}$ is coded as 1 when class $k$ is present and as 0 otherwise.
 
-The hidden layer units, $\boldsymbol{Z}=\{Z_{1},Z_{2},\dots, Z_{M}\}$, are a set of features derived from the input. They are created by first taking a linear combination of the inputs and then sending it through a non-linear *activation function*, $a(\cdot)$,
+The hidden layer units, $\boldsymbol{Z}=\{Z_{1},Z_{2},\dots, Z_{M}\}$, are a set of features derived from the input. 
+They are created by first taking a linear combination of the inputs and then sending it through a non-linear *activation function*, $a(\cdot)$,
 
 $$
 Z_{m}=a\left(\alpha_{0m}+\boldsymbol{\alpha}_{m}^{T}\boldsymbol{X}\right),
 $$
-for $m=1,\dots,M$. $\alpha_{0m}$ and $\boldsymbol{\alpha}_{m}$ are the coefficients of the linear mapping. Note that a layer that outputs a linear transformation of its inputs in this fashion is also called a *fully-connected* or *dense* layer. The activation function, $a(\cdot)$, was usually chosen to be the sigmoid function, $a(v)=\frac{1}{1+e^{-v}}$. However these days, there are many, more effective activation functions used in deep neural networks which we discuss in \Cref{sec:activation}.
+for $m=1,\dots,M$. $\alpha_{0m}$ and $\boldsymbol{\alpha}_{m}$ are the coefficients of the linear mapping. 
+Note that a layer that outputs a linear transformation of its inputs in this fashion is also called a *fully-connected* or *dense* layer. 
+The activation function, $a(\cdot)$, was usually chosen to be the sigmoid function, $a(v)=\frac{1}{1+e^{-v}}$. However these days, there are many, more effective activation functions used in deep neural networks which we discuss in \Cref{sec:activation}.
 
 The output units of the neural network can then be expressed as
 
 $$
 f_{k}(\boldsymbol{X})=g_{k}\left(\beta_{0k}+\boldsymbol{\beta}_{k}^{T}\boldsymbol{Z}\right),
 $$
-for $k=1,\dots, K$. Here, the $\beta$'s are the coefficients of the linear combination of the derived features, $\boldsymbol{Z}$, and $g_{k}(\cdot)$ is another activation function. Originally, for both regression and classification, $g_{k}(\cdot)$ was chosen to be the identity function, but they later found that the softmax function was better suited for multiclass classification, defined as
+for $k=1,\dots, K$. 
+Here, the $\beta$'s are the coefficients of the linear combination of the derived features, $\boldsymbol{Z}$, and $g_{k}(\cdot)$ is another activation function. 
+Originally, for both regression and classification, $g_{k}(\cdot)$ was chosen to be the identity function, but they later found that the softmax function was better suited for multiclass classification, defined as
 
 $$
 g_{k}(\boldsymbol{T})=\frac{e^{T_{k}}}{\sum_{k}e^{T_{k}}}.
 $$
-This function is exactly the transformation used in the multilogit model discussed in \Cref{sec:supervised}. It produces output in the range [0,1], summing to 1, similar to the properties of conditional class probabilities.
+This function is exactly the transformation used in the multilogit model discussed in \Cref{sec:supervised}. 
+It produces output in the range [0,1], summing to 1, similar to the properties of conditional class probabilities.
 
-The units in $\boldsymbol{Z}$ are called hidden since they are not directly observed. The aim of this transformation is to derive features, $\boldsymbol{Z}$, so that the classes become linearly separable in the derived feature space [@Lecun2015]. Many more of these hidden layers (combination of linear and non-linear transformations) can be used to derive features to input into the final classifier. This is what we refer to as deep neural networks (DNNs) or deep learning methods.
+The units in $\boldsymbol{Z}$ are called hidden since they are not directly observed. The aim of this transformation is to derive features, $\boldsymbol{Z}$, so that the classes become linearly separable in the derived feature space [@Lecun2015].
+Many more of these hidden layers (combination of linear and non-linear transformations) can be used to derive features to input into the final classifier.
+This is what we refer to as deep neural networks (DNNs) or deep learning methods.
 
-Note, that if the $a(\cdot)$ activation function was the identity function or another linear function, the whole network would collapse into a single linear mapping from inputs to outputs. By introducing the non-linear activations, it greatly enlarges the class of functions that can be approximated by the network (see universal approximator).
+Note, that if the $a(\cdot)$ activation function was the identity function or another linear function, the whole network would collapse into a single linear mapping from inputs to outputs.
+By introducing the non-linear activations, it greatly enlarges the class of functions that can be approximated by the network (see universal approximator).
 
-In a statistical learning sense, the hidden units can be thought of as a basis function expansion of the original inputs. The neural networks is then a standard linear (multilogit) model with the basis expansions as inputs. The only difference to the conventional basis function expansion techinique in Statistical Learning [@Hastie2009, Ch. 5] is that the parameters of the basis functions are learned from the data.
+In a statistical learning sense, the hidden units can be thought of as a basis function expansion of the original inputs. 
+The neural networks is then a standard linear (multilogit) model with the basis expansions as inputs.
+The only difference to the conventional basis function expansion techinique in Statistical Learning [@Hastie2009, Ch. 5] is that the parameters of the basis functions are learned from the data.
 
-One can now also see the relationship between a neural network and the PPR model. If the neural network has one hidden layer, it can be written in the exact same form as the PPR model. The difference is that the PPR uses a nonparametric function $g_{m}(v)$, while the neural network uses far simpler non-linear activation functions, like $a(\cdot)$.
+One can now also see the relationship between a neural network and the PPR model. 
+If the neural network has one hidden layer, it can be written in the exact same form as the PPR model.
+The difference is that the PPR uses a nonparametric function $g_{m}(v)$, while the neural network uses far simpler non-linear activation functions, like $a(\cdot)$.
 
-The number of units in the hidden layer, $M$, is also a value to be decided on. Too few units will not allow the network enough flexibility to model complex relationships and too many takes longer to train and increases the chance of overfitting. $M$ is mostly chosen by experimentation. A good starting point would be to choose a large value and training the network with regularisation (discussed shortly).
+The number of units in the hidden layer, $M$, is also a value to be decided on.
+Too few units will not allow the network enough flexibility to model complex relationships and too many takes longer to train and increases the chance of overfitting. 
+$M$ is mostly chosen by experimentation. 
+A good starting point would be to choose a large value and training the network with regularisation (discussed shortly).
 
-The difference between the above discussed neural networks and current state-of-the-art deep learning methods, is the number and type of hidden layers. The following section discusse the popular activation functions used in DNNs.
+The difference between the above discussed neural networks and current state-of-the-art deep learning methods, is the number and type of hidden layers. 
+The following section discusse the popular activation functions used in DNNs.
 
 ### Activation Functions \label{sec:activation}
 
-In the previous section, we introduced activation functions, which are simple non-linear functions of its input. These are usually applied after a fully connected layer (linear transformation) and are crucial for the flexibility of a deep neural network. We also mentioned that the sigmoid activation, which was originally the go-to activation, is currently not the most popular choice. Another activation function originally thought to work well was, $a(x)=\tanh(x)$. However, by far the most common activation function used at the time of writing is the Rectified Linear Units (ReLU) non-linearity. Its definition is much simpler than its name and is defined as $a(x)=\max(0,x)$. It was introduced in [@Krizhevsky2012] and they showed that using ReLUs in their CNNs reduced the number of training iterations to reach the same point by a factor of 6 compared to using $\tan(x)$.
+In the previous section, we introduced activation functions, which are simple non-linear functions of its input. 
+These are usually applied after a fully connected layer (linear transformation) and are crucial for the flexibility of a deep neural network. 
+We also mentioned that the sigmoid activation, which was originally the go-to activation, is currently not the most popular choice.
+Another activation function originally thought to work well was, $a(x)=\tanh(x)$. 
+However, by far the most common activation function used at the time of writing is the Rectified Linear Units (ReLU) non-linearity.
+Its definition is much simpler than its name and is defined as $a(x)=\max(0,x)$. 
+It was introduced in [@Krizhevsky2012] and they showed that using ReLUs in their CNNs reduced the number of training iterations to reach the same point by a factor of 6 compared to using $\tan(x)$.
 
-There are a plethora of proposals for activation functions, since any simple non-linear (differentiable?) function can be used. Some of the recent most popular choices are exponential linear units (ELUs) [@Clevert2015] and scaled exponential linear units (SELUs) [@Klambauer2017]. The choice of activation function usually influences the convergence time and some might protect the training procedure from overfitting in some cases. The different activation functions can be experimented with, however it would be sufficient in most cases to use ReLUs. The other mentioned proposals have inconsistent gains over ReLUs and therefore it remains the standard choice.
+There are a plethora of proposals for activation functions, since any simple non-linear (differentiable?) function can be used. 
+Some of the recent most popular choices are exponential linear units (ELUs) [@Clevert2015] and scaled exponential linear units (SELUs) [@Klambauer2017]. 
+The choice of activation function usually influences the convergence time and some might protect the training procedure from overfitting in some cases. 
+The different activation functions can be experimented with, however it would be sufficient in most cases to use ReLUs. 
+The other mentioned proposals have inconsistent gains over ReLUs and therefore it remains the standard choice.
 
-However, very recently [@Ramachandran2017] used automated search techniques to discover novel activation functions. The exhaustive and reinforcement learning based searched identified a few promising novel activation functions on which the authors then did further empirical evaluations. They found that the so-called *Swish* activation function,
+However, very recently [@Ramachandran2017] used automated search techniques to discover novel activation functions. 
+The exhaustive and reinforcement learning based searched identified a few promising novel activation functions on which the authors then did further empirical evaluations. 
+They found that the so-called *Swish* activation function,
 
 $$
 a(x)=x\cdot\sigma(\beta x),
 $$
-where $\beta$ is a constant (can also be a trainable parameter), gave the best empirical results. It consistently matched or outperformed ReLU's on deep networks applied to the domains of image classification and machine translation.
+where $\beta$ is a constant (can also be a trainable parameter), gave the best empirical results. 
+It consistently matched or outperformed ReLU's on deep networks applied to the domains of image classification and machine translation.
 
 ## Training a Neural Network
 
 ### Backpropogation
 
-In \Cref{sec:optimisation} we discussed how to fit a linear model using the Stochastics Gradient Descent optimisation procedure. Currenlty, SGD is the most effective way of training deep networks. To recap, SGD optimises the parameters $\theta$ of a networks to minimise the loss,
+In \Cref{sec:optimisation} we discussed how to fit a linear model using the Stochastics Gradient Descent optimisation procedure. 
+Currenlty, SGD is the most effective way of training deep networks. 
+To recap, SGD optimises the parameters $\theta$ of a networks to minimise the loss,
 
 $$
 \theta = \arg\min_{\theta}\frac{1}{N}\sum_{i=1}^{N}l(\boldsymbol{x}_{i}, \theta).
 $$
-With SGD the training proceeds in steps and at each step we consider a mini-batch of size $n\le N$ training samples. The mini-batch is used to approximate the gradient of the loss function with respect to the paramaters by computing, 
+With SGD the training proceeds in steps and at each step we consider a mini-batch of size $n\le N$ training samples. 
+The mini-batch is used to approximate the gradient of the loss function with respect to the paramaters by computing, 
 
 $$
 \frac{1}{n}\frac{\partial l(\boldsymbol{x}_{i},\theta)}{\partial \theta}.
 $$
 Using a mini-batch of samples instead of one at a time produces a better estimate of the gradient over the full training set and it is computationally much more efficient.
 
-This section discusses the same procedure, but applied to a simple single hidden layer neural network. This is made possible by the *backpropogation* algorithm. Note, this process extends naturally to the training of deeper networks.
+This section discusses the same procedure, but applied to a simple single hidden layer neural network. 
+This is made possible by the *backpropogation* algorithm. 
+Note, this process extends naturally to the training of deeper networks.
 
-The neural network described in the previous section has a set of unknown adjustable weights that defines the input-output function of the network. They are the $\alpha_{0m}, \boldsymbol{\alpha}_{m}$ paramters of the linear function of the inputs, $\boldsymbol{X}$, and the $\beta_{0k}, \boldsymbol{\beta}_{k}$ paramaters of the linear transformation of the derived features, $\boldsymbol{Z}$. Denote the complete set of parameters by $\theta$. Then the objective function for regression can be chosen as the sum-of-squared-errors:
+The neural network described in the previous section has a set of unknown adjustable weights that defines the input-output function of the network. 
+They are the $\alpha_{0m}, \boldsymbol{\alpha}_{m}$ paramters of the linear function of the inputs, $\boldsymbol{X}$, and the $\beta_{0k}, \boldsymbol{\beta}_{k}$ paramaters of the linear transformation of the derived features, $\boldsymbol{Z}$. 
+Denote the complete set of parameters by $\theta$. 
+Then the objective function for regression can be chosen as the sum-of-squared-errors:
 
 $$
 L(\theta) = \sum_{k=1}^{K}\sum_{i=1}^{N}\left(y_{ik}-f_{k}(\boldsymbol{x}_{i})\right)^{2}
@@ -156,9 +194,14 @@ and for classification, the cross-entropy:
 $$
 L(\theta) = -\sum_{i=1}^{N}\sum_{k=1}^{K}y_{ik}\log f_{k}(\boldsymbol{x}_{i}),
 $$
-with corresponding classifier $G(\boldsymbol{x})=\arg\max_{k}f_{k}(\boldsymbol{x})$. Since the neural network for classification is a linear logistic regression model in the hidden units, the paramaters can be estimated by maximum likelihood. (I'm not sure if this is possible with deeper networks, and with the non-linear activations?). According to @Hastie2009 [p. 395], the global minimiser of $L(\theta)$ is most likely an overfit solution and we instead require regularisation techniques when minimising $L(\theta)$.
+with corresponding classifier $G(\boldsymbol{x})=\arg\max_{k}f_{k}(\boldsymbol{x})$.
+Since the neural network for classification is a linear logistic regression model in the hidden units, the paramaters can be estimated by maximum likelihood. 
+(I'm not sure if this is possible with deeper networks, and with the non-linear activations?).
+According to @Hastie2009 [p. 395], the global minimiser of $L(\theta)$ is most likely an overfit solution and we instead require regularisation techniques when minimising $L(\theta)$.
 
-Therefore (?), one rather uses gradient descent and backpropogation to minimise $L(\theta)$. This is possible because of the modular nature of a neural network, allowing the gradients to be derived by iterative application of the chain rule for differentiation. This is done by a forward and backward sweep over the network, keeping track only of quantities local to each unit.
+Therefore (?), one rather uses gradient descent and backpropogation to minimise $L(\theta)$.
+This is possible because of the modular nature of a neural network, allowing the gradients to be derived by iterative application of the chain rule for differentiation. 
+This is done by a forward and backward sweep over the network, keeping track only of quantities local to each unit.
 
 In detail, the backpropogation algorithm for the sum-of-squared error objective function,
 
@@ -193,28 +236,57 @@ $$
 \frac{\partial L_{i}}{\partial \alpha_{ml}}&=s_{mi}x_{il}.
 \end{aligned}
 $$
-The quantities, $\delta_{ki}$ and $s_{mi}$ are errors from the current model at the output and hidden layer units respectively. From their definitions, they satify the following,
+The quantities, $\delta_{ki}$ and $s_{mi}$ are errors from the current model at the output and hidden layer units respectively. 
+From their definitions, they satify the following,
 
 $$
 s_{mi}=\sigma'(\boldsymbol{\alpha}_{m}^{T}\boldsymbol{x}_{i})\sum_{k=1}^{K}\beta_{km}\delta_{ki},
 $$
-which is known as the backpropogation equations. Using this, the weight updates can be made with an algortihm consisting of a forward and a backward pass over the network. In the forward pass, the current weights are fixed and the predicted values $\hat{f}_{k}(\boldsymbol{x}_{i})$ are computed. In the backward pass, the errors $\delta_{ki}$ are computed, and then backpropogated via the backpropogation equations to give obtain $s_{mi}$. These are then used to update the weights.
+which is known as the backpropogation equations.
+Using this, the weight updates can be made with an algortihm consisting of a forward and a backward pass over the network. 
+In the forward pass, the current weights are fixed and the predicted values $\hat{f}_{k}(\boldsymbol{x}_{i})$ are computed. 
+In the backward pass, the errors $\delta_{ki}$ are computed, and then backpropogated via the backpropogation equations to give obtain $s_{mi}$. 
+These are then used to update the weights.
 
-Backpropogation is simple and its local nature (each hidden unit passes only information to and from its connected units) allows it to be implented efficiently in parallel. The other advantage is that the computation of the gradient can be done on a batch (subset of the training set) of observations. This allows the network to be trained on very large datasets. One sweep of the batch learning through the entire training set is known as an epoch. It can take many training epochs for the objective function to converge. 
+Backpropogation is simple and its local nature (each hidden unit passes only information to and from its connected units) allows it to be implented efficiently in parallel. 
+The other advantage is that the computation of the gradient can be done on a batch (subset of the training set) of observations. 
+This allows the network to be trained on very large datasets. 
+One sweep of the batch learning through the entire training set is known as an epoch. 
+It can take many training epochs for the objective function to converge. 
 
 ### Learning Rate
 
-The convergence times also depends on the learning rate, $\gamma_{r}$. There are no easy ways for determining $\gamma_{r}$. A small learning rate slows downs the training time, but is safer against overfitting and overshooting the optimal solution. With a large learning rate, convergence will be reached quicker, but the optimal solution may not have been found. One could do a line search of a range of possible values, but this usually takes too long for bigger networks. One possible strategy for effective training is to decrease the learning rate every time after a certain amount of iterations.
+The convergence times also depends on the learning rate, $\gamma_{r}$. 
+There are no easy ways for determining $\gamma_{r}$. 
+A small learning rate slows downs the training time, but is safer against overfitting and overshooting the optimal solution.
+With a large learning rate, convergence will be reached quicker, but the optimal solution may not have been found. 
+One could do a line search of a range of possible values, but this usually takes too long for bigger networks. 
+One possible strategy for effective training is to decrease the learning rate every time after a certain amount of iterations.
 
-Recently, in (https://arxiv.org/abs/1711.00489) (no bibtex entry), the authors found that, instead of learning rate decay, one can alternatively increase the batch size during training. They found that this method reaches equivalent test acccuracies compared to learning rate decay after the same amount of epochs. But their method requires fewer parameter updates.
+Recently, in (https://arxiv.org/abs/1711.00489) (no bibtex entry), the authors found that, instead of learning rate decay, one can alternatively increase the batch size during training. They found that this method reaches equivalent test acccuracies compared to learning rate decay after the same amount of epochs. 
+But their method requires fewer parameter updates.
 
 ### Basic Regularisation
 
-There are many ways to prevent overfitting in deep neural networks. The simplest strategies for single hidden layer networks are by early stopping and weight decay. Stopping the training process early can prevent overfitting. When to stop can be determined by a validation set approach. Weight decay is the addition of a penalty term, $\lambda J(\theta)$, to the objective function, where,
+There are many ways to prevent overfitting in deep neural networks. 
+The simplest strategies for single hidden layer networks are by early stopping and weight decay. 
+Stopping the training process early can prevent overfitting. When to stop can be determined by a validation set approach. 
+Weight decay is the addition of a penalty term, $\lambda J(\theta)$, to the objective function, where,
 
 $$
 J(\theta)=\sum_{km}\beta^{2}_{km} + \sum_{ml}\alpha^{2}_{ml}.
 $$
-This is exactly what is done in ridge regression [@Hastie2009, Ch. 4]. $\lambda \ge 0$ and larger values of $\lambda$ tends to shrink the weights towards zero. This helps with the generalisation ability of a neural network, but recently more effective techniques to combat overfitting in DNNs have been developed. These are dicussed in \Cref{sec:over}.
+This is exactly what is done in ridge regression [@Hastie2009, Ch. 4]. 
+$\lambda \ge 0$ and larger values of $\lambda$ tends to shrink the weights towards zero. 
+This helps with the generalisation ability of a neural network, but recently more effective techniques to combat overfitting in DNNs have been developed. 
+These are dicussed in \Cref{sec:over}.
 
-It is common to standardise all inputs to have mean zero and standard deviation of one. This ensures that all input features are treated equally. Now we have covered all of the basics for simple (1-layer) neural networks.
+It is common to standardise all inputs to have mean zero and standard deviation of one. 
+This ensures that all input features are treated equally. 
+Now we have covered all of the basics for simple (1-layer) neural networks.
+
+## Representation Learning
+
++ What is the Neural Network actually doing?
+
+## Summary
