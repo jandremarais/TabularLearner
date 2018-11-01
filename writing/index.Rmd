@@ -46,10 +46,8 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo=FALSE)
 ```{r child = 'chapter1.Rmd'}
 ```
 
-
 ```{r child = 'chapter2.Rmd'}
 ```
-
 
 ```{r child = 'chapter3.Rmd'}
 ```

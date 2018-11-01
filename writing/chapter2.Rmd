@@ -2,14 +2,38 @@
 
 ## Introduction
 
-+ Inspired by biological networks in the brain
-+ where did it come from
-+ give the popular illustration
-+ what is it used for
-+ introduce neurons and layers
-+ introduce training
+A Neural Network (NN), like any other machine learning model, is a function that maps inputs to outputs, *i.e.* 
+$$
+f:\boldsymbol{x}\to y.
+$$
+The NN, $f$, receives input, $\boldsymbol{x}$, and produces output, $y$.
+What happens inside of $f$ is loosely based on biological neural systems, or the brain.
+The brain consists of a collection of interconnected neurons, each sending and receiving signals between each other.
+An artifical NN tries to copy this stucture by modelling what happens inside of a single neuron by a weighted combination of its inputs, combined with a simple non-linear transformation.
+The output of a neuron is referred to as activations.
+These neurons are grouped in so-called layers.
+At each layer the input is passed through each of the neurons and their activations, then in turn, gets passed to the next layer.
+See \autoref{fig:nn} for an illustration of this structure.
+A more detailed explanation of the structure of a NN is given in \autoref{sec:structure}
 
-## Structure
+![The structure of an artifical neural network (This is still a placeholder).\label{fig:nn}](figures/nn.png)
+
+The transformation at each neuron is controlled by a set of parameters, also known as weights.
+These weights can be tuned to obtain a desired output.
+When training a NN to perform a certain machine learning task, for instance classification, the NN is fed a bunch of data and tweaks its weights so that the resulting output matches the true target as close as possible.
+This process of tweaking the weights according to the data is done by an optimisation algorithm called Stochastic Gradient Descent (SGD).
+SGD and NN training is covered in detail in \autoref{sec:training}.
+
+There has been plenty of excitement around NNs recently, but in fact NNs have quite a bit of history.
+The development of NNs dates at least as far back as Perceptrons in [@rosenblatt1962].
+It is also interesting to compare modern NNs with the Projection Pursuit Regression algorithm [@friedman1981] developed in statistics.
+Only recently a series of breakthroughs allowed NNs to be more efficient and effective and therefore the revitalisation of the field.
+
+The modular nature of a NN allows it to accept inputs and produce outputs of various shapes and sizes.
+Therefore NNs can be used for just about any machine learning task, from doing simple binary classification on tabular data, to generating full color images from black and white sketches.
+Modern structures like the Convolutional Neural Network and the Recurrent Neural Network are all based on the vanilla NN structure and training procedure explored in the rest of this chapter.
+
+## The Structure of a Neural Network \label{sec:structure}
 
 A NN maps inputs to outputs according to a series of simple functions or transformations stacked on-top of each other.
 One of the main building blocks of an NN is the very common linear transformation. 
@@ -158,7 +182,7 @@ $$
 where $\beta$ is a constant (can also be a trainable parameter), gave the best empirical results. 
 It consistently matched or outperformed ReLU's on deep networks applied to the domains of image classification and machine translation.
 
-## Training a Neural Network
+## Training a Neural Network \label{sec:training}
 
 ### Backpropogation
 
