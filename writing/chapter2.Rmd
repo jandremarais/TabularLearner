@@ -9,7 +9,7 @@ $$
 The NN, $f$, receives input, $\boldsymbol{x}$, and produces output, $y$.
 What happens inside of $f$ is loosely based on biological neural systems, or the brain.
 The brain consists of a collection of interconnected neurons, each sending and receiving signals between each other.
-An artifical NN tries to copy this stucture by modelling what happens inside of a single neuron by a weighted combination of its inputs, combined with a simple non-linear transformation.
+An artifical NN tries to copy this stucture by modelling what happens inside of a single neuron by outputting a weighted combination of its inputs, combined with a simple non-linear transformation.
 The output of a neuron is referred to as activations.
 These neurons are grouped in so-called layers.
 At each layer the input is passed through each of the neurons and their activations, then in turn, gets passed to the next layer.
@@ -34,6 +34,82 @@ Therefore NNs can be used for just about any machine learning task, from doing s
 Modern structures like the Convolutional Neural Network and the Recurrent Neural Network are all based on the vanilla NN structure and training procedure explored in the rest of this chapter.
 
 ## The Structure of a Neural Network \label{sec:structure}
+
+Recall, a NN processes an input by sending it through a series of layers, each applying some transformation to its input, to eventually produce an output and each layers consists of smaller computational units, called neurons.
+To understand and formulate the NN structure, we will start by describing the operation inside a single neuron and then gradually put the pieces together to form layers and then a complete NN.
+Suppose we want a function that estimates a taxi fare given the distance travelled, duration of the trip and number of passengers.
+A single neuron can act as such a function by taking a weighted average of these three inputs to produce an estimate of the taxi fare.
+\autoref{fig:neuron} is a graphical representation of this function.
+In equation form, this function can be written as:
+$$
+w_{1}\cdot \text{distance} + w_{2}\cdot\text{time}+w_{3}\cdot\text{passengers}+b=\text{fare},
+$$
+where $w_{i}$, $i=\{1,2,3\}$, are the weights applied to each of the inputs and $b$ a constant added to the equation, better known as the bias term in machine learning.
+Clearly, this equation is simply the very common linear model and thus also can be written as:
+$$
+\boldsymbol{x}^{\intercal}\boldsymbol{w} + b=z,
+$$
+where $\boldsymbol{x}=[\text{distance}\quad\text{time}\quad\text{passengers}]^{\intercal}$ is the input, $\boldsymbol{w}=[w_{1}\quad w_{2}\quad w_{3}]^{\intercal}$ the weights and $z$ the output, *i.e.* the taxi fare. For convenience, we sometimes compress the above equation to $\boldsymbol{x}^{\intercal}\boldsymbol{w}=z$, where $\boldsymbol{x}$ includes the bias term and the weight vector $\boldsymbol{w}$ a unit element, *i.e.* $\boldsymbol{x}=[b\quad \text{distance}\quad\text{time}\quad\text{passengers}]^{\intercal}$ is the input, $\boldsymbol{w}=[1\quad w_{1}\quad w_{2}\quad w_{3}]^{\intercal}$.
+
+<!-- ![\label{fig:neuron}]() -->
+
+The weights determine how much each of the inputs contribute to the fare.
+For example, the distance (in km's) may be the most important driver of the taxi fare but the duration of the trip (in minutes) has little influence and the number passemgers has no effect.
+Then the weights may look something like this:
+$$
+w_{1}=10, \quad w_{2}=0.5 \quad \text{and} \quad w_{3}=0.
+$$
+But we do not know what these weights are before hand and therefore need to estimate them.
+With the classical linear model, these weights (or coefficients) are estimated using the ordinary least squares (OLS) method.
+Since a NN consists of many inter-conncected neurons, the OLS methods will not suffice.
+This is the topic of the next section.
+
+Suppose a single neuron (or a linear model if you like) is not flexible enough to model the taxi fare given the distance, time and number of passengers.
+Now we decide to add another neuron.
+This neuron also accepts the same inputs as the first, but uses a different set of weights to estimate the fare.
+Now we have two neurons, each producing a different output:
+$$
+\boldsymbol{x}^{\intercal}\boldsymbol{w}_{1} = z_{1}\quad \text{and}\quad \boldsymbol{x}^{\intercal}\boldsymbol{w}_{2} = z_{2}.
+$$
+So how do we get a final estimate of the fare from these two initial estimate?
+We feed it to another neuron of course, *i.e.*
+$$
+\boldsymbol{z}^{\intercal}\boldsymbol{w}_{3}=y
+$$
+See \autoref{fig:simple_nn} for a graphical representation.
+
+<!-- ![\label{fig:simple_nn}]() -->
+
+The first two neurons both took in the distance, time and passengers as input and produced a single output.
+These operations can be expressed as a single equation, *i.e.*
+$$
+\boldsymbol{x}^{\intercal}W=\boldsymbol{z}^{\intercal},
+$$
+where
+$$
+W=\begin{bmatrix}
+\boldsymbol{w}_{1}&\boldsymbol{w}_{2}
+\end{bmatrix}=
+\begin{bmatrix}
+1 & 1\\
+w_{11}&w_{12}\\
+w_{21}&w_{22}\\
+w_{33}&w_{32}\\
+\end{bmatrix} \quad \text{and}\quad \boldsymbol{z}=[z_{1}\quad z_{2}]^{\intercal}.
+$$
+The collection of these two neurons is what is called a layer.
+Since our third neuron (which is also a layer but with a single neuron) takes the output of this layer as input, it is possible to express the complete input-output relationship in one equation, *i.e.*
+$$
+\boldsymbol{z}^{\intercal}\boldsymbol{w}_{3}=\boldsymbol{x}^{\intercal}W\boldsymbol{w}_{3}=y.
+$$
+Note here that the weights from the first layer, $W$, and the third neuron, $\boldsymbol{w}_{3}$, can collapse into a single vector $\boldsymbol{w}$, effectively reducing all of the neuron operations back into a single neuron representation and thus is clearly not a good way to model a network
+
+However, a NN has a way to prevent this collapsing from happening and to allow for non-linear relationships between the inputs and outputs.
+It does this through the use of an activation function, a simple non-linear transformation.
+
+**TBC**
+
+## OLD STRUCTURE SECTION
 
 A NN maps inputs to outputs according to a series of simple functions or transformations stacked on-top of each other.
 One of the main building blocks of an NN is the very common linear transformation. 
