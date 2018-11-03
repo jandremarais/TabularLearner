@@ -52,12 +52,6 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo=FALSE)
 ```{r child = 'chapter3.Rmd'}
 ```
 
-<!-- ```{r child = 'chapter2.Rmd'} -->
-<!-- ``` -->
-
-<!-- ```{r child = 'chapter6.Rmd'} -->
-<!-- ``` -->
-
 \appendix
 \appendixpage\relax
 

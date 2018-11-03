@@ -15,4 +15,93 @@ Deep learning is a revitalization of artifical neural networks or multilayer per
 + (Un)Supervised Learning
 + regression/classification
 
+### Statistical Learning \label{sec:Slearning}
+
+Machine or statistical learning algorithms (used interchangably) are used to perform certain task that are too difficult or inefficient to solve with fixed rule-based programs. These algorithms are able to learn how to perform a task from data. For an algorithm to learn from data means that it can improve its ability in performing an assigned *task*, with respect to some *performance measure*, by processing *data*. This section gives a brief look at some of the important types of tasks, data and performance measures in the field of statistical learning.
+
+A learning task describes the way an algorithm should process an observation. An observation is a collection of features that have been measured from some object or event that we want the system to process, for example an image. We will represent an observation by a vector $\boldsymbol{x}\in\mathbb{R}^{p}$ where each element $x_{j}$ of the vector is an observed value of the $j$-th feature, $j=1,\dots,p$. For example, the features of an image are usually the color intensity values of the pixels in the image.
+
+Many kinds of tasks can be solved with statistical learning. One of the most common learning tasks is that of *classification*, where it is expected of an algorithm to determine which of $K$ categories an input belongs to. To solve the classification task, the learning algorithm is usually asked to produce a function $f:\mathbb{R}^{p}\to \{1,\dots,K\}$. When $y=f(\boldsymbol{x})$, the model assigns an input described by the vector $\boldsymbol{x}$ to a category identified by the numeric code $y$, called the *output* or *response*. In other variants of the classification task, $f$ may output a probability distribution over the possible classes.
+
+*Regression* is the other main learning task and requires the algorithm to predict a continuous value given some input. This task requires a function $f:\mathbb{R}^{p}\to\mathbb{R}$, where the only difference to classification is the format of its output.
+
+Learning algorithms can learn to perform such tasks by observing a relevant set of data points, *i.e.* a dataset. A dataset containing $N$ observations of $p$ features is commonly described as a design matrix $X:N\times p$, where each row of the matrix represents a different observation and each column corresponds to a different feature of the observations, *i.e.*
+
+$$
+X = 
+\begin{bmatrix}
+x_{11} & x_{12} & \dots & x_{1p}\\
+x_{21} & x_{22} & \dots & x_{2p}\\
+\vdots & \vdots & \ddots & \vdots\\
+x_{N1} & x_{N2} & \dots & x_{Np}
+\end{bmatrix}.
+$$
+Often the dataset includes annotations for each observation in the form of a label (classification) or a target value (regression). The $N$ annotations are represented by the vector $\boldsymbol{y}$, where element $y_{i}$ is associated with the $i$-th row of $X$. Therefore the response vector may be denoted by
+
+$$
+\boldsymbol{y}=
+\begin{bmatrix}
+y_{1}\\
+y_{2}\\
+\vdots\\
+y_{N}
+\end{bmatrix}.
+$$
+Note that in the case of multiple labels or targets, a matrix representation $Y:N\times K$ is required.
+
+Statistical learning algorithms can be divided into two main categories, *supervised* and *unsupervised* algorithms, determined by the presence (or absence) of annotations in the dataset to be analysed. Unsupervised learning algorithms learn from data consisting only of features, $X$, and are used to find useful properties and structure in the dataset [see @Hastie2009, Ch. 14]. On the other hand, superivised learning algorithms learn from datasets which consist of both features and annotations, $(X,Y)$, with the aim to model the relationship between them. Therefore, both classification and regression are considered to be supervised learning tasks.
+
+In order to evaluate the ability of a learning algorithm to perform its assigned task, we have to design a quantitative performance measure. For example, in a classification task we are usually interested in the accuracy of the algorithm, *i.e.* the percentage of times that the algorithm makes the correct classification. We are mostly interested in how well the learning algorithm performs on data that it has not seen before, since this demonstrates how well it will perform in real-world situations. Thus we evaluate the algorithm on a *test set* of data points, independent of the *training set* of data points used during the learning process.
+
+For a more concrete example of supervised learning, and keeping in mind that the linear model is one of the main building blocks of neural networks, consider the learning task underlying *linear regression*. The objective here is to construct a system which takes a vector $\boldsymbol{x}\in \mathbb{R}^{p}$ as input and predicts the value of a scalar $y\in \mathbb{R}$ in response. In the case of linear regression, we assume the output be a linear function of the input. Let $\hat{y}$ be the predicted response. We define the output to be 
+
+$$
+\hat{y}=\hat{\boldsymbol{w}}^{T}\boldsymbol{x},
+$$
+where $\hat{\boldsymbol{w}}=[w_{0},w_{1},\dots,w_{p}]$ is a vector of parameters and $\boldsymbol{x}=[1,x_{1},x_{2},\dots,x_{p}]$. Note that an intercept is included in the model (also known as a *bias* in machine learning). The parameters are values that control the behaviour of the system. We can think of them as a set of *weights* that determine how each feature affects the prediction. Hence the learning task can be defined as predicting $y$ from $\boldsymbol{x}$ through $\hat{y}=\hat{\boldsymbol{w}}^{T}\boldsymbol{x}$.
+
+We of course need to define a performance measure to evaluate the linear predictions. For a set of observations, an evaluation metric tells us how (dis)similar the predicted output is to the actual response values. A very common measure of performance in regression is the *mean squared error* (MSE), given by
+
+$$
+MSE = \frac{1}{N}\sum_{i=1}^{N}(y_{i}-\hat{y}_{i})^{2}.
+$$
+The process of learning from the data (or fitting a model to the data) can be reduced to the following optimisation problem: find the set of weights, $\hat{\boldsymbol{w}}$, which produces a $\hat{\boldsymbol{y}}$ that minimises the MSE. Of course this problem has a closed form solution and can quite trivially be found by means of *ordinary least squares* (OLS) [see @Hastie2009, p. 12]. However, we have mentioned that we are more interested in the algorithm's performance evaluated on a test set. Unfortunately the least squares solution does not guarantee the solution to be optimal in terms of the MSE on a test set, rendering statistical learning to be much more than a pure optimisation problem.
+
+The ability of a model to perform well on previously unobserved inputs is referred to as its *generalisation* ability. Generalisation is the key challenge of statistical learning. One way of improving the generalisation ability of a linear regression model is to modify the optimisation criterion $J$, to include a *weight decay* (or *regularisation*) term. That is, we want to minimise
+
+$$
+J(\boldsymbol{w})=MSE_{\text{train}} +\lambda\boldsymbol{w}^{T}\boldsymbol{w},
+$$
+where $J(\boldsymbol{w})$ now expresses preference for smaller weights. The parameter $\lambda$ is non-negative and needs to be specified ahead of time. It controls the strength of the preference by determining how much influence the penalty term, $\boldsymbol{w}^{T}\boldsymbol{w}$, has on the optimisation criterion. If $\lambda=0$, no preference is imposed, and the solution is equivalent to the OLS solution. Larger values of $\lambda$ force the weights to decrease, and thus referred to as a so-called *shrinkage* method ([*cf*. for example @Hastie2009, pp. 61-79] and @Goodfellow2016. 
+
+We can further generalise linear regression to the classification scenario. First, note the different types of classification schemes. Consider $\mathcal{G}$, the discrete set of values which may be assumed by $G$, where $G$ is used to denote a categorical output variable (instead of $Y$). Let $|\mathcal{G}|=K$ denote the number of discrete categories in the set $\mathcal{G}$. The simplest form of classification is known as binary classification and refers to scenarios where the input is associated with only one of two possible classes, *i.e.* $K=2$. When $K>2$, the task is known as multiclass classification. In multi-label classification an input may be associated with multiple classes (out of $K$ available classes), where the number of classes that each observation belongs to, is unknown. A thorough discussion of MLC methods is given in \Cref{chp:mlc}. Here we start by introducing the two single label classification setups, *viz*. binary and multiclass classification.
+
+In multiclass classification, given the input values $\boldsymbol{X}$, we would like to accurately predict the output, $G$, which we denote by $\hat{G}$. One approach would be to represent $G$ by an indicator vector $\boldsymbol{Y}_{G}:K\times1$, with elements all zero except in the $G$-th position, where it is assigned a 1, *i.e.* $Y_{k}=1$ for $k=G$ and $Y_{k}=0$ for $k\neq G$, $k=1,2,...,K$. We may then treat each of the elements in $\boldsymbol{Y}_{G}$ as quantitative outputs, and predict values for them, denoted by $\hat{\boldsymbol{Y}}=[\hat{Y}_{1},\dots,\hat{Y}_{K}]$. The class with the highest predicted value will then be the final categorical prediction of the classifer, *i.e.* $\hat{G}=\arg\max_{k\in\{1,\dots,K\}}\hat{Y}_{k}$.
+
+Within the above framework we therefore seek a function of the inputs which is able to produce accurate predictions of the class scores, *i.e.*
+
+$$
+\hat{Y}_{k}=\hat{f}_{k}(\boldsymbol{X}),
+$$
+for $k=1,\dots, K$. Here $\hat{f}_{k}$ is an estimate of the true function, $f_{k}$, which is meant to capture the relationship between the inputs and output of class $k$. As with the linear regression case described above, we can use a linear model $\hat{f}_{k}(\boldsymbol{X})=\hat{\boldsymbol{w}}_{k}^{T}\boldsymbol{X}$ to approximate the true function. The linear model for classification divides the input space into a collection of regions labelled according to the classification, where the division is done by linear *decision boundaries* (see \autoref{fig:sgd} for an illustration). The decision boundary between classes $k$ and $l$ is the set of points for which $\hat{f}_{k}(\boldsymbol{x})=\hat{f}_{l}(\boldsymbol{x})$. These set of points form an affine set or hyperplane in the input space.
+
+After the weights are estimated from the data, an observation represented by $\boldsymbol{x}$ (including the unit element) can be classified as follows:
+
++ Compute $\hat{f}_{k}(\boldsymbol{x})=\hat{\boldsymbol{w}}_{k}^{T}\boldsymbol{x}$ for all $k=1,\dots,K$.
++ Identify the largest component and classify to the corresponding class, *i.e.* $\hat{G}=\arg\max_{k\in\{1,\dots,K\}}\hat{f}_{k}(\boldsymbol{x})$.
+
+One may view the predicted class scores as estimates of the conditional class probabilities (or posterior probabilities), *i.e.* $P(G=k|\boldsymbol{X}=\boldsymbol{x})\approx \hat{f}_{k}(\boldsymbol{x})$. However, these values are not the best estimates of posterior probabilities. Although the values sum to 1, they do not lie within [0,1]. A way to overcome this problem is to estimate the posterior probabilities
+using the *logit transform* of $\hat{f}_{k}(\boldsymbol{x})$. That is,
+
+$$
+P(G=k|\boldsymbol{X}=\boldsymbol{x})\approx\frac{e^{\hat{f}_{k}(\boldsymbol{x})}}{\sum_{l=1}e^{\hat{f}_{l}(\boldsymbol{x})}}.
+$$
+Through this transformation, the estimates of the posterior probabilities both sum to 1 and are squeezed into [0,1]. The above model is the well-known *logistic regression* model [@Hastie2009, p. 119]. With this formulation there is no closed form solution for the weights. Instead, the weight estimates may be searched for by maximising the log-likelihood function. One way of doing this is by minimising the negative log-likelihood using gradient descent, which will be discussed in the following section.
+
+Finally in this section, note that any supervised learning problem can also be viewed as a function approximation problem. Suppose we are trying to predict a variable $Y$ given an input vector $\boldsymbol{X}$, where we assume the true relationship between them to be given by
+$$
+Y=f(\boldsymbol{X})+\epsilon,
+$$
+where $\epsilon$ represents the part of $Y$ that is not predictable from $\boldsymbol{X}$, because of, for example, incomplete features or noise present in the labels. Then in function approximation we are estimating $f$ with an estimate $\hat{f}$. In parametric function approximation, for example in linear regression, estimation of $f(\boldsymbol{X},\theta)$ is equivalent to estimating the optimal set of weights, $\hat{\theta}$. In the remainder of the thesis, we refer to $\hat{f}$ as the *model*, *classifier* or *learner*.
+
 ## Outline

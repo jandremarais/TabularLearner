@@ -113,7 +113,9 @@ a_{2}\left(a_{1}(\boldsymbol{x}^{\intercal}W)\boldsymbol{w}_{3}\right)=y,
 $$
 Where $a_{1}$ is the activation function after the first linear layer and $a_{2}$ the activation after the final layer.
 
-By introducing the non-linear activations, it greatly enlarges the class of functions that can be approximated by the network (see universal approximator).
+By introducing the non-linear activations, it greatly enlarges the class of functions that can be approximated by the network.
+
+**TBC**
 
 The activation function, $a(\cdot)$, was usually chosen to be the sigmoid function, $a(v)=\frac{1}{1+e^{-v}}$
 
@@ -149,19 +151,168 @@ A good starting point would be to choose a large value and training the network 
 The difference between the above discussed neural networks and current state-of-the-art deep learning methods, is the number and type of hidden layers. 
 The following section discusse the popular activation functions used in DNNs.
 
-**TBC**
-
-## OLD STRUCTURE SECTION
-
 The units in $\boldsymbol{Z}$ are called hidden since they are not directly observed. The aim of this transformation is to derive features, $\boldsymbol{Z}$, so that the classes become linearly separable in the derived feature space [@Lecun2015].
 Many more of these hidden layers (combination of linear and non-linear transformations) can be used to derive features to input into the final classifier.
 This is what we refer to as deep neural networks (DNNs) or deep learning methods.
 
++ comment on number and size of layers
++ lead into modern architectures
++ lead into parameter optimisation
+
 ## Training a Neural Network \label{sec:training}
+
+### Optimisation \label{sec:optimisation}
+
+As mentioned before, fitting a linear regression model can be reduced to finding the optimal weights to minimise the MSE function (with or without weight decay). In fact, typically model training procedures can be described as the search for its internal parameters that minimises or maximises some *objective function*. Therefore statistical learning and optimisation are closely related. Optimisation refers to the task of either minimising or maximising some function $J(x)$ by altering $x$. The function we want to optimise is called the objective function. When we are minimising the objective function, we may also refer to the objective function as the *cost* or *loss function*. These terms will be used interchangeably throughout the remainder of the thesis.
+
+As mentioned in the previous section, parameter estimation (or optimisation) of a linear (or logistic regression) model is usually done using OLS or maximum likelihood estimation (MLE). In this section, however, we discuss an alternative parameter estimation method which is also relevant for the optimisation of neural networks.
+
+Consider the MSE loss function:
+
+$$
+\begin{aligned}
+L&=\sum_{i=1}^{N}L_{i}\\
+&=\sum_{i=1}^{N}\sum_{k=1}^{K}(y_{ik}-f_{k}(\boldsymbol{x}_{i}))^{2}\\
+&=\sum_{i=1}^{N}\sum_{k=1}^{K}(y_{ik}-\boldsymbol{w}_{k}^{T}\boldsymbol{x}_{i})^{2},
+\end{aligned}
+$$
+where $f_{k}(\cdot)$ in this case is the linear model used to predict the $k$-th class posterior probability. Although the MSE loss is mostly used in a regression setup and not really well suited for classification, we make use of it here for illustration purposes.
+
+To find the weights, $\boldsymbol{w}$, that minimise $L$, we can follow a process of iterative refinement. That is, starting with a random initialisation of $\boldsymbol{w}$, one iteratively updates the values such that $L$ decreases. The updating steps are repeated until the loss converges. In order to minimise $L$ with respect to $\boldsymbol{w}$, we calculate the gradient of the loss function at the point $L(\boldsymbol{x};\boldsymbol{w})$. The gradient (or slope) of the loss function indicates the direction in which the function has the steepest rate of increase. Therefore, once we have determined this direction, we can update the weights by a step in the opposite direction - thereby reaching a smaller value of $L$.
+
+The gradient of $L_{i}$ is computed by obtaining the partial derivative of $L_{i}$ with respect to $\boldsymbol{w}_{k}$, *i.e.*:
+
+$$
+\frac{\partial L_{i}}{\partial\boldsymbol{w_{k}}}=-2(y_{ik}-\boldsymbol{w}_{k}^{T}\boldsymbol{x}_{i})\boldsymbol{x}_{i}.
+$$
+After obtaining the above ${N}$ partial derivatives, an update at the $(r+1)$-th iteration may be obtained as follows:
+
+$$
+\boldsymbol{w}_{k}^{(r+1)}=\boldsymbol{w}_{k}^{(r)}-\gamma\sum_{i=1}^{n}\frac{\partial L_{i}}{\partial\boldsymbol{w_{k}^{(r)}}},
+$$
+where $\gamma$ is called the *learning rate* and determines the size of the step taken toward the optimal direction. One typically would like to set the learning rate small enough so that one does not overshoot the minimum, but large enough to limit the number of iterations before convergence. This value can be determined via a line search but is not always ideal since this may render the training time of DNNs too long. Another option is to reduce the learning rate after every fixed number of iterations. More detail regarding the implication of the learning rate will be given in \Cref{chp:dnn}.
+
+The procedure of repeatedly evaluating the gradient of the objective function and then performing a parameter update, is called *gradient descent* [Cauchy, 1847]. Gradient descent forms the basis of the optimisation procedure for neural networks.
+
+Note that a weight update is made by evaluating the gradient over a set of observations, $\{\boldsymbol{x}_{i},i=1,\dots,n\}$. One of the advantages of gradient descent is that at an iteration, the gradient need not be computed over the complete training dataset, *i.e.* $n\le N$. When updates are iteratively determined by using subsets of the data, the process is called *mini-batch gradient descent*. This is extremely helpful in large-scale applications, since it obviates computation of the full loss function over the entire dataset. This leads to faster convergence, because of more frequent parameter updates, and allows processing of data sets that are too large to fit into a computer's memory. The choice regarding batch size depends on the available computation power. Typically a batch consists of 64, 128 or 256 data points, since in practice many vectorised operation implementations work faster when their inputs are sized in powers of 2. The gradient obtained using mini-batches is only an approximation of the gradient of the full loss but it seems to be sufficient in practice [@Li2014]. Note at this point that the collection of iterations needed to make one sweep through the training data set is called an *epoch*.
+
+The extreme case of mini-batch gradient descent is when the batch size is selected to be 1. This is called *Stochastic Gradient Descent* (SGD). Recently SGD has been used much less, since it is more efficient to calculate the gradient in larger batches compared to only using one example. However, note that it remains common to use the term SGD when actually referring to mini-batch gradient descent. Gradient descent in general has often been regarded as slow or unreliable but it works well for optimising DNNs. SGD will most probably not find even a local minimum of the objective function. It typically however finds a very low value of the cost function quickly enough to be useful.
+
+### Optimisation Example
+
+To illustrate the SGD algorithm, consider the linear model in a classification context. Suppose we are given a training data set with two-dimensional inputs and only two possible classes. Let the data be generated in the same way as described in [@Hastie2009, pp. 16-17]. 
+
+We want to fit a linear regression model to the data such that we can classify an observation to the class with the highest predicted score. In the binary case it is only necessary to model one class probability and then assign an observation to that class if the score exceeds some threshold (usually 0.5), otherwise it is assigned to the other class. Therefore the decision boundary is given by $\{\boldsymbol{x}:\boldsymbol{x}^{T}\hat{\boldsymbol{w}}=0.5\}$.
+
+The example is illustrated in \autoref{fig:sgd}. The colour shaded regions represent the parts of the input space classified to the respective classes, as determined by the decision boundary based upon OLS parameter estimates. Gradient descent was applied to the determine the optimal weights using a learning rate of 0.001. Since the total number of training observations are small, it is not necessary to use SGD. In \autoref{fig:sgd}, the dashed lines represent the decision boundary defined by the gradient descent parameter estimates at different iterations. We observe that initially the estimated decision boundary is far from the OLS solution, but as the update iterations proceed, the decision boundary is rotated and translated until finally matching the OLS line. It took 29 iterations for the procedure to reach convergence.
+
+```{r, cache=TRUE,eval=FALSE, fig.cap = "Plots of the gradient descent example. (a) The data points in input space. The shades in the background represent the class division in input space, with the decision boundary determined by linear least squares estimation. The dashed lines represent the decision boundaries learned at different iterations. (b) The loss calculated at each iteration. \\label{fig:sgd}"}
+# generate the data
+set.seed(1)
+
+K <- 2
+m <- lapply(list(c(1, 0), c(0, 1), c(3, 3))[1:K], 
+            function(a) mvrnorm(n = 10, mu = a, Sigma = diag(2)))
+
+X <- lapply(m, function(b) {
+  t(sapply(1:100, function(a) {
+    mvrnorm(n = 1, mu = b[sample(10, 1), ], Sigma = diag(2)/5)
+  }))
+})
+
+D <- data.frame(X = do.call("rbind", X), Y = rep(0:(K-1), each = 100))
+D <- cbind(X.0 = 1, D)
+#D[, -3] <- scale(D[, -3])
+
+# SGD
+lin_model <- function(x, b) sum(x * b)
+L <- function(y, yhat) sum((y - yhat)^2)
+
+set.seed(125)
+B <- mvrnorm(1, mu = c(0, 0, 0), Sigma = diag(3))
+B_mat <- B
+yhat <- apply(D[, -3], 1, function(a) lin_model(a, B))
+loss <- L(D$Y, yhat)
+lr <- 0.001
+for(i in 1:200) {
+  gradient <- c(-2*t(as.matrix(D[, -4])) %*% (D$Y - yhat))
+  B_new <- B - lr * gradient
+  
+  yhat <- apply(D[, -4], 1, function(a) lin_model(a, B_new))
+  loss <- c(loss, L(D$Y, yhat))
+  
+  if(abs(loss[i+1] - loss[i]) < 0.00001) {
+    return()
+  } else {
+    B <- B_new
+    B_mat <- rbind(B_mat, B_new)
+  }
+  #B <- B_new
+}
+
+x <- as.matrix(D[, -4])
+Bhat <- solve(t(x)%*%x)%*%t(x)%*%D$Y
+
+d_bounds <- t(apply(B_mat, 1, function(a) c(slope = -a[2]/a[3], intercept = (0.5-a[1])/a[3])))
+rownames(d_bounds) <- NULL
+d_bounds <- data.frame(iteration = 0:(nrow(d_bounds)-1), d_bounds)
+d_bounds <- d_bounds[c(1, 5, 10, 30), ]
+
+xlims <- range(D$X.1) * 1.1
+ylims <- range(D$X.2) * 1.1
+
+shade_x <- seq(xlims[1], xlims[2], len = 100)
+shade_y <- -shade_x*Bhat[2]/Bhat[3] + (0.5 - Bhat[1])/Bhat[3]
+shade_y[shade_y>ylims[2]] <- ylims[2]
+
+db_coords <- t(sapply(1:nrow(d_bounds), function(a) {
+  ycut <- xlims[2] * d_bounds[a, "slope"] + d_bounds[a, "intercept"]
+  if(ycut < ylims[2]) {
+    c(xlims[2], ycut)
+  } else {
+    c((ylims[2] - d_bounds[a, "intercept"])/ d_bounds[a, "slope"], ylims[2])
+  }
+}))
+colnames(db_coords) <- c("dx", "dy")
+d_bounds <- cbind(d_bounds, db_coords)
+
+library(latex2exp)
+# Plot
+p <- D %>% 
+  ggplot() + 
+  geom_point(aes(X.1, X.2, color = factor(Y)), show.legend = FALSE)+
+  #coord_fixed() +
+  theme(panel.background = element_rect(fill = "white")) +
+  geom_abline(data = d_bounds, aes(slope = slope, intercept = intercept), linetype = "dashed") +
+  geom_ribbon(data = data.frame(shade_x, shade_y),
+            aes(x = shade_x, ymin = ylims[1], ymax = shade_y), alpha = 0.15, fill = "red") +
+  geom_ribbon(data = data.frame(shade_x, shade_y),
+            aes(x = shade_x, ymin = shade_y, ymax = ylims[2]), alpha = 0.15, fill = "blue") +
+  scale_y_continuous(expand = c(0, 0), name = TeX("$X_2$"), breaks = NULL) + 
+  scale_x_continuous(expand = c(0, 0), name = TeX("$X_1$"), breaks = NULL) +
+  geom_text(data = d_bounds, aes(dx, dy, label = paste0("i=", iteration)), hjust = c(1, rep(0, 3)), 
+            vjust = c(0, rep(1, 3)), nudge_y = c(0, rep(-0.02, 3)), nudge_x = c(-0.02, rep(0, 3))) +
+  panel_border(colour = "black")
+
+loss_data <- data.frame(loss = loss, iteration = 0:(length(loss) - 1)) 
+library(ggthemes)
+p_loss <- loss_data %>% 
+  ggplot(aes(iteration, loss)) + 
+  geom_line(color = "blue") +
+  theme(axis.ticks.y = element_blank()) +
+  # theme(panel.background = element_rect(fill = "white"),
+  #       axis.ticks.x = element_blank()) +
+  geom_segment(data = loss_data[c(1,5,10,30), ], aes(x = iteration, xend = iteration, yend = 0), linetype = "dashed") +
+  scale_y_continuous(expand = c(0, 0), labels = NULL) + 
+  scale_x_continuous(expand = c(0.05, 0), breaks = c(0, 4, 9, 29))
+
+plot_grid(p, p_loss, labels = c("(a)", "(b)"), nrow = 1, align = "vh", rel_widths = c(3,2))
+```
+
 
 ### Backpropogation
 
-In \Cref{sec:optimisation} we discussed how to fit a linear model using the Stochastics Gradient Descent optimisation procedure. 
+In \Cref{sec:optimisation} we discussed how to fit a linear model using the Stochastic Gradient Descent optimisation procedure. 
 Currenlty, SGD is the most effective way of training deep networks. 
 To recap, SGD optimises the parameters $\theta$ of a networks to minimise the loss,
 
@@ -195,10 +346,9 @@ L(\theta) = -\sum_{i=1}^{N}\sum_{k=1}^{K}y_{ik}\log f_{k}(\boldsymbol{x}_{i}),
 $$
 with corresponding classifier $G(\boldsymbol{x})=\arg\max_{k}f_{k}(\boldsymbol{x})$.
 Since the neural network for classification is a linear logistic regression model in the hidden units, the paramaters can be estimated by maximum likelihood. 
-(I'm not sure if this is possible with deeper networks, and with the non-linear activations?).
 According to @Hastie2009 [p. 395], the global minimiser of $L(\theta)$ is most likely an overfit solution and we instead require regularisation techniques when minimising $L(\theta)$.
 
-Therefore (?), one rather uses gradient descent and backpropogation to minimise $L(\theta)$.
+Therefore, one rather uses gradient descent and backpropogation to minimise $L(\theta)$.
 This is possible because of the modular nature of a neural network, allowing the gradients to be derived by iterative application of the chain rule for differentiation. 
 This is done by a forward and backward sweep over the network, keeping track only of quantities local to each unit.
 
@@ -283,6 +433,10 @@ These are dicussed in \Cref{sec:over}.
 It is common to standardise all inputs to have mean zero and standard deviation of one. 
 This ensures that all input features are treated equally. 
 Now we have covered all of the basics for simple (1-layer) neural networks.
+
++ move regularisation to next chapter
++ lead into modern learning policies
++ lead into what it is learning
 
 ## Representation Learning
 
