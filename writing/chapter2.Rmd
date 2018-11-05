@@ -126,6 +126,8 @@ Another activation function originally thought to work well was, $a(x)=\tanh(x)$
 However, by far the most common activation function used at the time of writing is the Rectified Linear Units (ReLU) non-linearity.
 Its definition is much simpler than its name and is defined as $a(x)=\max(0,x)$. 
 It was introduced in [@Krizhevsky2012] and they showed that using ReLUs in their CNNs reduced the number of training iterations to reach the same point by a factor of 6 compared to using $\tan(x)$.
+The ReLU limits the gradient vanishing problem as its derivative is always one when x is positive.
+Gradient vanishing problem?
 
 There are a plethora of proposals for activation functions, since any simple non-linear (differentiable?) function can be used. 
 Some of the recent most popular choices are exponential linear units (ELUs) [@Clevert2015] and scaled exponential linear units (SELUs) [@Klambauer2017]. 

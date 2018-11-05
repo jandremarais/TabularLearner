@@ -2,11 +2,151 @@
 
 + Recent advancements in deep learning which could be useful to applying in tabular data
 
+
++ dropout
++ batchnorm
++ data augmentation
++ skip connections
++ autoencoders
++ transfer learning
+
+## Regularisation
+
+### Dropout
+### Weight Decay
+### Data Augmentation
+
++ 1 cycle policy 
+
+## 1Cycle Policy
+
+[@smith2018]
+
++ reduce training time and increase performace
+
+Currently the process of setting the hyper-parameters, including designing the network architecture, requires expertise and extensive trial and error and is based more on serendipity than science. 
+
+Currently there are no simple and easy ways to set hyper-parameters – specifically, learning rate, batch size, momentum, and weight decay.
+Grid search or random search is expensive.
+Optimal parameters make a huge difference in training time and performance.
+
+Look for clues of overfitting and underfitting to determine best parameters.
+
+The experiments discussed herein indicate that the learning rate, momentum, and regularization are tightly coupled and optimal values must be determined together.
+
+by monitoring validation/test loss early in the training, enough information is available to tune the
+architecture  and  hyper-parameters  and  this  eliminates  the  necessity  of  running  complete  grid  or
+random searches.
+
+Underfitting is when the machine learning model is unable to reduce the error for either the test or
+training set.  The cause of underfitting is an under
+capacity
+of the machine learning model; that is,
+it is not powerful enough to fit the underlying complexities of the data distributions.  Overfitting
+happens  when  the  machine  learning  model  is  so  powerful  as  to  fit  the  training  set  too  well  and
+the generalization error increases.
+
+The takeaway is that
+achieving the horizontal part of the test loss is the goal of hyper-
+parameter tuning
+
+The art of setting the network’s hyper-parameters amounts to ending up at the balance point between
+underfitting and overfitting
+
+If the learning rate (LR) is too small, overfitting can occur.  Large learning rates help to regularize
+the training but if the learning rate is too large, the training will diverge.
+
+To use CLR, one specifies minimum and maximum learning rate boundaries and a stepsize. The
+stepsize is the number of iterations (or epochs) used for each step and a cycle consists of two such
+steps – one in which the learning rate linearly increases from the minimum to the maximum and
+the other in which it linearly decreases. 
+
+n the LR range test, training starts with a small learning rate which is slowly increased linearly
+throughout a pre-training run.  This single run provides valuable information on how well the net-
+work can be trained over a range of learning rates and what is the maximum learning rate.  When
+starting with a small learning rate, the network begins to converge and, as the learning rate increases,
+it eventually becomes too large and causes the test/validation loss to increase and the accuracy to
+decrease.  The learning rate at this extrema is the largest value that can be used as the learning rate
+for the maximum bound with cyclical learning rates but a smaller value will be necessary when
+choosing a constant learning rate or the network will not begin to converge.
+
+the amount of regularization must be balanced for each dataset
+and architecture
+
+Contrary to this early work, this Section recommends using a larger batch size when using
+the 1cycle learning rate schedule, which is described in the above
+
+Weight decay is one form of regularization and it plays an important role in training so its value needs
+to be set properly.  The important point made above applies; that is, practitioners must balance the
+various forms of regularization to obtain good performance. the interested reader can see Kuka
+ˇcka et al. (2017) for a review of regularization methods.
+
+1.  Learning rate (LR): Perform a learning rate range test to a “large” learning rate.  The max
+LR depends on the architecture (for the shallow 3-layer architecture, large is 0.01 while for
+resnet, large is 3.0), you might try more than one maximum.  Using the 1cycle LR policy
+with a maximum learning rate determined from an LR range test, a minimum learning rate
+as a tenth of the maximum appears to work well but other factors are relevant, such as the
+rate of learning rate increase (too fast and increase will cause instabilities).
+
+2.  Total batch size (TBS): A large batch size works well but the magnitude is typically con-
+strained by the GPU memory. If your server has multiple GPUs, the total batch size is the
+batch size on a GPU multiplied by the number of GPUs. If the architecture is small or your
+hardware permits very large batch sizes, then you might compare performance of different
+batch sizes.  In addition, recall that small batch sizes add regularization while large batch
+sizes add less, so utilize this while balancing the proper amount of regularization. It is often
+better to use a larger batch size so a larger learning rate can be used.
+
+3.  Momentum:  Short runs with momentum values of 0.99, 0.97, 0.95, and 0.9 will quickly
+show the best value for momentum. If using the 1cycle learning rate schedule, it is better to
+use a cyclical momentum (CM) that starts at this maximum momentum value and decreases
+with increasing learning rate to a value of 0.8 or 0.85 (performance is almost independent
+of the minimum momentum value).  Using cyclical momentum along with the LR range
+test stabilizes the convergence when using large learning rate values more than a constant
+momentum does.
+
+4.  Weight decay (WD): This requires a grid search to determine the proper magnitude but
+usually  does  not  require  more  than  one  significant  figure  accuracy.   Use  your  knowl-
+edge of the dataset and architecture to decide which values to test.  For example, a more
+complex dataset requires less regularization so test smaller weight decay values, such as
+10−4,10−5,10−6,0. A  shallow  architecture  requires  more  regularization  so  test  largerweight decay values, such as10−2,10−3,10−4.
+
+https://arxiv.org/pdf/1803.09820.pdf
+
 # Neural Networks for Tabular Data
 
 + Considerations for applying DL to tabular data
 
 ## Entity Embeddings
+
+Entity embedding not only reduces memory usage and speeds up neural networks compared with one-hot encoding, but more importantly by mapping similar values close to each other in the embedding space it reveals the intrinsic properties of the categorical variables, which you cannot obtain with one-hot e
+
+First published work in modern times on entity embeddings was in the taxi destination prediction challenge [@Brebisson2015].
+Another Kaggle sucess story is for predicting the total sales of a store [@Guo2016].
+This embedding of discrete data was inspired by work done word embeddings in the Natural Language Processing community.
+There a word is mapped into a vector space of fixed size.
+The vector representing a word is known as its embedding.
+The table of embeddings for the words in the dataset is included in the model as a paramterised mapping that can be learned in the same way as the rest of the NN layers.
+The parameters of the embedding function (or layer) are first randomly initialised and then gets tuned along with the rest of the NN during training.
+
+The embedding for discrete variables act in the exact same way.
+The embdding for each categorical variable gets concatenated to the continuous variables and then gets passed to the rest of the layers in the network.
+
+In [@Brebisson2015] they found that embeddings helped a lot. 
+The embeddings can also be visualised to investigate whether make sense or to gain further insight into the data and model decision making.
+The weights associated with each categories projection onto the embedding space can be plotted with any dimension reduction technique like t-sne or PCA.
+Then we can compare the categoires based on their relative distances and positions in this reduced space.
+
+Entity embeddings are not too different to one-hot encoding a categorical input and sending it through a standard fully connected layer.
+An embedding is essentailly the same operation but a separate one for each of the categorical features.
+Doing it this way reduces memory usage and speeds up training of a NN. 
+This makes is incredibly useful for datasets with high cardinality features and many of them.
+It will also not be possible to interpret categories based on its embedding of the one-hot encoded path is followed.
+
+We further demonstrate in this paper that entity embedding helps the neural network to generalize better when the data is sparse and statistics is unknown [@Guo2016].
+
+As proof that these entity embeddings actually learns something useful, besides plotting the embedding matrix, one can also feed them along with the continuous features to other learning algorithms and see how it affects performance.
+[@Guo2016] found that the embeddings obtained from the trained neural network boosted the performance of all tested machine learning methods considerably when used as the input features. 
+
 
 ## Normalising Continuous Variables
 

@@ -4,6 +4,19 @@ Deep learning resulted in tremendous improvements in many machine learning appli
 
 Deep learning is a revitalization of artifical neural networks or multilayer perceptrons.  Nns have been use on tabular data but old techniques and very few of the moden techniques have been tested on tabular data. 
 
+Deep learning has already created .significant improvements in computer vision, speech recognition, and natural language processing
+
+One of the first sucessful implementations of modern NNs for tabular data was in predicting the destination of a taxi ride based on its initial trajectory [@Brebisson2015]. 
+It was hosted as a Kaggle competition and this solution outperformed all other entries by a significant margin.
+
+In most machine learning tasks the greatest performance gains can be achieved by feature engineering wheras better algotihms only result inincremental boosts.
+In feature egineering one strives to create new features from the original features based on some domain knowledge of the data or otherwise, that makes it easier for the model to estimate the target.
+Although a crucial step to make the most out of the data, this can be a very laborious process.
+There is not formal path to follow in this stage and thus usually consists of many a trial and error, benefitted by domain knowledge of the data, only accessible in some cases.
+A huge advantage of using NNs on tabular data (and other data structures) is that the feature engineering process gets automated to some extent.
+A NN learns these optimal feature transformations implicitly during the training process.
+The hidden layers of a NN can be viewed as a feautre extractor that was optimised to map the inputs into the best possible features space for a model (the final layer of the network) to operate in.
+
 
 ## Problem Description
 
