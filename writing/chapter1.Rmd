@@ -9,6 +9,11 @@ Deep learning has already created .significant improvements in computer vision, 
 One of the first sucessful implementations of modern NNs for tabular data was in predicting the destination of a taxi ride based on its initial trajectory [@Brebisson2015]. 
 It was hosted as a Kaggle competition and this solution outperformed all other entries by a significant margin.
 
+Many tabular data sets are challenging to represent and model due to its high dimensionality, noise, heterogeneity, sparseness, incompleteness, random errors, and systematic biases [@Miotto2016].
+
+The success of predictive algorithms largely depends on feature selection and data representation.
+The feature selection process and finding the best data representation is largely a manual and painful process.
+
 In most machine learning tasks the greatest performance gains can be achieved by feature engineering wheras better algotihms only result inincremental boosts.
 In feature egineering one strives to create new features from the original features based on some domain knowledge of the data or otherwise, that makes it easier for the model to estimate the target.
 Although a crucial step to make the most out of the data, this can be a very laborious process.
@@ -17,11 +22,20 @@ A huge advantage of using NNs on tabular data (and other data structures) is tha
 A NN learns these optimal feature transformations implicitly during the training process.
 The hidden layers of a NN can be viewed as a feautre extractor that was optimised to map the inputs into the best possible features space for a model (the final layer of the network) to operate in.
 
+Unsupervised feature learning attempts to overcome limitations of supervised feature space definition by automatically identifying patterns and dependencies in the data to learn a compact and general representation that make it easier to automatically extract useful information when building classifiers or other predictors [@Miotto2016].
+
+These techniques are very familiar and effective in text, audio and image processing, but not with tabular data.
+
+[@Miotto2016] presented a novel unsupervised deep feature learning method to derive a general-purpose patient representation for EHR data that facilitates clinical predictive modelling.
+A stacked denoising autoencoder was used.
+
+
 
 ## Problem Description
 
 + Motivation
 + Goal
+  - want to see if a machine can learn useful features for predictive modelling on unlabelled tabular data.
 
 ## Background
 

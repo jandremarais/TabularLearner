@@ -232,6 +232,27 @@ As proof that these entity embeddings actually learns something useful, besides 
 
 + How does initialising the net with autoencoder learned weights compare to random initialisation?
 
+An autoencoder takes an input and first transforms it into some (smaller) latent representation using the part of the network called the encoder.
+From the latent representation the second part of the network, called the decoder, tries to reconstruct the input by doing some transformation.
+Both the encoder and the decoder networks are NNs in their own right and thus usually consist of either fully conncected layers or convolutional layers (or both).
+
+During training a reconstruction loss is minimised.
+A reconstruction loss measures the distance between the reconstruction of the input based on the latent representation and the actual input.
+
+Autoencoders technically belong the self (or semi) supervised class of methods, although many still think of it as unsupervised.
+It is unsupervised in the sense that it does not require labelling, but it is stll supervised in the sense that it predicts an ouput; the input and thus self-supervised.
+
+### Denoising Autoencoders
+
+A denoising autoencoder (DAE) is a variant of the vanilla autoencoder.
+A DAE also learns to reconstruct the input vector, but in this case from a corrupted version thereof.
+So during training, before an input is sent through the encoder, it first get injected with random noise.
+However, the output of the decoder is still being compared to the original input and thus the DAE is supposed to learn how to remove noise from the input - therefore, denoising.
+
+[@Miotto2016] used a stacked denoising autoencoder to learn patient representations from EHR data.
+They found that these representations were useful features in predicting future health states of patients.
+By using these learned representations as input significantly improved the performance of predictive models compared to those only using the raw inputs.
+
 ### Feature Extraction
 
 + Are these features useful for tree based methods.

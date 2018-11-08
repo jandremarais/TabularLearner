@@ -444,4 +444,9 @@ Now we have covered all of the basics for simple (1-layer) neural networks.
 
 + What is the Neural Network actually doing?
 
++ See [@Bengio2013]
+
+Each layer of the network is trained to produce a higher-level representation of the observed patterns, based on the data it receives as input from the layer below, by optimizing an objective function.
+Every level produces a representation of the input pattern that is more abstract than the previous level because it is obtained by composing more non-linear operations.
+
 ## Summary
