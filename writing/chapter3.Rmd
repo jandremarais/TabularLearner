@@ -114,11 +114,25 @@ https://arxiv.org/pdf/1803.09820.pdf
 
 # Neural Networks for Tabular Data
 
-+ Considerations for applying DL to tabular data
+It is not exactly clear why DNNs are still in many cases inferior to gradient boosted trees when applied to tabular data, eventhough it outperforms all other algorithms in other application domains like text and speech. 
+We can look for differences between tabular data and unstructured data in their properties to try and understand why this is the case.
+A difference between the two data types that stand out is the relative importance of each of the important features with respect to the target. 
+In computer vision a large amount of pixels should change before an image is of something else.
+Whereas in tabular data a very small change in a single feature may have totally different behaviour with respect to the target [@Shavitt2018].
+The same authors mention that this can be addressed by including a separate reqularisation term for each of the weights in the network. 
+These regularisation terms are seen as additional model hyperparameters.
+It is easy to see that this approach is totally intractable since the only way to train these hyperpararmeters are brute force and repetitive tweaking and validatig (derivative free methods).
+A workaround is to make these regularisation parameters trainable like all of the other points in the network.
+This is achieved by minimising the counterfactual loss, a novel loss function proposed by [@Shavitt2018].
+They found that training NNs by optimising the counterfactual loss, outperform other regularisation approaches for NNs and results in NNs that are comparable to gradient boosted trees.
+The learned regularisation parameters can even help with interpretting feature importance.
 
 ## Entity Embeddings
 
-Entity embedding not only reduces memory usage and speeds up neural networks compared with one-hot encoding, but more importantly by mapping similar values close to each other in the embedding space it reveals the intrinsic properties of the categorical variables, which you cannot obtain with one-hot e
+Entity embedding not only reduces memory usage and speeds up neural networks compared with one-hot encoding, but more importantly by mapping similar values close to each other in the embedding space it reveals the intrinsic properties of the categorical variables, which you cannot obtain with one-hot encoding.
+
+Companies like [Instacart](https://tech.instacart.com/deep-learning-with-emojis-not-math-660ba1ad6cdc) and [Pinterest](https://medium.com/the-graph/applying-deep-learning-to-related-pins-a6fee3c92f5e) have reported the effective use of entity embeddings on their internal datasets. 
+These embeddings can be reused on different machine learning tasks and do have to be relearned for each dataset.
 
 First published work in modern times on entity embeddings was in the taxi destination prediction challenge [@Brebisson2015].
 Another Kaggle sucess story is for predicting the total sales of a store [@Guo2016].

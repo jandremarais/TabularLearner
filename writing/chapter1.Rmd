@@ -29,6 +29,9 @@ These techniques are very familiar and effective in text, audio and image proces
 [@Miotto2016] presented a novel unsupervised deep feature learning method to derive a general-purpose patient representation for EHR data that facilitates clinical predictive modelling.
 A stacked denoising autoencoder was used.
 
+It is widely held that 80% of the effort in an analytic model is preprocessing, merging, customizing, and cleaning datasets, not analysing them for insights [@Rajkomar2018].
+[@Rajkomar2018] showed how effective NNs are for EHR data.
+State of the art on various predictive tasks.
 
 
 ## Problem Description
