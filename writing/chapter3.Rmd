@@ -78,8 +78,7 @@ the 1cycle learning rate schedule, which is described in the above
 
 Weight decay is one form of regularization and it plays an important role in training so its value needs
 to be set properly.  The important point made above applies; that is, practitioners must balance the
-various forms of regularization to obtain good performance. the interested reader can see Kuka
-ˇcka et al. (2017) for a review of regularization methods.
+various forms of regularization to obtain good performance. the interested reader can see kuka et al. (2017) for a review of regularization methods.
 
 1.  Learning rate (LR): Perform a learning rate range test to a “large” learning rate.  The max
 LR depends on the architecture (for the shallow 3-layer architecture, large is 0.01 while for
@@ -107,8 +106,10 @@ momentum does.
 4.  Weight decay (WD): This requires a grid search to determine the proper magnitude but
 usually  does  not  require  more  than  one  significant  figure  accuracy.   Use  your  knowl-
 edge of the dataset and architecture to decide which values to test.  For example, a more
-complex dataset requires less regularization so test smaller weight decay values, such as
-10−4,10−5,10−6,0. A  shallow  architecture  requires  more  regularization  so  test  largerweight decay values, such as10−2,10−3,10−4.
+complex dataset requires less regularization so test smaller weight decay values. A  shallow  architecture  requires  more  regularization  so  test  largerweight decay values.
+
+
+
 
 https://arxiv.org/pdf/1803.09820.pdf
 
@@ -168,6 +169,27 @@ As proof that these entity embeddings actually learns something useful, besides 
   - mean subtract and error divide
   - rankGauss
   - scale to 0-1
+  
+## Data augmentation
+
+As mentioned before, our aim with predictive models is to generalise well to an unseen test set.
+In an ideal world we would train a model on all possible variations of the data to capture all interactions and relationships.
+This is not possible in the real world.
+Such a dataset is not available and would be infinitely large.
+
+In reality we have a finite subset of the full data distribution to train on.
+Any new samples with unique feature combinations will likely improve the models generalisablity.
+If the collection of new samples is not available, we can try to artificially create more.
+
+This is a standard approach especially in computer vision applications. For example, from a single image, we can rotate it, flip it horizontally, shift it any direction, crop it, and many other transformations without destroying the semantic content of the image.
+But by doing so we are artificially increasing the size of the training set to help with overfitting.
+Of course this is not as effective as genuine new data samples, but it is a very effective and efficient substitute [@Perez2017].
+
+Tabular data is very different to image data and the standard augmentations used in computer vision does not make sense with tabular data.
+Our options for tabular data are:
+
++ Marginalised corrupted features: [@VanDerMaaten2013]
++ Mixup: [@Zhang2017]
 
 ## Regularisation Learning
 
@@ -298,3 +320,4 @@ By using these learned representations as input significantly improved the perfo
 + Is Deep Learning useful for tabular data? 
 + If it is, when?
 + Where should future work on the subject focus on?
+
