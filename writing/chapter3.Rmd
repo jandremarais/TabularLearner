@@ -109,7 +109,30 @@ edge of the dataset and architecture to decide which values to test.  For exampl
 complex dataset requires less regularization so test smaller weight decay values. A  shallow  architecture  requires  more  regularization  so  test  largerweight decay values.
 
 
+### Autoencoders
 
+An autoencoder takes an input and first transforms it into some (smaller) latent representation using the part of the network called the encoder.
+From the latent representation the second part of the network, called the decoder, tries to reconstruct the input by doing some transformation.
+Both the encoder and the decoder networks are NNs in their own right and thus usually consist of either fully conncected layers or convolutional layers (or both).
+
+During training a reconstruction loss is minimised.
+A reconstruction loss measures the distance between the reconstruction of the input based on the latent representation and the actual input.
+
+Autoencoders technically belong the self (or semi) supervised class of methods, although many still think of it as unsupervised.
+It is unsupervised in the sense that it does not require labelling, but it is stll supervised in the sense that it predicts an ouput; the input and thus self-supervised.
+
+### Denoising Autoencoders
+
+A denoising autoencoder (DAE) is a variant of the vanilla autoencoder.
+A DAE also learns to reconstruct the input vector, but in this case from a corrupted version thereof.
+So during training, before an input is sent through the encoder, it first get injected with random noise.
+However, the output of the decoder is still being compared to the original input and thus the DAE is supposed to learn how to remove noise from the input - therefore, denoising.
+
+[@Miotto2016] used a stacked denoising autoencoder to learn patient representations from EHR data.
+They found that these representations were useful features in predicting future health states of patients.
+By using these learned representations as input significantly improved the performance of predictive models compared to those only using the raw inputs.
+
+See also [@Vincent2008].
 
 https://arxiv.org/pdf/1803.09820.pdf
 
@@ -186,10 +209,36 @@ But by doing so we are artificially increasing the size of the training set to h
 Of course this is not as effective as genuine new data samples, but it is a very effective and efficient substitute [@Perez2017].
 
 Tabular data is very different to image data and the standard augmentations used in computer vision does not make sense with tabular data.
-Our options for tabular data are:
+You cannot rotate or scale an observation from a tabular data without losing its meaning.
+One transformation that does make sense for tabular input is the injection of random noise.
 
-+ Marginalised corrupted features: [@VanDerMaaten2013]
+When working with images, we can randomly perturb the pixel intensities by a small amount so that it is still possible to make sense of its content.
+By adding 1 for example to all pixels and all colors in an image, will only make it slightly brighter and we will still be able to make sense of it.
+Bu with tabular data we can just randomly add a small amount to any feature.
+The input features will probably not all be on the same scale and the addition of noise might result in a feature value that is out of the true distribution. 
+In addition, it does not make sense to add anything to a discrete variables.
+Thus in order to inject random noise to a tabular data sample, the noise should be scaled relative to each input feature range and the results should be a valid value for that feature.
+This also helps the model to be more robust to small variations in the data.
+
+[@VanDerMaaten2013] suggests an augmentation approach that does this called Marginalised Corrupted Features (MCF).
+The MCF approach adds noise to input from some known distribution.
+
+In the original Denoising Autoencoding papaer [@Vincent2008], they used a blank-out corruption procedure.
+Which is randomly selecting a subset of the input features and mask their values with a zero.
+The only conceptual problem with this approach is that for some features a zero value actually carries some meaning, so a suggestion is to blank-out features with a unique value not already belonging to that feature distribution.
+
+Another input corruption approach not reported in the literature but shown to work empirically [here](https://www.kaggle.com/c/porto-seguro-safe-driver-prediction/discussion/44629) is what is called Swap Noise.
+The swap noise procedure corrupts inputs by randomly swapping input values with those of other samples in the datasets.
+In this way you ensure that the corrupted input at least have valid feature values.
+But it still might produce combinations of features that are not actually possible.
+
+    All of these methods have hyperparameters that needs to be set. I haven't gone into detail as I still need to decide what is relevant to this thesis.
+
+
+
 + Mixup: [@Zhang2017]
+
+  Taking linear combinations of pairs of samples.
 
 ## Regularisation Learning
 
@@ -264,30 +313,7 @@ Our options for tabular data are:
 
 ## Unsupervised Pre-training
 
-### Autoencoders
-
 + How does initialising the net with autoencoder learned weights compare to random initialisation?
-
-An autoencoder takes an input and first transforms it into some (smaller) latent representation using the part of the network called the encoder.
-From the latent representation the second part of the network, called the decoder, tries to reconstruct the input by doing some transformation.
-Both the encoder and the decoder networks are NNs in their own right and thus usually consist of either fully conncected layers or convolutional layers (or both).
-
-During training a reconstruction loss is minimised.
-A reconstruction loss measures the distance between the reconstruction of the input based on the latent representation and the actual input.
-
-Autoencoders technically belong the self (or semi) supervised class of methods, although many still think of it as unsupervised.
-It is unsupervised in the sense that it does not require labelling, but it is stll supervised in the sense that it predicts an ouput; the input and thus self-supervised.
-
-### Denoising Autoencoders
-
-A denoising autoencoder (DAE) is a variant of the vanilla autoencoder.
-A DAE also learns to reconstruct the input vector, but in this case from a corrupted version thereof.
-So during training, before an input is sent through the encoder, it first get injected with random noise.
-However, the output of the decoder is still being compared to the original input and thus the DAE is supposed to learn how to remove noise from the input - therefore, denoising.
-
-[@Miotto2016] used a stacked denoising autoencoder to learn patient representations from EHR data.
-They found that these representations were useful features in predicting future health states of patients.
-By using these learned representations as input significantly improved the performance of predictive models compared to those only using the raw inputs.
 
 ### Feature Extraction
 
