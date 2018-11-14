@@ -4,7 +4,7 @@ Deep learning resulted in tremendous improvements in many machine learning appli
 
 Deep learning is a revitalization of artifical neural networks or multilayer perceptrons.  Nns have been use on tabular data but old techniques and very few of the moden techniques have been tested on tabular data. 
 
-Deep learning has already created .significant improvements in computer vision, speech recognition, and natural language processing
+Deep learning has already created significant improvements in computer vision, speech recognition, and natural language processing
 
 One of the first sucessful implementations of modern NNs for tabular data was in predicting the destination of a taxi ride based on its initial trajectory [@Brebisson2015]. 
 It was hosted as a Kaggle competition and this solution outperformed all other entries by a significant margin.
@@ -38,7 +38,8 @@ State of the art on various predictive tasks.
 
 + Motivation
 + Goal
-  - want to see if a machine can learn useful features for predictive modelling on unlabelled tabular data.
+
+This thesis acts as a tutoriol for applying Deep Learning to tabular data and also includes a literature and empirical study on what works where.
 
 ## Background
 

@@ -449,4 +449,9 @@ Now we have covered all of the basics for simple (1-layer) neural networks.
 Each layer of the network is trained to produce a higher-level representation of the observed patterns, based on the data it receives as input from the layer below, by optimizing an objective function.
 Every level produces a representation of the input pattern that is more abstract than the previous level because it is obtained by composing more non-linear operations.
 
+The most central idea in deep learning is that of representation.
+Traditionally, input features to a machine learning algorithm must be hand-crafted from raw data, relying on practitioner expertise and domain knowledge to determine explicitpatterns of prior interest. 
+The engineering process of creating, analyzing, selecting, and  evaluating  appropriate  features  can be  laborious and time consuming, and is often thought of as a ”black art” requiring creativity,  trial-and-error, and oftentimes luck.  
+In contrast, deep learning techniques learn optimal features  directly from the data itself, without any human guidance, allowing for the automatic discovery of latent data relationships that might otherwise be unknown or hidden
+
 ## Summary

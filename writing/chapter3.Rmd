@@ -227,12 +227,12 @@ In the original Denoising Autoencoding papaer [@Vincent2008], they used a blank-
 Which is randomly selecting a subset of the input features and mask their values with a zero.
 The only conceptual problem with this approach is that for some features a zero value actually carries some meaning, so a suggestion is to blank-out features with a unique value not already belonging to that feature distribution.
 
-Another input corruption approach not reported in the literature but shown to work empirically [here](https://www.kaggle.com/c/porto-seguro-safe-driver-prediction/discussion/44629) is what is called Swap Noise.
+Another input corruption approach shown to work empirically [here](https://www.kaggle.com/c/porto-seguro-safe-driver-prediction/discussion/44629) is what is called Swap Noise [@kasar2018].
 The swap noise procedure corrupts inputs by randomly swapping input values with those of other samples in the datasets.
 In this way you ensure that the corrupted input at least have valid feature values.
 But it still might produce combinations of features that are not actually possible.
 
-    All of these methods have hyperparameters that needs to be set. I haven't gone into detail as I still need to decide what is relevant to this thesis.
+  All of these methods have hyperparameters that needs to be set. I haven't gone into detail as I still need to decide what is relevant to this thesis.
 
 
 
@@ -246,6 +246,16 @@ But it still might produce combinations of features that are not actually possib
 
 # Interpreting Neural Networks
 
+## Introduction
+
+Although Deep Learning is now the state-of-the-art for many machine learning tasks, it still trailing behind other algorithms in terms of model interpretability.
+But keep in mind this is not an unusual trade-off; between prediction performance and model interpretability.
+DNNs are occasionally referred to as "black boxes" since it is very difficult to interpret what is going on inside the stacks of linear and non-linear layers.
+This one of deep learning's greatest criticisms and is large reason why it cannot be used in some production environments. 
+For example, in the clinical domain, model transparency is of utmost importance, given that predictions  might be used to affect real-world medical decision-making and patient treatments [@Shickel2017].
+
+Fortunately, some work has been done to gain insights from NNs.
+
 ## Model Agnostic
 
 + Permutation Importance
@@ -254,9 +264,11 @@ But it still might produce combinations of features that are not actually possib
 
 ## Neural Network Specific
 
-+ Distilling Neural Networks, i.e. training a decision tree on train neural network generated data. https://arxiv.org/pdf/1711.09784.pdf
-+ Interpreting activations.
-+ Plotting embeddings in lower dimensional space with PCA or t-sne
+- Distilling Neural Networks, i.e. training a decision tree on train neural network generated data. https://arxiv.org/pdf/1711.09784.pdf
+- Mimic leanring [@Che2016]
+- Plotting embeddings in lower dimensional space with PCA or t-sne
+- evaluate which inputs get activated by a certain unit.
+- 
 
 # Experiments
 
@@ -264,8 +276,13 @@ But it still might produce combinations of features that are not actually possib
 
 ### Datasets
 
-+ regression
-+ classification
+See UCI machine learning repository for options.
+
+For example:
++ 2 x regression
++ 1 x binary classification
++ 1 x multiclass classification
+
 + need multiple datasets for robust conclusions
 + this project will not look at feature engineering so this part must be obtained from somewhere else if the data requires a lot of preprocessing.
 
@@ -289,11 +306,6 @@ But it still might produce combinations of features that are not actually possib
 
 + Evaluate training and performance at different embedding sizes.
 + Inspect embedding matrices by plotting in lower dimensions.
-
-### Skip Connections
-
-+ ResNets and DenseNets
-+ See what it does to performance if every layers is connected to every other layer.
 
 ## Training
 
@@ -330,11 +342,6 @@ But it still might produce combinations of features that are not actually possib
 ### Number of Feature
 
 + Model perfomances at increasing number of feature
-
-### Noise
-
-+ Model perfomances at different signal to noise ratios
-+ Shuffle columns of datasets before training
 
 ### Feature Importance
 
