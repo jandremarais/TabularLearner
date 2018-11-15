@@ -452,6 +452,9 @@ Every level produces a representation of the input pattern that is more abstract
 The most central idea in deep learning is that of representation.
 Traditionally, input features to a machine learning algorithm must be hand-crafted from raw data, relying on practitioner expertise and domain knowledge to determine explicitpatterns of prior interest. 
 The engineering process of creating, analyzing, selecting, and  evaluating  appropriate  features  can be  laborious and time consuming, and is often thought of as a ”black art” requiring creativity,  trial-and-error, and oftentimes luck.  
-In contrast, deep learning techniques learn optimal features  directly from the data itself, without any human guidance, allowing for the automatic discovery of latent data relationships that might otherwise be unknown or hidden
+In contrast, deep learning techniques learn optimal features  directly from the data itself, without any human guidance, allowing for the automatic discovery of latent data relationships that might otherwise be unknown or hidden.
+
+That being said, preprocessing of data in deep learning is not totally free of human engineering.
+See in the Normalisation section what measures should be taken to ensure a NN can learn effectively from tabular data.
 
 ## Summary

@@ -33,6 +33,7 @@ It is widely held that 80% of the effort in an analytic model is preprocessing, 
 [@Rajkomar2018] showed how effective NNs are for EHR data.
 State of the art on various predictive tasks.
 
+- NNs proved to be useful for tabular data at AirBnB [@haldar].
 
 ## Problem Description
 
