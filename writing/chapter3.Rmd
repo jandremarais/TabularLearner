@@ -305,6 +305,19 @@ For example:
 
 ### Evalutation
 
+For most of the experiments we will do a 5-fold cross validation [@] to estimate the performance of a model. 
+That is, randomly dividing the dataset in five equal parts and then in turn, hold out one of those parts for validation purposes and train the model using the remaining four parts.
+The performance of the model can then be evaluated on the held-out part.
+This process is repeated for every one of the five segmentations of the dataset and thus five measurements of the performance of model is obtained.
+We can then compute the average over these five measurements to obtain a less biased estimate of the model performance.
+Another advantage of this approach is that we can obtain standard error for the model performance.
+
+Cross-validation is rarely done in Deep Learning, since the models typically take very long to train and any repitition is thus further costly.
+However, Deep Learning is also mostly applied to large datasets and if a large test set is available, the gains from cross-validation diminishes.
+Fortunately, the NNs applied to tabular data are much smaller than ones used for unstructured data and for this work we have access to sufficient computing power.
+And therefore cross-validation makes sense.
+
+
 + 5-fold CV for standard errors
 + dataset specific metrics so that can compare to other work.
 + training and inference times because sometimes it takes a lot of computing power and then not useful to everyone.
