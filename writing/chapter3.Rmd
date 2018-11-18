@@ -293,34 +293,41 @@ If randomly permuting a feature did not affect the model performance at all, it 
 
 ### Datasets
 
-See UCI machine learning repository for options.
+Our experiments are done on multiple datasets.
+Thus we can distinguish between findings that are only true for certain datasets and tasks and findings that hold more universallt.
 
-For example:
-+ 2 x regression
-+ 1 x binary classification
-+ 1 x multiclass classification
+The criteria for selecting the datasets were:
+- Strong model performance baselines exist; so that we can determine how far we are from the SoTA and that is actually a relevant problem.
+- Entirely open source; so that anyone can access it, reproduce it and build on it.
+- More than 20,000 observations; since NNs are data hungry.
+- Does not require too much preprocessing; so that most of the energy goes into the modelling phase.
 
-+ need multiple datasets for robust conclusions
-+ this project will not look at feature engineering so this part must be obtained from somewhere else if the data requires a lot of preprocessing.
+We chose two datasets for regression, one for binary classification and one for multi(class/label) classification from the UCI machine learning repository [Dua2017]. The chosen datasets are:
+
+**The Adult dataset[^adult]**. This dataset was collected during a census.
+The task here is to predicting whether or a not a certain person's income exceeds $50,000.
+
+
+[^adult]: http://archive.ics.uci.edu/ml/datasets/Adult
+
 
 ### Evalutation
 
-For most of the experiments we will do a 5-fold cross validation [@] to estimate the performance of a model. 
+For most of the experiments we will do a 5-fold cross validation [@Hastie2009, p. 241] to estimate the performance of a model. 
 That is, randomly dividing the dataset in five equal parts and then in turn, hold out one of those parts for validation purposes and train the model using the remaining four parts.
 The performance of the model can then be evaluated on the held-out part.
 This process is repeated for every one of the five segmentations of the dataset and thus five measurements of the performance of model is obtained.
 We can then compute the average over these five measurements to obtain a less biased estimate of the model performance.
 Another advantage of this approach is that we can obtain standard error for the model performance.
 
-Cross-validation is rarely done in Deep Learning, since the models typically take very long to train and any repitition is thus further costly.
+Cross-validation is rarely done in Deep Learning, since the models typically take very long to train and any repitition is thus more costly.
 However, Deep Learning is also mostly applied to large datasets and if a large test set is available, the gains from cross-validation diminishes.
 Fortunately, the NNs applied to tabular data are much smaller than ones used for unstructured data and for this work we have access to sufficient computing power.
 And therefore cross-validation makes sense.
 
+For the regression tasks we will compare the various models using the mean squared error and for classificaion we use cross-entropy.
+When comparing the results to previous work, we base it on the metrics that are commmon for the specific dataset.
 
-+ 5-fold CV for standard errors
-+ dataset specific metrics so that can compare to other work.
-+ training and inference times because sometimes it takes a lot of computing power and then not useful to everyone.
 
 ## Structure
 
