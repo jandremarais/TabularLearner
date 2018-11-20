@@ -301,15 +301,29 @@ The criteria for selecting the datasets were:
 - Entirely open source; so that anyone can access it, reproduce it and build on it.
 - More than 20,000 observations; since NNs are data hungry.
 - Does not require too much preprocessing; so that most of the energy goes into the modelling phase.
+- Contain a mix of continuous and categorical features.
 
-We chose two datasets for regression, one for binary classification and one for multi(class/label) classification from the UCI machine learning repository [Dua2017]. The chosen datasets are:
+We chose two datasets for regression, one for binary classification and one for multi(class/label) classification from the UCI machine learning repository [Dua2017]. 
+The chosen datasets are:
 
 **The Adult dataset[^adult]**. This dataset was collected during a census.
-The task here is to predicting whether or a not a certain person's income exceeds $50,000.
-
+The task here is to predict whether or a not a certain person's income exceeds $50,000 per year. 
+The features available are things like *age*, *education*, *sex* and *race*.
+In total there are 14 features and 48,842 observations.
 
 [^adult]: http://archive.ics.uci.edu/ml/datasets/Adult
 
+**Forest Cover Type[^forestcover]**: Predicting forest cover type from cartographic variables.
+This is a multiclass clasification task. There are 581,012 observations.
+
+[^forestcover]: https://archive.ics.uci.edu/ml/datasets/covertype
+
+**Taxi Fare Prediction**: Regression task (possibly) https://www.kaggle.com/c/new-york-city-taxi-fare-prediction
+
+- Maybe https://www.kaggle.com/c/costa-rican-household-poverty-prediction/data
+- Maybe https://www.kaggle.com/c/home-credit-default-risk
+
+Look at the datasets used by [@anonymous2019].
 
 ### Evalutation
 
@@ -326,30 +340,56 @@ Fortunately, the NNs applied to tabular data are much smaller than ones used for
 And therefore cross-validation makes sense.
 
 For the regression tasks we will compare the various models using the mean squared error and for classificaion we use cross-entropy.
+These are the metrics directly being optimised during the training process.
 When comparing the results to previous work, we base it on the metrics that are commmon for the specific dataset.
 
 
 ## Structure
 
-### Number of Layers
+### Number and Size of Layers
 
-+ Evaluate training and performance as the number of layers increase
+Recently found that the below experiments were already done by [@Guo2017, @Qu2016, @Zhang2016].
+This was however only explored for Click-through rate prediction data.
+Thus the below experiments should be done in the light of these findings and can be compared to the their findings.
 
-### Size of Layers
+Here we investigate the effect of the size of the network on the different datasets.
+We compare the performance of the models at different numbers and sizes of layers.
+Larger networks are more flexible and therefore we expect it to act similarly to any learning model flexibility parameter.
+Increasing the network size will be beneficial up until a certrain point until it becomes too big and be more prone to overfitting.
+We hope to find a rule of thumb that might act as a good starting point and guideline to choose the network size.
+We also want to get a feel for how important these hyperparameters are.
 
-+ Evaluate training and performance as the the size of the layers increas
+- Constant size
+Layer sizes: 32, 64, 128, 256, 512, 1024, 2048
+Number of layers: 1,2,3,4,5,6
+At a constant dropout.
+
+Suppose we choose three layers, compare the following shape at approximately equal number of parameters.
+Shapes: Constant, decreasing, increasing, diamond, hourglass
+
 
 ### Size of Embeddings
 
-+ Evaluate training and performance at different embedding sizes.
-+ Inspect embedding matrices by plotting in lower dimensions.
+The aim of these experiments are to evaluate performance at different embedding sizes.
+We explore embedding sizes at different ratios of the cardinality of categorical variables.
+The ratios we look at are: 10%, 20% 30%, 40%, 50%, 60%, 70%, 80% and 90% of the cardinality of each categorical feature.
+Possibly explore certain max embedding sizes.
+
+As we increase the size we will also look at the effect it has by visually inspecting the embedding layers in a 2-dimensional space.
+
+Again, we expect there to be optimal embedding size for each variable depedning on the cardinality of the variable and how complex its relationship is with the other variables and the target.
+We expect the ideal embedding size to be as small as possible but still being able to capture all of the information of the variable.
+
+Look at wide and deep models from [@Cheng2016].
+They restrics all embeddings to be of size 32.
 
 ## Training
 
 ### One-cycle Policy
 
-+ Leslie Smith's 1 cycle and superconvergence work
-+ Is it better than standard training procedures w.r.t training time and performance
+- Is it better than standard training procedures w.r.t training time and performance
+- Evaluate all of teechniques in Leslie Smith paper for finding the best training procedure.
+- including batch size, weight decay, learning rate
 
 ### Batch Size
 
@@ -357,8 +397,8 @@ When comparing the results to previous work, we base it on the metrics that are 
 
 ### Augmentation and Dropout
 
-+ How can we augment inputs
-+ Is dropout effective for regularising (and with above augmentations?)
++ Swap noise at different proportions of corrupted features.
++ mixup
 
 ## Unsupervised Pre-training
 
@@ -374,15 +414,18 @@ When comparing the results to previous work, we base it on the metrics that are 
 
 ### Sample Size
 
-+ Model perfomances at different number of samples
-
-### Number of Feature
-
-+ Model perfomances at increasing number of feature
+= Model perfomances at different number of samples
+- compare to tree based
 
 ### Feature Importance
 
 + How does tree-based feature importance compare to permutation importance of neural net?
+
+### Other
+
+- continuous normalisation
+- regularisation learning
+- ways of ensembling
 
 # Conclusion
 
