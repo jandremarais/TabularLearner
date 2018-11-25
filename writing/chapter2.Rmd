@@ -1,5 +1,7 @@
 # Neural Networks
 
+# Neural Networks
+
 ## Introduction
 
 A Neural Network (NN), like any other machine learning model, is a function that maps inputs to outputs, *i.e.* 
@@ -457,4 +459,17 @@ In contrast, deep learning techniques learn optimal features  directly from the 
 That being said, preprocessing of data in deep learning is not totally free of human engineering.
 See in the Normalisation section what measures should be taken to ensure a NN can learn effectively from tabular data.
 
-## Summary
+Also manifold learning. 
+Show PCA of different level activations and show how the classes get separated during training.
+The feature extraction layers transforms the inputs, which are not separable in the input space, to a representation where they are separable.
+A sufficiently detailed architecture can separate nearly any arrangments of points.
+PCA vs AE.
+If non-linear, find any surface manifold, in contras to hyperplane without.
+AEs can only learn to represent data that it has actually seen before, not necessarily out of sample space.
+
+
+## Vanilla MLP on Tabular Data
+- run through an example of a simple MLP
+- acts as an baseline
+- idenitify its drawbacks
+- how the next chapters will build on it

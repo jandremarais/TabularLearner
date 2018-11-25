@@ -1,21 +1,97 @@
 # Deep Learning
 
-+ Recent advancements in deep learning which could be useful to applying in tabular data
+## Introduction
+- Modern Neural Network Approaches
+- story of combatting overfitting
+- Recent advancements in deep learning which could be useful to applying in tabular data
 
-## Regularisation
+## Autoeoncdoers
+
+
+An autoencoder takes an input and first transforms it into some (smaller) latent representation using the part of the network called the encoder.
+From the latent representation the second part of the network, called the decoder, tries to reconstruct the input by doing some transformation.
+Both the encoder and the decoder networks are NNs in their own right and thus usually consist of either fully conncected layers or convolutional layers (or both).
+
+During training a reconstruction loss is minimised.
+A reconstruction loss measures the distance between the reconstruction of the input based on the latent representation and the actual input.
+
+Autoencoders technically belong the self (or semi) supervised class of methods, although many still think of it as unsupervised.
+It is unsupervised in the sense that it does not require labelling, but it is stll supervised in the sense that it predicts an ouput; the input and thus self-supervised.
+
+A denoising autoencoder (DAE) is a variant of the vanilla autoencoder.
+A DAE also learns to reconstruct the input vector, but in this case from a corrupted version thereof.
+So during training, before an input is sent through the encoder, it first get injected with random noise.
+However, the output of the decoder is still being compared to the original input and thus the DAE is supposed to learn how to remove noise from the input - therefore, denoising.
+
+[@Miotto2016] used a stacked denoising autoencoder to learn patient representations from EHR data.
+They found that these representations were useful features in predicting future health states of patients.
+By using these learned representations as input significantly improved the performance of predictive models compared to those only using the raw inputs.
+
+See also [@Vincent2008].
+
+https://arxiv.org/pdf/1803.09820.pdf
+
+## Combatting Overfitting
+
+### Transfer Learning
 
 ### Dropout
-
 Interesetingly, [@haldar2018] found that dropout was not effective in their application.
 They pinned it down to dropout producing invalid input scenarious that distracted the model.
 Therefore they opted for hand crafted noise shapes taking into account the distribution of the relevant feature. 
 
-### Weight Decay
 ### Data Augmentation
 
-+ 1 cycle policy 
+As mentioned before, our aim with predictive models is to generalise well to an unseen test set.
+In an ideal world we would train a model on all possible variations of the data to capture all interactions and relationships.
+This is not possible in the real world.
+Such a dataset is not available and would be infinitely large.
 
-## 1Cycle Policy
+In reality we have a finite subset of the full data distribution to train on.
+Any new samples with unique feature combinations will likely improve the models generalisablity.
+If the collection of new samples is not available, we can try to artificially create more.
+
+This is a standard approach especially in computer vision applications. For example, from a single image, we can rotate it, flip it horizontally, shift it any direction, crop it, and many other transformations without destroying the semantic content of the image.
+But by doing so we are artificially increasing the size of the training set to help with overfitting.
+Of course this is not as effective as genuine new data samples, but it is a very effective and efficient substitute [@Perez2017].
+
+## Modern Architectures
+
+### Normalisation
+
+The batch normalisation layer attempts to normalise neuron activations to zero mean and unit variance [@Ioffe2015].
+It has become the stanard when training deep CNNs.
+Training with normalisation techniques is perturbed by Stochastic Gradient Descent (SGD), stochastic regularisation (like dropout) and the estimation of the normalisation parameters.
+Both RNNs and CNNs can stabilise learning via weight sharing, therefore they are less prone to perturbations.
+Fully-connected NNs do not have this luxury and shows high variance in the training error when trained with normalisation techniques.
+
+- batchnorm
+- selu?
+
+### Residual Networks
+- resnet and densenet
+
+Residual Networks became very popular after it was used to win one of the ImageNet competiions [@He2015].
+The residual connection layer can simply be formalised as
+$$
+y=F(x)+x,
+$$
+*i.e.* combining the input to the layer(s) with the output of the layer(s).
+Here, the combination is by addition, but other ways can also be used, like multiplication or concatenation.
+These layers are very useful when training deeper neural networks since they encourage gradient flow through interval layers.
+
+### Embeddings
+
+Like word embeddings.
+Learnable mapping of an item to a vector.
+
+### Attention
+
+First proposed in neural machine translation [@Bahdanau2014] and now almost used ubiquitously in natural language processing applications.
+
+## One-cycle Policy
+- can include experiment here
+
 
 [@smith2018]
 
@@ -105,159 +181,7 @@ usually  does  not  require  more  than  one  significant  figure  accuracy.   U
 edge of the dataset and architecture to decide which values to test.  For example, a more
 complex dataset requires less regularization so test smaller weight decay values. A  shallow  architecture  requires  more  regularization  so  test  largerweight decay values.
 
-
-### Autoencoders
-
-An autoencoder takes an input and first transforms it into some (smaller) latent representation using the part of the network called the encoder.
-From the latent representation the second part of the network, called the decoder, tries to reconstruct the input by doing some transformation.
-Both the encoder and the decoder networks are NNs in their own right and thus usually consist of either fully conncected layers or convolutional layers (or both).
-
-During training a reconstruction loss is minimised.
-A reconstruction loss measures the distance between the reconstruction of the input based on the latent representation and the actual input.
-
-Autoencoders technically belong the self (or semi) supervised class of methods, although many still think of it as unsupervised.
-It is unsupervised in the sense that it does not require labelling, but it is stll supervised in the sense that it predicts an ouput; the input and thus self-supervised.
-
-### Denoising Autoencoders
-
-A denoising autoencoder (DAE) is a variant of the vanilla autoencoder.
-A DAE also learns to reconstruct the input vector, but in this case from a corrupted version thereof.
-So during training, before an input is sent through the encoder, it first get injected with random noise.
-However, the output of the decoder is still being compared to the original input and thus the DAE is supposed to learn how to remove noise from the input - therefore, denoising.
-
-[@Miotto2016] used a stacked denoising autoencoder to learn patient representations from EHR data.
-They found that these representations were useful features in predicting future health states of patients.
-By using these learned representations as input significantly improved the performance of predictive models compared to those only using the raw inputs.
-
-See also [@Vincent2008].
-
-https://arxiv.org/pdf/1803.09820.pdf
-
-# Neural Networks for Tabular Data
-
-It is not exactly clear why DNNs are still in many cases inferior to gradient boosted trees when applied to tabular data, eventhough it outperforms all other algorithms in other application domains like text and speech. 
-We can look for differences between tabular data and unstructured data in their properties to try and understand why this is the case.
-A difference between the two data types that stand out is the relative importance of each of the important features with respect to the target. 
-In computer vision a large amount of pixels should change before an image is of something else.
-Whereas in tabular data a very small change in a single feature may have totally different behaviour with respect to the target [@Shavitt2018].
-The same authors mention that this can be addressed by including a separate reqularisation term for each of the weights in the network. 
-These regularisation terms are seen as additional model hyperparameters.
-It is easy to see that this approach is totally intractable since the only way to train these hyperpararmeters are brute force and repetitive tweaking and validatig (derivative free methods).
-A workaround is to make these regularisation parameters trainable like all of the other points in the network.
-This is achieved by minimising the counterfactual loss, a novel loss function proposed by [@Shavitt2018].
-They found that training NNs by optimising the counterfactual loss, outperform other regularisation approaches for NNs and results in NNs that are comparable to gradient boosted trees.
-The learned regularisation parameters can even help with interpretting feature importance.
-
-- NNs proved to be useful for tabular data at AirBnB [@haldar].
-
-## Entity Embeddings
-
-Entity embedding not only reduces memory usage and speeds up neural networks compared with one-hot encoding, but more importantly by mapping similar values close to each other in the embedding space it reveals the intrinsic properties of the categorical variables, which you cannot obtain with one-hot encoding.
-
-Companies like [Instacart](https://tech.instacart.com/deep-learning-with-emojis-not-math-660ba1ad6cdc) and [Pinterest](https://medium.com/the-graph/applying-deep-learning-to-related-pins-a6fee3c92f5e) have reported the effective use of entity embeddings on their internal datasets. 
-These embeddings can be reused on different machine learning tasks and do have to be relearned for each dataset.
-
-First published work in modern times on entity embeddings was in the taxi destination prediction challenge [@Brebisson2015].
-Another Kaggle sucess story is for predicting the total sales of a store [@Guo2016].
-This embedding of discrete data was inspired by work done word embeddings in the Natural Language Processing community.
-There a word is mapped into a vector space of fixed size.
-The vector representing a word is known as its embedding.
-The table of embeddings for the words in the dataset is included in the model as a paramterised mapping that can be learned in the same way as the rest of the NN layers.
-The parameters of the embedding function (or layer) are first randomly initialised and then gets tuned along with the rest of the NN during training.
-
-The embedding for discrete variables act in the exact same way.
-The embdding for each categorical variable gets concatenated to the continuous variables and then gets passed to the rest of the layers in the network.
-
-In [@Brebisson2015] they found that embeddings helped a lot. 
-The embeddings can also be visualised to investigate whether make sense or to gain further insight into the data and model decision making.
-The weights associated with each categories projection onto the embedding space can be plotted with any dimension reduction technique like t-sne or PCA.
-Then we can compare the categoires based on their relative distances and positions in this reduced space.
-
-Entity embeddings are not too different to one-hot encoding a categorical input and sending it through a standard fully connected layer.
-An embedding is essentailly the same operation but a separate one for each of the categorical features.
-Doing it this way reduces memory usage and speeds up training of a NN. 
-This makes is incredibly useful for datasets with high cardinality features and many of them.
-It will also not be possible to interpret categories based on its embedding of the one-hot encoded path is followed.
-
-We further demonstrate in this paper that entity embedding helps the neural network to generalize better when the data is sparse and statistics is unknown [@Guo2016].
-
-As proof that these entity embeddings actually learns something useful, besides plotting the embedding matrix, one can also feed them along with the continuous features to other learning algorithms and see how it affects performance.
-[@Guo2016] found that the embeddings obtained from the trained neural network boosted the performance of all tested machine learning methods considerably when used as the input features. 
-
-
-## Normalising Continuous Variables
-
-One of the things that make tree-based methods so attractive is that the numeric values of the features hardly matter, as long as their relative ordering is meaningful.
-On the other hand, NNs are very sensitive to the numeric value of the input. 
-This is related to the optimisation procedure.
-If an abnormal feature value is fed to the network during training, large gradients can backpropogate throught the network and/or result in vanishing gradients [@Clevert2015].
-
-[@haldar2018] suggest to restrict the values in the range of {-1,1} and so that the median is mapped to zero.
-They achieved this by inspecting each of the features and if a feature looks gaussian, do the normalisation $(x-\mu)/\sigma$ and if the feature looks more like a power law distribution, transform is by $\log\left((1+x)/(1+\text{median})\right)$.
-
-Another step the same authors suggest is to ensure the continuous variables follow a smooth distribution.
-This helps for generalisation, checking for bugs and general training efficiency.
-It also helps the analyst to determine whether a feature is generated by some other underlying process.
-
-+ how to normalize continuous variables
-  - mean subtract and error divide
-  - rankGauss
-  - scale to 0-1
-  
-## Data augmentation
-
-As mentioned before, our aim with predictive models is to generalise well to an unseen test set.
-In an ideal world we would train a model on all possible variations of the data to capture all interactions and relationships.
-This is not possible in the real world.
-Such a dataset is not available and would be infinitely large.
-
-In reality we have a finite subset of the full data distribution to train on.
-Any new samples with unique feature combinations will likely improve the models generalisablity.
-If the collection of new samples is not available, we can try to artificially create more.
-
-This is a standard approach especially in computer vision applications. For example, from a single image, we can rotate it, flip it horizontally, shift it any direction, crop it, and many other transformations without destroying the semantic content of the image.
-But by doing so we are artificially increasing the size of the training set to help with overfitting.
-Of course this is not as effective as genuine new data samples, but it is a very effective and efficient substitute [@Perez2017].
-
-Tabular data is very different to image data and the standard augmentations used in computer vision does not make sense with tabular data.
-You cannot rotate or scale an observation from a tabular data without losing its meaning.
-One transformation that does make sense for tabular input is the injection of random noise.
-
-When working with images, we can randomly perturb the pixel intensities by a small amount so that it is still possible to make sense of its content.
-By adding 1 for example to all pixels and all colors in an image, will only make it slightly brighter and we will still be able to make sense of it.
-Bu with tabular data we can just randomly add a small amount to any feature.
-The input features will probably not all be on the same scale and the addition of noise might result in a feature value that is out of the true distribution. 
-In addition, it does not make sense to add anything to a discrete variables.
-Thus in order to inject random noise to a tabular data sample, the noise should be scaled relative to each input feature range and the results should be a valid value for that feature.
-This also helps the model to be more robust to small variations in the data.
-
-[@VanDerMaaten2013] suggests an augmentation approach that does this called Marginalised Corrupted Features (MCF).
-The MCF approach adds noise to input from some known distribution.
-
-In the original Denoising Autoencoding papaer [@Vincent2008], they used a blank-out corruption procedure.
-Which is randomly selecting a subset of the input features and mask their values with a zero.
-The only conceptual problem with this approach is that for some features a zero value actually carries some meaning, so a suggestion is to blank-out features with a unique value not already belonging to that feature distribution.
-
-Another input corruption approach shown to work empirically [here](https://www.kaggle.com/c/porto-seguro-safe-driver-prediction/discussion/44629) is what is called Swap Noise [@kasar2018].
-The swap noise procedure corrupts inputs by randomly swapping input values with those of other samples in the datasets.
-In this way you ensure that the corrupted input at least have valid feature values.
-But it still might produce combinations of features that are not actually possible.
-
-  All of these methods have hyperparameters that needs to be set. I haven't gone into detail as I still need to decide what is relevant to this thesis.
-
-
-
-+ Mixup: [@Zhang2017]
-
-  Taking linear combinations of pairs of samples.
-
-## Regularisation Learning
-
-+ https://arxiv.org/pdf/1805.06440.pdf
-
-# Interpreting Neural Networks
-
-## Introduction
+## Model Interpretation
 
 Although Deep Learning is now the state-of-the-art for many machine learning tasks, it still trailing behind other algorithms in terms of model interpretability.
 But keep in mind this is not an unusual trade-off; between prediction performance and model interpretability.
@@ -267,9 +191,9 @@ For example, in the clinical domain, model transparency is of utmost importance,
 
 Fortunately, some work has been done to gain insights from NNs.
 
-## Model Agnostic
+### Model Agnostic
 
-### Permutation Importance
+#### Permutation Importance
 
 [@haldar2018] notes that the permutation test only produces sensical results on the assumption that the features are independent.
 Permuting the feature independently created examples that never occurred in real life, and the importance of features in that invalid space sent us in the wrong direction. 
@@ -279,158 +203,10 @@ If randomly permuting a feature did not affect the model performance at all, it 
 + Partial Dependece
 + SHAP
 
-## Neural Network Specific
+### Neural Network Specific
 
 - Distilling Neural Networks, i.e. training a decision tree on train neural network generated data. https://arxiv.org/pdf/1711.09784.pdf
 - Mimic leanring [@Che2016]
 - Plotting embeddings in lower dimensional space with PCA or t-sne
 - evaluate which inputs get activated by a certain unit.
 - 
-
-# Experiments
-
-## Method
-
-### Datasets
-
-Our experiments are done on multiple datasets.
-Thus we can distinguish between findings that are only true for certain datasets and tasks and findings that hold more universallt.
-
-The criteria for selecting the datasets were:
-- Strong model performance baselines exist; so that we can determine how far we are from the SoTA and that is actually a relevant problem.
-- Entirely open source; so that anyone can access it, reproduce it and build on it.
-- More than 20,000 observations; since NNs are data hungry.
-- Does not require too much preprocessing; so that most of the energy goes into the modelling phase.
-- Contain a mix of continuous and categorical features.
-
-We chose two datasets for regression, one for binary classification and one for multi(class/label) classification from the UCI machine learning repository [Dua2017]. 
-The chosen datasets are:
-
-**The Adult dataset[^adult]**. This dataset was collected during a census.
-The task here is to predict whether or a not a certain person's income exceeds $50,000 per year. 
-The features available are things like *age*, *education*, *sex* and *race*.
-In total there are 14 features and 48,842 observations.
-
-[^adult]: http://archive.ics.uci.edu/ml/datasets/Adult
-
-**Forest Cover Type[^forestcover]**: Predicting forest cover type from cartographic variables.
-This is a multiclass clasification task. There are 581,012 observations.
-
-[^forestcover]: https://archive.ics.uci.edu/ml/datasets/covertype
-
-**Taxi Fare Prediction**: Regression task (possibly) https://www.kaggle.com/c/new-york-city-taxi-fare-prediction
-
-- Maybe https://www.kaggle.com/c/costa-rican-household-poverty-prediction/data
-- Maybe https://www.kaggle.com/c/home-credit-default-risk
-
-Look at the datasets used by [@anonymous2019].
-
-### Evalutation
-
-For most of the experiments we will do a 5-fold cross validation [@Hastie2009, p. 241] to estimate the performance of a model. 
-That is, randomly dividing the dataset in five equal parts and then in turn, hold out one of those parts for validation purposes and train the model using the remaining four parts.
-The performance of the model can then be evaluated on the held-out part.
-This process is repeated for every one of the five segmentations of the dataset and thus five measurements of the performance of model is obtained.
-We can then compute the average over these five measurements to obtain a less biased estimate of the model performance.
-Another advantage of this approach is that we can obtain standard error for the model performance.
-
-Cross-validation is rarely done in Deep Learning, since the models typically take very long to train and any repitition is thus more costly.
-However, Deep Learning is also mostly applied to large datasets and if a large test set is available, the gains from cross-validation diminishes.
-Fortunately, the NNs applied to tabular data are much smaller than ones used for unstructured data and for this work we have access to sufficient computing power.
-And therefore cross-validation makes sense.
-
-For the regression tasks we will compare the various models using the mean squared error and for classificaion we use cross-entropy.
-These are the metrics directly being optimised during the training process.
-When comparing the results to previous work, we base it on the metrics that are commmon for the specific dataset.
-
-
-## Structure
-
-### Number and Size of Layers
-
-Recently found that the below experiments were already done by [@Guo2017, @Qu2016, @Zhang2016].
-This was however only explored for Click-through rate prediction data.
-Thus the below experiments should be done in the light of these findings and can be compared to the their findings.
-
-Here we investigate the effect of the size of the network on the different datasets.
-We compare the performance of the models at different numbers and sizes of layers.
-Larger networks are more flexible and therefore we expect it to act similarly to any learning model flexibility parameter.
-Increasing the network size will be beneficial up until a certrain point until it becomes too big and be more prone to overfitting.
-We hope to find a rule of thumb that might act as a good starting point and guideline to choose the network size.
-We also want to get a feel for how important these hyperparameters are.
-
-- Constant size
-Layer sizes: 32, 64, 128, 256, 512, 1024, 2048
-Number of layers: 1,2,3,4,5,6
-At a constant dropout.
-
-Suppose we choose three layers, compare the following shape at approximately equal number of parameters.
-Shapes: Constant, decreasing, increasing, diamond, hourglass
-
-
-### Size of Embeddings
-
-The aim of these experiments are to evaluate performance at different embedding sizes.
-We explore embedding sizes at different ratios of the cardinality of categorical variables.
-The ratios we look at are: 10%, 20% 30%, 40%, 50%, 60%, 70%, 80% and 90% of the cardinality of each categorical feature.
-Possibly explore certain max embedding sizes.
-
-As we increase the size we will also look at the effect it has by visually inspecting the embedding layers in a 2-dimensional space.
-
-Again, we expect there to be optimal embedding size for each variable depedning on the cardinality of the variable and how complex its relationship is with the other variables and the target.
-We expect the ideal embedding size to be as small as possible but still being able to capture all of the information of the variable.
-
-Look at wide and deep models from [@Cheng2016].
-They restrics all embeddings to be of size 32.
-
-## Training
-
-### One-cycle Policy
-
-- Is it better than standard training procedures w.r.t training time and performance
-- Evaluate all of teechniques in Leslie Smith paper for finding the best training procedure.
-- including batch size, weight decay, learning rate
-
-### Batch Size
-
-+ how does batch size influence model metrics
-
-### Augmentation and Dropout
-
-+ Swap noise at different proportions of corrupted features.
-+ mixup
-
-## Unsupervised Pre-training
-
-+ How does initialising the net with autoencoder learned weights compare to random initialisation?
-
-### Feature Extraction
-
-+ Are these features useful for tree based methods.
-
-## Comparisons To Tree-based Methods
-
-+ Compare Neural Networks to Gradient Boosted Machines and Random Forests.
-
-### Sample Size
-
-= Model perfomances at different number of samples
-- compare to tree based
-
-### Feature Importance
-
-+ How does tree-based feature importance compare to permutation importance of neural net?
-
-### Other
-
-- continuous normalisation
-- regularisation learning
-- ways of ensembling
-
-# Conclusion
-
-+ What was done in the thesis?
-+ Is Deep Learning useful for tabular data? 
-+ If it is, when?
-+ Where should future work on the subject focus on?
-

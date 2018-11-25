@@ -1,53 +1,56 @@
 # Introduction
 
-Deep learning resulted in tremendous improvements in many machine learning applications, especially in the domains of image, text and audio processing. The datasets in these domains are what some call unstructured data. Why is it called unstructured? In a sense the data is homogeneous. Cite reviews of deep learning in these domains. Show the growth of deep learning papers, conference applications and deep learning software. But where we haven’t seen much exploration of deep learning is applying it to structure data also referred to as tabular data. Tabular data is also important. But each column is different and thus in a way more difficult to learn representations. At the moment methods on tabular data are dominated by tree based boosting methods. See kaggle competitions. In some cases where there was enough data deep learning got a slight upperhand. But it is still not clear when a tabular dataset is best suited for dl and neither how then to apply dl to such a dataset. This thesis acts as an tutorial on applying dl to tabular data. We will look at existing work on the matter, see that it is lacking, see what we can borrow from the other domains, do an empirical study to look for clues. Especially layers, embeddings, pretraining, augementation, modern training policies, batch size. The use of dl is often restricted by its perceived lack of interpretability and the here we will explore ways that we can interpret them with model agnostic and nn specific methods. 
+## Deep Learning
 
+This thesis is about using Deep Learning (DL) approaches to solve machine learning tasks where tabular data are the inputs.
+Deep learning has already created significant improvements in computer vision, speech recognition, and natural language processing.
 Deep learning is a revitalization of artifical neural networks or multilayer perceptrons.  Nns have been use on tabular data but old techniques and very few of the moden techniques have been tested on tabular data. 
 
-Deep learning has already created significant improvements in computer vision, speech recognition, and natural language processing
+Deep learning resulted in tremendous improvements in many machine learning applications, especially in the domains of image, text and audio processing. 
+The datasets in these domains are what some call unstructured data. 
+Why is it called unstructured? 
+In a sense the data is homogeneous. 
+Cite reviews of deep learning in these domains. 
+Show the growth of deep learning papers, conference applications and deep learning software. 
+But where we haven’t seen much exploration of deep learning is applying it to structure data also referred to as tabular data. 
+Tabular data is also important. 
+But each column is different and thus in a way more difficult to learn representations.
+At the moment methods on tabular data are dominated by tree based boosting methods. 
+See kaggle competitions. 
+In some cases where there was enough data deep learning got a slight upperhand. 
+But it is still not clear when a tabular dataset is best suited for dl and neither how then to apply dl to such a dataset. 
+This thesis acts as an tutorial on applying dl to tabular data. 
+We will look at existing work on the matter, see that it is lacking, see what we can borrow from the other domains, do an empirical study to look for clues.
+Especially layers, embeddings, pretraining, augementation, modern training policies, batch size. 
+The use of dl is often restricted by its perceived lack of interpretability and the here we will explore ways that we can interpret them with model agnostic and nn specific methods. 
 
-One of the first sucessful implementations of modern NNs for tabular data was in predicting the destination of a taxi ride based on its initial trajectory [@Brebisson2015]. 
-It was hosted as a Kaggle competition and this solution outperformed all other entries by a significant margin.
+- summary of dl
+- summary of advances in dl in other fields
+
+## Tabular Data
+- what is tabular data
+- how is it different to other data sources
+- what type of application
+- sota approaches (look for that one paper on 121 UCI datasets)
+- common workflow
+
+
+## Challenges for Deep Learning on Tabular Data
+- summarise the core research of this thesis
+- also serves as a motivation for the thesis
+- give the aim of this thesis
 
 Many tabular data sets are challenging to represent and model due to its high dimensionality, noise, heterogeneity, sparseness, incompleteness, random errors, and systematic biases [@Miotto2016].
 
-The success of predictive algorithms largely depends on feature selection and data representation.
-The feature selection process and finding the best data representation is largely a manual and painful process.
+This thesis acts as a tutoriol for applying Deep Learning to tabular data and also includes a literature review and empirical study on what works where.
 
-In most machine learning tasks the greatest performance gains can be achieved by feature engineering wheras better algotihms only result inincremental boosts.
-In feature egineering one strives to create new features from the original features based on some domain knowledge of the data or otherwise, that makes it easier for the model to estimate the target.
-Although a crucial step to make the most out of the data, this can be a very laborious process.
-There is not formal path to follow in this stage and thus usually consists of many a trial and error, benefitted by domain knowledge of the data, only accessible in some cases.
-A huge advantage of using NNs on tabular data (and other data structures) is that the feature engineering process gets automated to some extent.
-A NN learns these optimal feature transformations implicitly during the training process.
-The hidden layers of a NN can be viewed as a feautre extractor that was optimised to map the inputs into the best possible features space for a model (the final layer of the network) to operate in.
-
-Unsupervised feature learning attempts to overcome limitations of supervised feature space definition by automatically identifying patterns and dependencies in the data to learn a compact and general representation that make it easier to automatically extract useful information when building classifiers or other predictors [@Miotto2016].
-
-These techniques are very familiar and effective in text, audio and image processing, but not with tabular data.
-
-[@Miotto2016] presented a novel unsupervised deep feature learning method to derive a general-purpose patient representation for EHR data that facilitates clinical predictive modelling.
-A stacked denoising autoencoder was used.
-
-It is widely held that 80% of the effort in an analytic model is preprocessing, merging, customizing, and cleaning datasets, not analysing them for insights [@Rajkomar2018].
-[@Rajkomar2018] showed how effective NNs are for EHR data.
-State of the art on various predictive tasks.
-
-- NNs proved to be useful for tabular data at AirBnB [@haldar].
-
-## Problem Description
-
-+ Motivation
-+ Goal
-
-This thesis acts as a tutoriol for applying Deep Learning to tabular data and also includes a literature and empirical study on what works where.
-
-## Background
-
-+ (Un)Supervised Learning
-+ regression/classification
-
-### Statistical Learning \label{sec:Slearning}
+## Overview of Statistical Learning Theory/Machine learning
+Overview of core concepts in Machine Learning used and referred to in the rest of the thesis.
+- Supervised vs Unsuperivsed
+- Regression vs Classification
+- Overfitting
+- Bias-variance trade-off
+- Interpretability
 
 Machine or statistical learning algorithms (used interchangably) are used to perform certain task that are too difficult or inefficient to solve with fixed rule-based programs. These algorithms are able to learn how to perform a task from data. For an algorithm to learn from data means that it can improve its ability in performing an assigned *task*, with respect to some *performance measure*, by processing *data*. This section gives a brief look at some of the important types of tasks, data and performance measures in the field of statistical learning.
 
@@ -137,3 +140,4 @@ $$
 where $\epsilon$ represents the part of $Y$ that is not predictable from $\boldsymbol{X}$, because of, for example, incomplete features or noise present in the labels. Then in function approximation we are estimating $f$ with an estimate $\hat{f}$. In parametric function approximation, for example in linear regression, estimation of $f(\boldsymbol{X},\theta)$ is equivalent to estimating the optimal set of weights, $\hat{\theta}$. In the remainder of the thesis, we refer to $\hat{f}$ as the *model*, *classifier* or *learner*.
 
 ## Outline
+Give an outline of what will be discussed where in the thesis.

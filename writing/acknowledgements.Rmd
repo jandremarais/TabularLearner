@@ -3,4 +3,4 @@
 I would like to express my sincere gratitude to the following people
 and organisations ...
 
-- The UCI Machine Learning Repository [@Dua2017] for hosting a platform to share datasets.
+- The UCI Machine Learning Repository (Dheeru and Karra Taniskidou, 2017) for hosting a platform to share datasets.

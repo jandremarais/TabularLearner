@@ -1,0 +1,158 @@
+# Experiments
+
+\chapterprecishere{"For us, the most important part of rigor is better empiricism, not more mathematical theories."\par\raggedleft--- \textup{Ali Rahimi and Ben Recht}, NIPS 2017}
+
+## Introudction
+- empirical comparisons/ablation studies of approaches discussed in core chapter
+
+## Datasets
+- which datasets will experiments performed on
+
+Our experiments are done on multiple datasets.
+Thus we can distinguish between findings that are only true for certain datasets and tasks and findings that hold more universallt.
+
+The criteria for selecting the datasets were:
+- Strong model performance baselines exist; so that we can determine how far we are from the SoTA and that is actually a relevant problem.
+- Entirely open source; so that anyone can access it, reproduce it and build on it.
+- More than 20,000 observations; since NNs are data hungry.
+- Does not require too much preprocessing; so that most of the energy goes into the modelling phase.
+- Contain a mix of continuous and categorical features.
+
+We chose two datasets for regression, one for binary classification and one for multi(class/label) classification from the UCI machine learning repository [Dua2017]. 
+The chosen datasets are:
+
+**The Adult dataset[^adult]**. This dataset was collected during a census.
+The task here is to predict whether or a not a certain person's income exceeds $50,000 per year. 
+The features available are things like *age*, *education*, *sex* and *race*.
+In total there are 14 features and 48,842 observations.
+
+[^adult]: http://archive.ics.uci.edu/ml/datasets/Adult
+
+**Forest Cover Type[^forestcover]**: Predicting forest cover type from cartographic variables.
+This is a multiclass clasification task. There are 581,012 observations.
+
+[^forestcover]: https://archive.ics.uci.edu/ml/datasets/covertype
+
+**Taxi Fare Prediction**: Regression task (possibly) https://www.kaggle.com/c/new-york-city-taxi-fare-prediction
+
+- Maybe https://www.kaggle.com/c/costa-rican-household-poverty-prediction/data
+- Maybe https://www.kaggle.com/c/home-credit-default-risk
+
+Look at the datasets used by [@anonymous2019], also [@Zhang2017]
+
+- Criteo [@Song2018], [@Wang2017b], [@Qu2016], [@Guo2017]
+- Avazu [@Song2018]
+- KDD12 [@Song2018]
+- MovieLens-1M [@Song2018]
+- iPinYou [@Qu2016]
+- Forest Cover type [@Wang2017b]
+- Higgs [@Wang2017b]
+- Tox21 [@Klambauer2017]
+- Yahoo [@anonymous2019]
+- Letor [@anonymous2019]
+- Protein [@anonymous2019]
+- A9A [@anonymous2019]
+- Flight [@anonymous2019]
+
+## Evaluation
+
+For most of the experiments we will do a 5-fold cross validation [@Hastie2009, p. 241] to estimate the performance of a model. 
+That is, randomly dividing the dataset in five equal parts and then in turn, hold out one of those parts for validation purposes and train the model using the remaining four parts.
+The performance of the model can then be evaluated on the held-out part.
+This process is repeated for every one of the five segmentations of the dataset and thus five measurements of the performance of model is obtained.
+We can then compute the average over these five measurements to obtain a less biased estimate of the model performance.
+Another advantage of this approach is that we can obtain standard error for the model performance.
+
+Cross-validation is rarely done in Deep Learning, since the models typically take very long to train and any repitition is thus more costly.
+However, Deep Learning is also mostly applied to large datasets and if a large test set is available, the gains from cross-validation diminishes.
+Fortunately, the NNs applied to tabular data are much smaller than ones used for unstructured data and for this work we have access to sufficient computing power.
+And therefore cross-validation makes sense.
+
+For the regression tasks we will compare the various models using the mean squared error and for classificaion we use cross-entropy.
+These are the metrics directly being optimised during the training process.
+When comparing the results to previous work, we base it on the metrics that are commmon for the specific dataset.
+
+### Metrics
+- loss function
+- task specific
+- dataset specific
+- time and memory
+
+AUC, Logloss for binary classification [@Song2018], [@Wang2017b],  [@Zhang2016], [@Qu2016]
+No cross-validation [@Song2018],  [@Zhang2016]
+Run time per epoch [@Song2018], [@Guo2017]
+Model size [@Song2018]
+Think [@Wang2017b] used CV since the report se's for hyperparameter tunings.
+
+
+### Cross-validation
+
+## General Approach
+- which numeric normalisation
+- should we embed numerics
+
+**Preprocessing**.
+- Remove infrequent features [@Song2018]
+- numeric transform by $\log^{2}(z)$ if $Z>2$ [@Song2018].
+- numeric features log transform  [@Wang2017b]
+
+
+## Architectural Search
+- Number of layers (vs with SeLU) (vs other activations) [1-10]
+- Layer size [32-2048]
+- Architecture shape [Constant, increasing, decreasingm diamond]
+- Embedding sizes [proportional, fixed]
+- dropout [0-1]
+
+Recently found that the below experiments were already done by [@Guo2017, @Qu2016, @Zhang2016].
+This was however only explored for Click-through rate prediction data.
+Thus the below experiments should be done in the light of these findings and can be compared to the their findings.
+
+Here we investigate the effect of the size of the network on the different datasets.
+We compare the performance of the models at different numbers and sizes of layers.
+Larger networks are more flexible and therefore we expect it to act similarly to any learning model flexibility parameter.
+Increasing the network size will be beneficial up until a certrain point until it becomes too big and be more prone to overfitting.
+We hope to find a rule of thumb that might act as a good starting point and guideline to choose the network size.
+We also want to get a feel for how important these hyperparameters are.
+
+- Constant size
+Layer sizes: 32, 64, 128, 256, 512, 1024, 2048
+Number of layers: 1,2,3,4,5,6
+At a constant dropout.
+
+Suppose we choose three layers, compare the following shape at approximately equal number of parameters.
+Shapes: Constant, decreasing, increasing, diamond, hourglass
+
+The aim of these experiments are to evaluate performance at different embedding sizes.
+We explore embedding sizes at different ratios of the cardinality of categorical variables.
+The ratios we look at are: 10%, 20% 30%, 40%, 50%, 60%, 70%, 80% and 90% of the cardinality of each categorical feature.
+Possibly explore certain max embedding sizes.
+
+As we increase the size we will also look at the effect it has by visually inspecting the embedding layers in a 2-dimensional space.
+
+Again, we expect there to be optimal embedding size for each variable depedning on the cardinality of the variable and how complex its relationship is with the other variables and the target.
+We expect the ideal embedding size to be as small as possible but still being able to capture all of the information of the variable.
+
+Look at wide and deep models from [@Cheng2016].
+They restrics all embeddings to be of size 32.
+
+## Sample Size
+- accuracy vs size of dataset
+
+## Mixup
+- does it help the validation loss
+
+## Pretraining
+- does it help the validation loss
+- Are these features useful for tree based methods.
+
+## Attention
+- with residual
+
+## Comparisons To Tree-based Methods
++ Compare Neural Networks to Gradient Boosted Machines and Random Forests.
+
+## Example Interpretation
+- plot embeddings
+- plot attention matrices
+- SHAP and permutation
