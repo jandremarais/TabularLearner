@@ -1,6 +1,4 @@
-# Neural Networks
-
-# Neural Networks
+# Neural Networks \label{chp:nn}
 
 ## Introduction
 

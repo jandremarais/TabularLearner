@@ -4,8 +4,10 @@
 
 \acro{ANN}{Artificial Neural Network}
 \acro{CNN}{Convolutional Neural Network}
+\acro{CTR}{Click-through Rate}
 \acro{CV}{Computer Vision}
 \acro{DL}{Deep Learning}
+\acro{EHR}{Electronic Health Records}
 \acro{kNN}{$k$-Nearest Neighbour}
 \acro{mAP}{Mean Average Precision}
 \acro{ML}{Machine Learning}

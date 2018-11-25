@@ -1,4 +1,4 @@
-# Conclusion
+# Conclusion \label{chp:conc}
 
 + What was done in the thesis?
 + Is Deep Learning useful for tabular data? 

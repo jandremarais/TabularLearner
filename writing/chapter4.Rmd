@@ -1,4 +1,4 @@
-# Deep Learning for Tabular Data
+# Deep Learning for Tabular Data \label{chp:td}
 
 ## Introduction
 - core work

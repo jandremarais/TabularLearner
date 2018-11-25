@@ -1,4 +1,4 @@
-# Experiments
+# Experiments \label{chp:exp}
 
 \chapterprecishere{"For us, the most important part of rigor is better empiricism, not more mathematical theories."\par\raggedleft--- \textup{Ali Rahimi and Ben Recht}, NIPS 2017}
 
