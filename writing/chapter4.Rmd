@@ -344,6 +344,8 @@ Automated Feature Engineering
 - Swap Noise
 - Mixup
 
+- [@kasar2018] - hybrid bootstrap
+
 Tabular data is very different to image data and the standard augmentations used in computer vision does not make sense with tabular data.
 You cannot rotate or scale an observation from a tabular data without losing its meaning.
 One transformation that does make sense for tabular input is the injection of random noise.
@@ -378,6 +380,7 @@ All of these methods have hyperparameters that needs to be set. I haven't gone i
 A stacked denoising autoencoder was used.
 Unsupervised feature learning attempts to overcome limitations of supervised feature space definition by automatically identifying patterns and dependencies in the data to learn a compact and general representation that make it easier to automatically extract useful information when building classifiers or other predictors [@Miotto2016].
 These techniques are very familiar and effective in text, audio and image processing, but not with tabular data.
+[@Geras2014] on gradual increasing of corruption ratio; but applied to images.
 
 - Knowledge distillation/psuedo labelling
 

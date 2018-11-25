@@ -7,6 +7,7 @@ output:
     toc_depth: 3
     number_sections: true
     keep_tex: no
+    fig_caption: yes
 bibliography: libraryclean.bib
 documentclass: memoir
 lang: afrikaans,UKenglish
@@ -40,6 +41,10 @@ header-includes:
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo=FALSE)
+library(readr)
+library(xtable)
+options(xtable.timestamp = "")
+options(xtable.comment = FALSE)
 ```
 
 ```{r child = 'chapter1.Rmd'}

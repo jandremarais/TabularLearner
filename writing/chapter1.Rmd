@@ -6,14 +6,20 @@ This thesis is about using *Deep Learning* (DL) approaches to solve *Machine Lea
 The field of DL is an extention of the class of ML algorithms called *Artifical Neural Networks* (NNs).
 The rapid development in computing power and the growing abundance of data available, awoken the slumbering field of NNs and resulted in optimisation and architecture design advancements, creating the DL field as we know it today [@Lecun2015].
 
-DL is receiving a remarkable amount of attention in academia (see \autoref{fig:dlpapers}).
-DL has already shown tremendous value in application areas such as *Computer Vision* (CV) [cite], audio processing [cite], and *Natural Language Processing* (NLP) [cite], significantly improving upon the then *State of the Art* (SotA).
-In the aformentioned application areas, DL reached a maturity level sufficient to be able to run these systems in a production/commercial environment, *e.g.* voice assistants [cite], face recognition [cite], language translation [cite] to name a few.
+DL is receiving a remarkable amount of attention in academia and elsewhere (see \autoref{fig:dlpapers}).
+DL has already shown tremendous value in application areas such as *Computer Vision* (CV) [@Hu2017], audio processing [Battenberg2017], and *Natural Language Processing* (NLP) [@Devlin2018], significantly improving upon the then *State of the Art* (SotA).
+In the aformentioned application areas, DL reached a maturity level sufficient to be able to run these systems in a production/commercial environment, *e.g.* voice assistants [@Sarikaya2017] like Amazon Alexa, face recognition[^faceid] with Apple iPhones and language translation [@Wu2016] with Google to name a few.
 
-![The exponential growth of published papers containing the term *Deep Learning*\label{fig:dlpapers}](figures/dummy.png)
+[^faceid]: https://www.apple.com/business/site/docs/FaceID_Security_Guide.pdf
+
+![The exponential growth of published papers and Google search terms containing the term *Deep Learning*\label{fig:dlpapers}. Sources: Google Trends[^googletrend], Semantic Scholar[^semschol]](figures/trends.pdf)
+
+[^jeffdeantalk]: https://www.slideshare.net/AIFrontiers/jeff-dean-trends-and-developments-in-deep-learning-research
+[^googletrend]: https://trends.google.com/trends/explore?date=all&q=deep%20learning
+[^semschol]: https://www.semanticscholar.org/search?year%5B0%5D=2000&year%5B1%5D=2019&q=%22deep%20learning%22&sort=relevance
 
 One of the most attractive attributes of DL is its ability to model almost any input-output relationship.
-DL has been used to generate art [cite] and music [cite], controlling autonomous cars [cite], playing video games [cite], beating the world's best Go player [cite], suggesting which videos to watch [cite], and improving the quality of images [cite].
+DL has been used to generate art [@Gatys2015] and music [@Mogren2016], controlling various modules in autonomous cars [@Fridman2017], playing video games [@Mnih2013], beating the world's best Go player [@Silver2017], suggesting which videos to watch [@Covington2016], and improving the quality of images [@Shi2016].
 
 One thing that these sucessful DL applications have in common is that the modality of the data on which they operate is homegeneous.
 In CV the data are pixel values, in NLP the data are words and in audio processing the data are sound waves.
@@ -23,8 +29,8 @@ Furthermore, universal patterns exist in each of these domains allowing for know
 For example in CV, advancements in classifying pictures of pets will most likely also be applicable to identifying tumuors in X-rays and the patterns learned by the model to do the one task may also be useful to do the other (see *Transfer Learning*).
 
 A data domain in which DL does not flourish is that of tabular data.
-Although work is being done on the problem [cite] and SotA results were received on rare occasions [cite], the area is nowhere near as mature or receiving as much attention compared to CV and NLP.
-ML tasks operating on tabular data are typically more effectively solved by using tree-based methods [cite], which is also evident by looking at the winning solutions of relevant Kaggle competitions[^kaggle].
+Although work is being done on the problem [@Shavitt2018, @Song2018] and SotA results were received on rare occasions [@Brebisson2015, @Guo2016], the area is nowhere near as mature or receiving as much attention compared to CV and NLP.
+ML tasks operating on tabular data are typically more effectively solved by using tree-based methods [@Delgado2014], which is also evident by looking at the winning solutions of relevant Kaggle competitions[^kaggle].
 This is possibly largely influenced by the heterogeneity of tabular data [@Shavitt2018], which we discuss in the next section.
 
 [^kaggle]: https://www.kaggle.com
@@ -35,7 +41,16 @@ This is possibly largely influenced by the heterogeneity of tabular data [@Shavi
 - sota approaches (look for that one paper on 121 UCI datasets)
 - common workflow
 
-Tabular data is also important. 
+We call data that can be represented by a 2-dimensional table, where each of row of the table corresponds to one observation and each column denotes an individual meaningful feature, a *tabular dataset*.
+See \autoref{tab:adult} for an extract of the Adult[^adult1] dataset, an example of a tabular dataset.
+
+[^adult1]: http://archive.ics.uci.edu/ml/datasets/Adult
+
+```{r, results='asis'}
+df = read_csv('../data/adult_sample.csv')
+xtable(df, caption = 'Preview of the Adult dataset.\\label{tab:adult}')
+```
+
 But each column is different and thus in a way more difficult to learn representations.
 At the moment methods on tabular data are dominated by tree based boosting methods. 
 See kaggle competitions. 
