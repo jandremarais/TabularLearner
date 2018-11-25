@@ -83,18 +83,19 @@ In this thesis we explore ways of doing so.
 By reviewing the most recent literature on the topic and doing empirical studies, we aim to compose a guideline and highlight the best practices for working with DL and tabular data.
 
 ## Challenges for Deep Learning on Tabular Data
-- summarise the core research of this thesis
-- also serves as a motivation for the thesis
-- give the aim of this thesis
-- review current state of field and promsing future directions.
 
-This thesis acts as a tutoriol for applying Deep Learning to tabular data.
-We review the recent literature on DL and specifically, applying DL to tabular data.
-and also includes a literature review and empirical study on what works where.
+This thesis acts as a tutorial for applying Deep Learning to tabular data.
+We review the recent literature on general DL and more specifically applying DL to tabular data.
+We have identified the major challenges of using DL approaches on tabular data and will review the literature in this context.
+These challenges are summarised below, posed as questions:
+- **How should input features be represented numerically?**: We have mentioned that tabular data consists of mixed feature types, a combination of categorical and continuous feautes. The question here relates to how these features should be processed and presented to the model during training.
+- **How can we exploit feature interactions?**: Once we have found the optimal feature representation for all feature types, we will need a way to effectively learn the interactions between them and how they relate to the target. This a crucial part for effective ML models on tabular data.
+- **How can we be more sample efficient?**:  Tabular datasets are typically not as large as datasets in CV and NLP, and furthermore there is no general large dataset with universal properties that a model can learn from and transfer its knowledge. Thus a key challenge is being able to learn from less data.
+- **How do we interpret the model decisions?**: The use of DL is often restricted by its perceived lack of interpretability. Therefore we need ways of explaining the model output in order for it to be useful in many applications.
 
-We will look at existing work on the matter, see that it is lacking, see what we can borrow from the other domains, do an empirical study to look for clues.
-Especially layers, embeddings, pretraining, augementation, modern training policies, batch size. 
-The use of dl is often restricted by its perceived lack of interpretability and the here we will explore ways that we can interpret them with model agnostic and nn specific methods. 
+Clearly, there are plenty of considerations when it comes to using DL with tabular data. 
+The aim of this thesis is to find the best ways of overcoming these challenges, by giving a detailed review of the relevant literature and backing up the claims with empirical results.
+The work will help the reader understand the *status quo* of the field and what is required for DL to be as effective as in data domains such as CV and NLP.
 
 The next section covers fundamental concepts of Statistical Learning Theory.
 These concepts are referred to throughout the thesis and therefore it will be beneficial to be familiar with them.
