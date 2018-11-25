@@ -2,22 +2,15 @@
 
 \begin{acronym}[ML-KNN]
 
-\acro{AA}{Algorithm Adaptation}
 \acro{ANN}{Artificial Neural Network}
-\acro{BR}{Binary Relevance}
-\acro{CAD}{Computer Aided Diagnosis}
-\acro{CC}{Classifier Chains}
 \acro{CNN}{Convolutional Neural Network}
 \acro{CV}{Computer Vision}
-\acro{ECC}{Ensemble Classifier Chains}
+\acro{DL}{Deep Learning}
 \acro{kNN}{$k$-Nearest Neighbour}
-\acro{LP}{Label Powerset}
 \acro{mAP}{Mean Average Precision}
-\acro{ML-kNN}{Multi-Label $k$-Nearest Neighbour}
-\acro{MLC}{Multi-Label Classification}
-\acro{MLIC}{Multi-Label Image Classification}
-\acro{PT}{Problem Transformation}
-\acro{RAkEL}{Random $k$-Labelsets}
+\acro{ML}{Machine Learning}
+\acro{NLP}{Natural Language Processing}
+\acro{NN}{Neural Network}
 \acro{SGD}{Stochastic Gradient Descent}
 \acro{SotA}{State-of-the-Art}
 

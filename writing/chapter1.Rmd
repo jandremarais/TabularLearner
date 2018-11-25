@@ -2,38 +2,47 @@
 
 ## Deep Learning
 
-This thesis is about using Deep Learning (DL) approaches to solve machine learning tasks where tabular data are the inputs.
-Deep learning has already created significant improvements in computer vision, speech recognition, and natural language processing.
-Deep learning is a revitalization of artifical neural networks or multilayer perceptrons.  Nns have been use on tabular data but old techniques and very few of the moden techniques have been tested on tabular data. 
+This thesis is about using *Deep Learning* (DL) approaches to solve *Machine Learning* (ML) tasks where tabular data are the inputs.
+The field of DL is an extention of the class of ML algorithms called *Artifical Neural Networks* (NNs).
+The rapid development in computing power and the growing abundance of data available, awoken the slumbering field of NNs and resulted in optimisation and architecture design advancements, creating the DL field as we know it today [@Lecun2015].
 
-Deep learning resulted in tremendous improvements in many machine learning applications, especially in the domains of image, text and audio processing. 
-The datasets in these domains are what some call unstructured data. 
-Why is it called unstructured? 
-In a sense the data is homogeneous. 
-Cite reviews of deep learning in these domains. 
-Show the growth of deep learning papers, conference applications and deep learning software. 
-But where we haven’t seen much exploration of deep learning is applying it to structure data also referred to as tabular data. 
+DL is receiving a remarkable amount of attention in academia (see \autoref{fig:dlpapers}).
+DL has already shown tremendous value in application areas such as *Computer Vision* (CV) [cite], audio processing [cite], and *Natural Language Processing* (NLP) [cite], significantly improving upon the then *State of the Art* (SotA).
+In the aformentioned application areas, DL reached a maturity level sufficient to be able to run these systems in a production/commercial environment, *e.g.* voice assistants [cite], face recognition [cite], language translation [cite] to name a few.
+
+![The exponential growth of published papers containing the term *Deep Learning*\label{fig:dlpapers}](figures/dummy.png)
+
+One of the most attractive attributes of DL is its ability to model almost any input-output relationship.
+DL has been used to generate art [cite] and music [cite], controlling autonomous cars [cite], playing video games [cite], beating the world's best Go player [cite], suggesting which videos to watch [cite], and improving the quality of images [cite].
+
+One thing that these sucessful DL applications have in common is that the modality of the data on which they operate is homegeneous.
+In CV the data are pixel values, in NLP the data are words and in audio processing the data are sound waves.
+This is not a criteria for DL to be sucessful but is certainly a driver for its sucess in these domains.
+Modelling of homogeneous data is easier since every input feature can be treated the same.
+Furthermore, universal patterns exist in each of these domains allowing for knowledge to be transferred between tasks of the same domain, both knowledge aquired by humans and that learned by the DL model.
+For example in CV, advancements in classifying pictures of pets will most likely also be applicable to identifying tumuors in X-rays and the patterns learned by the model to do the one task may also be useful to do the other (see *Transfer Learning*).
+
+A data domain in which DL does not flourish is that of tabular data.
+Although work is being done on the problem [cite] and SotA results were received on rare occasions [cite], the area is nowhere near as mature or receiving as much attention compared to CV and NLP.
+ML tasks operating on tabular data are typically more effectively solved by using tree-based methods [cite], which is also evident by looking at the winning solutions of relevant Kaggle competitions[^kaggle].
+This is possibly largely influenced by the heterogeneity of tabular data [@Shavitt2018], which we discuss in the next section.
+
+[^kaggle]: https://www.kaggle.com
+
+## Tabular Data
+- how is it different to other data sources
+- what type of application
+- sota approaches (look for that one paper on 121 UCI datasets)
+- common workflow
+
 Tabular data is also important. 
 But each column is different and thus in a way more difficult to learn representations.
 At the moment methods on tabular data are dominated by tree based boosting methods. 
 See kaggle competitions. 
 In some cases where there was enough data deep learning got a slight upperhand. 
 But it is still not clear when a tabular dataset is best suited for dl and neither how then to apply dl to such a dataset. 
-This thesis acts as an tutorial on applying dl to tabular data. 
-We will look at existing work on the matter, see that it is lacking, see what we can borrow from the other domains, do an empirical study to look for clues.
-Especially layers, embeddings, pretraining, augementation, modern training policies, batch size. 
-The use of dl is often restricted by its perceived lack of interpretability and the here we will explore ways that we can interpret them with model agnostic and nn specific methods. 
 
-- summary of dl
-- summary of advances in dl in other fields
-
-## Tabular Data
-- what is tabular data
-- how is it different to other data sources
-- what type of application
-- sota approaches (look for that one paper on 121 UCI datasets)
-- common workflow
-
+Nns have been use on tabular data but old techniques and very few of the moden techniques have been tested on tabular data. 
 
 ## Challenges for Deep Learning on Tabular Data
 - summarise the core research of this thesis
@@ -43,6 +52,12 @@ The use of dl is often restricted by its perceived lack of interpretability and 
 Many tabular data sets are challenging to represent and model due to its high dimensionality, noise, heterogeneity, sparseness, incompleteness, random errors, and systematic biases [@Miotto2016].
 
 This thesis acts as a tutoriol for applying Deep Learning to tabular data and also includes a literature review and empirical study on what works where.
+
+This thesis acts as an tutorial on applying dl to tabular data. 
+We will look at existing work on the matter, see that it is lacking, see what we can borrow from the other domains, do an empirical study to look for clues.
+Especially layers, embeddings, pretraining, augementation, modern training policies, batch size. 
+The use of dl is often restricted by its perceived lack of interpretability and the here we will explore ways that we can interpret them with model agnostic and nn specific methods. 
+
 
 ## Overview of Statistical Learning Theory/Machine learning
 Overview of core concepts in Machine Learning used and referred to in the rest of the thesis.
