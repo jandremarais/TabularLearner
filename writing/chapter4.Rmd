@@ -231,6 +231,7 @@ Is it only for balanced representation when combined with categorical features?
 The numerical and categorical embeddings are concatenated to form a single vector representation [@Song2018].
 [@Wang2017b] does not embed numerical but just stack the normalised numerical features along with the categorical embeddings.
 [@Song2018] used $\log^{2}(z)$ if $Z>2$ to transform numeric features to minimise its variance.
+But how does that work for negative values?
 [@Wang2017b] used normal log transform.
 [@Wang2017b] uses normalisation but dont know what yet.
 [@Song2018] experimented to find the optimal embedding size [8,16,24,32], found it depended on the dataset.
@@ -243,7 +244,7 @@ The list of embeddings then gets projected back into a fixed-length representati
 [@Ioffe2015] shows how sensitive DNNs are to scaling and distribution.
 Proper normalisation of numeric features was critical for convergence [@Covington2016].
 [@Covington2016] does a transformation to equally distribute a numeric feature in [0,1) using the cumalitive distribution.
-The integral is approximated  with  linear  interpolation  on the quantiles of the feature values computed in a single pass over the data before training begins.
+The integral is approximated with linear interpolation on the quantiles of the feature values computed in a single pass over the data before training begins.
 In addition they add $\tilde{x}^{2}$ and $\sqrt{\tilde{x}}$ to give the network more expressive power.
 
 **Interpreting DNNs.** [@Song2018]

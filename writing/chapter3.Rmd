@@ -70,6 +70,7 @@ Fully-connected NNs do not have this luxury and shows high variance in the train
 
 ### Residual Networks
 - resnet and densenet
+- how resnet is essentially boosting
 
 Residual Networks became very popular after it was used to win one of the ImageNet competiions [@He2015].
 The residual connection layer can simply be formalised as

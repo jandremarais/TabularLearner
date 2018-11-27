@@ -91,11 +91,25 @@ Think [@Wang2017b] used CV since the report se's for hyperparameter tunings.
 - which numeric normalisation
 - should we embed numerics
 
+Unfortunately, we cannot follow the hyperparameter selection process suggested by [@Smith2018] for all the experiments.
+The process is too manual.
+Therefore we follow the approach once on each dataset to find a good selection of learning rate, number of epochs and weight decay and then use these paramters for the rest of the experiments on this dataset.
+If the model significantly changes over experiments, we might need to rerun the parameter selection process.
+Thus we will definitely not find the optimal model for each experiment but it should be sufficient to use as comparisons.
+According to [@Smith2018] these parameters are also quite robust and the model is not too sensitive on these choices.
+
+Might follow a bit of a greedy approach when selecting optimal paramters.
+All the hyperparameters are very dependent on each other but we cannot run experiments for every possible combination.
+Therefore we find optimal parameters for a certain experiment and then assume that these parameters are also good for other experiments.
+
 **Preprocessing**.
 - Remove infrequent features [@Song2018]
 - numeric transform by $\log^{2}(z)$ if $Z>2$ [@Song2018].
 - numeric features log transform  [@Wang2017b]
 
+The idea is to do as little feature engineering as possible.
+So the steps we take here are generic steps that are applicable to any dataset.
+We do no feature selection since we would want the model to learn by itself which features are relevant.
 
 ## Architectural Search
 - Number of layers (vs with SeLU) (vs other activations) [1-10]
