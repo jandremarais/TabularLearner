@@ -35,7 +35,23 @@ https://arxiv.org/pdf/1803.09820.pdf
 
 ### Transfer Learning
 
+The major critique against DNNs are that they require a huge amount of training data and that they take extremely long to train. 
+This is somewhat true, however, *transfer learning* provides an effective solution to these problems. 
+Recall that DNNs are examples of representation learning algorithms. 
+Consider the case where a CNN was sucessfully trained on ImageNet.
+For any input image, each layer of the CNN produces some feature representation of the input image. 
+(Not sure where Zeiler paper is going to be discussed). 
+
 ### Dropout
+
+Overfitting can be reduced by using dropout [@Hinton2012] to prevent complex co-adaptions on the training data. Dropout consists of setting the output of a hidden unit to zero with a probability $p$ (in the original paper they used $p=0.5$). The units which are set to zero do not contribute to the forward pass and do not participate in backpropogation. Every time an input is presented, the neural network samples a different set of units to be dropped out. 
+
+This technique ensures that a unit does not rely on the presence of a particular set of other units. It is therefore forced to learn more robust features that are useful in conjunction with many different random subsets of the other units [@Krizhevsky2012].
+
+At test time, no units are dropped out and their output is multiplied by $1-p$ (make sure) to compensate for the fact that all of the units are now active. Dropout does tremendously well to combat overfitting, but it slows down the covergence time of training.
+
++ in the original paper they also compare the technique to ensebmling
+
 Interesetingly, [@haldar2018] found that dropout was not effective in their application.
 They pinned it down to dropout producing invalid input scenarious that distracted the model.
 Therefore they opted for hand crafted noise shapes taking into account the distribution of the relevant feature. 
@@ -58,6 +74,40 @@ Of course this is not as effective as genuine new data samples, but it is a very
 ## Modern Architectures
 
 ### Normalisation
+
+One of the things that complicate the training of neural networks is the fact that hidden layers have to adapt to the continuously changing distribution of its inputs. The inputs to each layer are affected by the paramaters of all its preceding layers and a small change in a preceding layer can lead to a much bigger difference in output as the network becomes deeper. When the input distribution to a learning system changes, it is said to experience covariate shift [@Shimodaira2000].
+
+Using ReLUs, carefull weight initialisation and small learning rates can help a network to deal with the internal covariate shift. However, a more effective way would be to ensure that the distribution of non-linearity inputs remains more stable while training the network. [@Ioffe2015] proposed *batch normalisation* to do just that.
+
+A batch normalisation layer normalises its inputs to a fixed mean and variance (similar to how the inputs of the network is normalised) and therefore it can be applied before any hidden layer in a network to prevent internal covariate shift. The addition of this layer dramatically accelerates the training of DNNs, also because it can be used with higher learning rates. It also helps with regularisation [@Ioffe2015], therefore in some cases dropout is not necessary.
+
+The batch normalising transform over a batch of univariate inputs, $x_{1}, \dots,x_{n}$ is done by the following steps:
+
+1. Calculate the mini-batch mean, $\mu$, and variance, $\sigma^{2}$:
+
+    $$
+    \begin{aligned}
+    \mu &= \frac{1}{n}\sum_{i=1}^{n}x_{i}\\
+    \sigma^{2}&=\frac{1}{n}\sum_{i=1}^{n}(x_{i}-u)^{2}
+    \end{aligned}
+    $$
+
+2. Normalise the inputs, 
+
+    $$
+    \hat{x}_{i} = \frac{x_{i}-\mu}{\sqrt{\sigma^{2}+\epsilon}},
+    $$
+    where $\epsilon$ is a constant to ensure numerical stability.
+
+3. Scale and shift the values,
+
+    $$
+    y_{i}=\gamma\hat{x}_{i}+\beta,
+    $$
+    where $\gamma$ and $\beta$ are the only two learnable paramaters of a batch normalisation layer.
+
+The reason for the scale and shift step is to allow the layer to represent the identity transform if the normalised inputs are not suitable for the following layer, *i.e.* the scale and shift step will reverse the normalisation step if $\gamma=\sqrt{\sigma^{2}+\epsilon}$ and $\beta=\mu$.
+
 
 The batch normalisation layer attempts to normalise neuron activations to zero mean and unit variance [@Ioffe2015].
 It has become the stanard when training deep CNNs.
@@ -94,7 +144,7 @@ First proposed in neural machine translation [@Bahdanau2014] and now almost used
 - can include experiment here
 
 
-[@smith2018]
+[@Smith2018]
 
 + reduce training time and increase performace
 

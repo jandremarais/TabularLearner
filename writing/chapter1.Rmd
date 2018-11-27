@@ -88,6 +88,7 @@ This thesis acts as a tutorial for applying Deep Learning to tabular data.
 We review the recent literature on general DL and more specifically applying DL to tabular data.
 We have identified the major challenges of using DL approaches on tabular data and will review the literature in this context.
 These challenges are summarised below, posed as questions:
+
 - **How should input features be represented numerically?**: We have mentioned that tabular data consists of mixed feature types, a combination of categorical and continuous feautes. The question here relates to how these features should be processed and presented to the model during training.
 - **How can we exploit feature interactions?**: Once we have found the optimal feature representation for all feature types, we will need a way to effectively learn the interactions between them and how they relate to the target. This a crucial part for effective ML models on tabular data.
 - **How can we be more sample efficient?**:  Tabular datasets are typically not as large as datasets in CV and NLP, and furthermore there is no general large dataset with universal properties that a model can learn from and transfer its knowledge. Thus a key challenge is being able to learn from less data.
@@ -96,6 +97,26 @@ These challenges are summarised below, posed as questions:
 Clearly, there are plenty of considerations when it comes to using DL with tabular data. 
 The aim of this thesis is to find the best ways of overcoming these challenges, by giving a detailed review of the relevant literature and backing up the claims with empirical results.
 The work will help the reader understand the *status quo* of the field and what is required for DL to be as effective as in data domains such as CV and NLP.
+
+Other objectives (still need to edit):
++ Learn how the existing approaches can be tweaked or adapted to optimally fit to our data.
++ Provide rigorous empirical evaluations of the selected existing approaches as well as the novel adaptions proposed in this thesis on the dataset, such that the conclusions made here can safely be used in future research on this dataset and possibly other tabular data problems.
++ Design reproducible experiments for any researcher or person with an interest in the field to replicate the results and further build on the approaches.
+
+Since theory and practice does not always go hand-in-hand, it is usually advantageous to complement a theoretical study with empirical results. 
+Another motivation for empirical study is that we regard the ability to implement an approach equally as important as understanding the theory behind it. 
+We characterise a good empirical experiment as one that is *rigorous* and *reproducible*. 
+Recently the field of DL has been criticised for the growing gap between the understanding of its techniques and its practical successes[^talk] where most of the recent focus was on the latter. 
+The speakers urged the deep learning community to be more rigorous in their experiments where, for them, the most important part of rigor is better empiricism, not more mathematical theories. 
+Better empiricism in classification may include for example practices such as using cross-validation to estimate the generalisation ability of a model and reporting standard errors. 
+Empirical studies should be more than just trying to beat the benchmark and should also consist of simple experiments that aid in the understanding of how the techniques work. 
+
+[^talk]: How do I cite the talk given at NIPS2017 - https://www.youtube.com/watch?v=Qi1Yry33TQE
+
+On the other hand, we want all our experiments to be as reproducible as possible, *i.e.* provide all the code, data and necessary documentation to reproduce the experiments that were done in this thesis[^git]. 
+This is often an overlooked feature of experiments, but is however crucial for transparent and accountable reporting and making your work useful for others to build upon.
+
+[^git]: All of these are shared publicly at https://github.com/jandremarais/tabularLearner
 
 The next section covers fundamental concepts of Statistical Learning Theory.
 These concepts are referred to throughout the thesis and therefore it will be beneficial to be familiar with them.
