@@ -21,6 +21,7 @@ class TabularModel(nn.Module):
         act_dict = {'relu': nn.ReLU(inplace=True), 'selu': nn.SELU(inplace=True)}
         act_func = act_dict[act_func]
         actns = [act_func] * (len(sizes)-2) + [None]
+        if get_layer_name(act_func)=='selu':use_bn=False
         layers = []
         for i,(n_in,n_out,dp,act) in enumerate(zip(sizes[:-1],sizes[1:],[0.]+ps,actns)):
             layers += bn_drop_lin(n_in, n_out, bn=use_bn and i!=0, p=dp, actn=act)

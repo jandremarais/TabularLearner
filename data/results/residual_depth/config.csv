@@ -1,0 +1,5 @@
+,residual,n_layer
+model_1,False,2
+model_2,False,6
+model_3,True,2
+model_4,True,6
