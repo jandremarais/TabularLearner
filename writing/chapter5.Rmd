@@ -56,6 +56,16 @@ Look at the datasets used by [@anonymous2019], also [@Zhang2017]
 
 ## Evaluation
 
+[@Klambauer2017] did a once-off three-way split of the data into training, validation and testing datasets.
+Hyperparemeter decisions were made based on the valdiation dataset performace and then the selected models are compared on the test datasets.
+The models were compared using the pairwise Wilcoxon rank test.
+The problem with doing a once-off split is that it does not account for the variance of the model and the performance of the model can in fact be very sensitive to the subset of data.
+By doing cross-validation, we can have more robust performance metrics, including the benefit of reporting on standard errors.
+
+The other problem with [@Klambauer2017] is that they only tested on classification tasks and not regression.
+Models can behave quite differently on the two types of tasks.
+[@Zhang2017] also only tested mixup data augmentation on tabular datasets where the task was classification.
+
 For most of the experiments we will do a 5-fold cross validation [@Hastie2009, p. 241] to estimate the performance of a model. 
 That is, randomly dividing the dataset in five equal parts and then in turn, hold out one of those parts for validation purposes and train the model using the remaining four parts.
 The performance of the model can then be evaluated on the held-out part.

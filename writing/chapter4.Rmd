@@ -255,28 +255,6 @@ If you cannot explain how a prediction is made, you cannot know how good it is.
 [@Song2018] uses the multi-head self-attention mechanism to evaluate correlations between features - globally and locally .
 [@Zhou2017] plots attention and categorical embeddings.
 
-**Layer Normalisation.** [@Klambauer2017]
-Fully-connected DNNs with normalisation techniques are very sensitive to perturbations.
-DNNs exhibit a high variance in training error when trained using BatchNorm.
-This hinders the learning process.
-Combined with dropout just magnifies the effect.
-[@Klambauer2017] suggested the use of SeLUs which is an activation function which helps the network to maintain zero mean and unit variance activations.
-By using this activation, there is no need for a BatchNorm layer.
-SNNs do not suffer from exploding or vanishing gradients.
-They paper tested on 123 tabular datasets to show that on average SNNs are the best.
-But it is quite finicky to get the implementation right.
-It requires a very specific weight initialisation, one that does not really make sense for embedding matrices.
-And even when you get it right, the improvement is not necessarily significant.
-That said, it has not been tested by others on tabular data, so it is worth a try.
-$$
-\text{selu}(x)=\lambda 
-\begin{cases}
-x & \text{if}~~~x>0\\
-\alpha e^{x}-\alpha & \text{if}~~~x\le 0\\
-\end{cases}
-$$
-Give more detail if it is proved to be useful.
-Also needs a specific type of dropout.
 
 **Small Datasets.**
 It is well know that DNNs require a large amout of data to generalise well.
@@ -332,7 +310,38 @@ Automated Feature Engineering
 ### Going Deeper
 
 - Residual Connections
-- Self-normalising Units
+
+#### Self-normalising Units
+
+Fully-connected DNNs with normalisation techniques are very sensitive to perturbations.
+DNNs exhibit a high variance in training error when trained using BatchNorm.
+This hinders the learning process.
+Combined with dropout just magnifies the effect.
+[@Klambauer2017] suggested the use of SeLUs which is an activation function which helps the network to maintain zero mean and unit variance activations.
+By using this activation, there is no need for a BatchNorm layer.
+SNNs do not suffer from exploding or vanishing gradients.
+They paper tested on 123 tabular datasets to show that on average SNNs are the best.
+But it is quite finicky to get the implementation right.
+It requires a very specific weight initialisation, one that does not really make sense for embedding matrices.
+And even when you get it right, the improvement is not necessarily significant.
+That said, it has not been tested by others on tabular data, so it is worth a try.
+$$
+\text{selu}(x)=\lambda 
+\begin{cases}
+x & \text{if}~~~x>0\\
+\alpha e^{x}-\alpha & \text{if}~~~x\le 0\\
+\end{cases}
+$$
+Give more detail if it is proved to be useful.
+Also needs a specific type of dropout.
+
+[@Klambauer2017] tested SELUs on 121 classification datasets from the UCI Machine Learning repository.
+They compared DNNs with SELU activations to other DNNs and other classifiers like Random Forests and SVMs.
+They found that on the datasets with less than 1000 obervations, random forests and SVMs performed the best.
+However, for the datasets with more than 1000 observations, DNNs with SELU activations performed the best overall.
+The classifiers were compared by ranking them by their accuracy for each prediction task and doing a pairwise Wilcoxon test.
+
+Another thing the authors found when comparing SELUs with other activations is that the model selection approach for SELU DNNs resulted in much deeper networks than DNNs with other activations.
 
 ### Attention
 
@@ -343,8 +352,6 @@ Automated Feature Engineering
 ### Data Augmentation
 - Blankout
 - Swap Noise
-- Mixup
-
 - [@kasar2018] - hybrid bootstrap
 
 Tabular data is very different to image data and the standard augmentations used in computer vision does not make sense with tabular data.
@@ -373,7 +380,37 @@ But it still might produce combinations of features that are not actually possib
 
 All of these methods have hyperparameters that needs to be set. I haven't gone into detail as I still need to decide what is relevant to this thesis.
 
-+ Mixup: [@Zhang2017] - Taking linear combinations of pairs of samples.
+**Mixup**. 
+The way mixup creates artifical samples is by the following original formulation:
+$$
+\tilde{\boldsymbol{x}}=\lambda\boldsymbol{x}_{i}+(1-\lambda)\boldsymbol{x}_{j}\\
+\tilde{\boldsymbol{y}}=\lambda\boldsymbol{y}_{i}+(1-\lambda)\boldsymbol{y}_{j}\\
+$$
+where $\boldsymbol{x}$ is a input vector,$\boldsymbol{y}$ a one-hot encoded output vector and $\lambda\in[0,1]$.
+$(\boldsymbol{x}_{i}, \boldsymbol{y}_{i})$ and $(\boldsymbol{x}_{j}, \boldsymbol{y}_{j})$ are two samples drawn at random from the training data.
+Thus mixup assumes that linear interpolations of input vectors lead to linear interpolations of corresponding targets.
+
+$\lambda$ controls the strength of the interpolation between input-output pairs.
+The closer $\lambda$ is to 0 or 1, the closer the artificial sample will be to an actual training sample.
+The authors suggest using $\lambda\sim\text{Beta}(\alpha, \alpha)$ for $\alpha\in(0,\infty)$.
+They observed best performance when $\alpha\in[0.1,0.4]$ and if $\alpha$ is too high, they experience underfitting.
+
+Other ablation studies they did was to find at which stages of the network the interpolation should happen, *e.g.* raw input, after embedding, hidden layer, *etc.*
+But the experiments are not extremely clear and therefore warrants further discussion here.
+
+Typically data augmentation procedures are dataset dependent and therefore requires expert knowledge.
+It is hard to think of ways to augment tabular data, even more so a generic way of doing so.
+However, from this defnition it is clear that mixup can be used on any type of data, including tabular datasets.
+
+Mixup data augmentation can be understood as a mechanism to encourage the model to behave linearly in-between training samples.
+[@Zhang2017] shows that this linear behaviour reduces the amount of undesirable variation when predicting new samples further away from the training samples.
+They also argue and show empirically how training with mixup is more stable in terms of model predicions and gradien norms.
+This is because mixup leads to decision boundaries that transition linearly between classes, resulting in smoother predictions.
+
+The authors [@Zhang2017] tested mixup data augmentation on tabular datasets.
+They tested it on 6 classification datasets from the UCI Machine Learning repository.
+They used a 2-layer MLP with 128 neuros each and a batch size of 16.
+They found that mixup improved the performance on 4 out of the 6 datasets.
 
 ### Unsupervised Pretraining
 - DAEs
