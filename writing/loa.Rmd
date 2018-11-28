@@ -11,6 +11,7 @@
 \acro{kNN}{$k$-Nearest Neighbour}
 \acro{mAP}{Mean Average Precision}
 \acro{ML}{Machine Learning}
+\acro{MLP}{Multi-layer Perceptron}
 \acro{NLP}{Natural Language Processing}
 \acro{NN}{Neural Network}
 \acro{SGD}{Stochastic Gradient Descent}

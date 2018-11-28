@@ -71,6 +71,13 @@ This is a standard approach especially in computer vision applications. For exam
 But by doing so we are artificially increasing the size of the training set to help with overfitting.
 Of course this is not as effective as genuine new data samples, but it is a very effective and efficient substitute [@Perez2017].
 
+Data augmentation consistently leads to improved generalisation.
+
+Data augmentation can be formalised by the *Vicinal Risk Minimisation* principle [@Chapelle2001] where human knowledge is required to describe a vicinity around each observation in the training data so that artificial examples can be drawn from the vicinity distribution of the training sample to enlarge it.
+In image classification one can define the vicinity of an image as the set of its horizontal reflections and minor rotations, for example.
+Note that this approach is dataset dependent.
+
+
 ## Modern Architectures
 
 ### Normalisation
