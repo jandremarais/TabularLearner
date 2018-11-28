@@ -8,7 +8,7 @@ class TabularModel(nn.Module):
 
     def __init__(self, emb_szs, n_cont, out_sz, layers, ps=None,
                  emb_drop=0., y_range=None, use_bn=True, bn_final=False, 
-                 act_func='relu', residual=False, mixup_aug=False):
+                 act_func='relu', residual=False, mixup_alpha=False):
         super().__init__()
         ps = ifnone(ps, [0]*len(layers))
         ps = listify(ps, layers)
@@ -35,14 +35,14 @@ class TabularModel(nn.Module):
         if residual: 
             res_lin = bn_drop_lin(self.n_emb+self.n_cont, sizes[-2], bn=False, p=dp, actn=act_func)
             self.res_lin = nn.Sequential(*res_lin)
-        self.mixup_aug = mixup_aug
+        self.mixup_alpha = mixup_alpha
 
     def get_sizes(self, layers, out_sz):
         return [self.n_emb + self.n_cont] + layers + [out_sz]
 
     def forward(self, x_cat, x_cont) -> Tensor:
         if self.n_emb != 0:
-            if self.mixup_aug: 
+            if self.mixup_alpha>0: 
                 x = x_cat
             else:
                 x = [e(x_cat[:,i]) for i,e in enumerate(self.embeds)]
@@ -109,13 +109,13 @@ class TabularMixUpCallback(Callback):
     
 def tabular_learner(data, layers, emb_szs=None, metrics=None,
                     ps=None, emb_drop=0., y_range=None, use_bn=True, 
-                    act_func='relu', residual=False, mixup_aug=False, **kwargs):
+                    act_func='relu', residual=False, mixup_alpha=0, **kwargs):
     "Get a `Learner` using `data`, with `metrics`, including a `TabularModel` created using the remaining params."
     emb_szs = data.get_emb_szs(ifnone(emb_szs, {}))
     model = TabularModel(emb_szs, len(data.cont_names), out_sz=data.c, layers=layers, ps=ps, emb_drop=emb_drop,
-                         y_range=y_range, use_bn=use_bn, act_func=act_func, residual=residual, mixup_aug=mixup_aug)
+                         y_range=y_range, use_bn=use_bn, act_func=act_func, residual=residual, mixup_alpha=mixup_alpha)
     l = Learner(data, model, metrics=metrics, **kwargs)
-    if mixup_aug: 
+    if mixup_alpha>0: 
         l.loss_func = MixUpLoss(l.loss_func)
-        l.callback_fns.append(partial(TabularMixUpCallback, alpha=0.4))
+        l.callback_fns.append(partial(TabularMixUpCallback, alpha=mixup_alpha))
     return l
