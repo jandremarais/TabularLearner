@@ -68,11 +68,13 @@ options(xtable.comment = FALSE)
 \appendix
 \appendixpage\relax
 
-# Appendix A
+```{r child = 'appendixA.Rmd'}
+```
 
-Description of each of the datasets used in Experiments.
+```{r child = 'appendixB.Rmd'}
+```
 
-<!-- ```{r child = 'appendixA.Rmd'} --> 
-<!-- ``` -->
+```{r child = 'appendixC.Rmd'}
+```
 
 \clearpage

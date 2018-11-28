@@ -1,0 +1,14 @@
+# Software and Code\label{app:code}
+
++ Deep Learning Library: Pytorch and Fastai
++ Hardware: GTX1080Ti
++ Python and Jupyter Notebooks for programming environemnt
++ github for version control
++ RMarkdown for writing and compiling the thesis document
+
+## Code and Reproducibility
+
+Note that all of the code used in the thesis, including the source documents, is made available in the tabularLearner Github repository [^repo]. More instructions on how to implement the code is contained in the file named `README.md`, in the repository.
+
+
+[^repo]: https://github.com/jandremarais/tabularLearner

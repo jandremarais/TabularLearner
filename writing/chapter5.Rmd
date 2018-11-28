@@ -2,11 +2,37 @@
 
 \chapterprecishere{"For us, the most important part of rigor is better empiricism, not more mathematical theories."\par\raggedleft--- \textup{Ali Rahimi and Ben Recht}, NIPS 2017}
 
-## Introudction
-- empirical comparisons/ablation studies of approaches discussed in core chapter
+## Introduction
 
-## Datasets
-- which datasets will experiments performed on
+Since theory and practice does not always go hand-in-hand, it is usually advantageous to compliment a theoretical study or literature review with empirical results. 
+Another motivation for empirical study is that we regard the ability to implement an approach equally as important as understanding the theory behind it. 
+We characterise a good empirical experiment as one that is *rigorous* and *reproducible*. 
+Recently the field of DL has been criticised for the growing gap between the understanding of its techniques and its practical successes[^talk] where most of the recent focus was on the latter. 
+The speakers urged the deep learning community to be more rigorous in their experiments where, for them, the most important part of rigor is better empiricism, not more 
+mathematical theories. 
+
+[^talk]: How do I cite the talk given at NIPS2017 - https://www.youtube.com/watch?v=Qi1Yry33TQE
+
+In this chapter we aim for good empiricism by evaluating the models on different types of prediction tasks and datasets, exploring many hyperparamters and doing cross-validation for unbiased performance measures along with standard errors.
+Our work is not necessarily about beating the benchmark and consist of simple experiments that aid in the understanding of how the techniques work, as used throughout the thesis.
+
+Furthermore, we want all our experiments to be as reproducible as possible.
+Therefore we provide all the code, data and necessary documentation to reproduce the experiments that were done in this thesis[^git]. 
+This is often an overlooked feature of experiments, but is however crucial for transparent and accountable reporting and making your work useful for others to build upon.
+
+[^git]: All of these are shared publicly at https://github.com/jandremarais/tabularLearner
+
+The main aim of this chapter is to better understand the behaviours of certain models and parameters and to cross-check the literature with empirical observations.
+We focus on the same main issues when it comes to DL on tabular as in the previous chapter, which are: 
+
+- how to represent the inputs,
+- how to learn from feature interactions, and
+- how to fight overfitting.
+
+The more general hyperparameters, like learning rate, batch size, layer size and layer depth will not receive attention here since it has already been discussed at relevant parts previously.
+However, since these parameters are tightly linked with each other and other model parameters, we still do a hyperparamter search where we deem appropriate and report the findings in \Cref{app:B}. The rest of the chapter continues as follows: In \Sref{sec:datasets} an overview of the datasets used for these experiments are given and why the were chosen. We discuss our evaluation procedure and metrics in \Sref{sec:eval}. Thereafter we start with the main experiments.
+
+## Datasets \label{sec:datasets}
 
 Our experiments are done on multiple datasets.
 Thus we can distinguish between findings that are only true for certain datasets and tasks and findings that hold more universallt.
@@ -54,7 +80,7 @@ Look at the datasets used by [@anonymous2019], also [@Zhang2017]
 - A9A [@anonymous2019]
 - Flight [@anonymous2019]
 
-## Evaluation
+## Evaluation \label{sec:eval}
 
 [@Klambauer2017] did a once-off three-way split of the data into training, validation and testing datasets.
 Hyperparemeter decisions were made based on the valdiation dataset performace and then the selected models are compared on the test datasets.
@@ -65,18 +91,6 @@ By doing cross-validation, we can have more robust performance metrics, includin
 The other problem with [@Klambauer2017] is that they only tested on classification tasks and not regression.
 Models can behave quite differently on the two types of tasks.
 [@Zhang2017] also only tested mixup data augmentation on tabular datasets where the task was classification.
-
-For most of the experiments we will do a 5-fold cross validation [@Hastie2009, p. 241] to estimate the performance of a model. 
-That is, randomly dividing the dataset in five equal parts and then in turn, hold out one of those parts for validation purposes and train the model using the remaining four parts.
-The performance of the model can then be evaluated on the held-out part.
-This process is repeated for every one of the five segmentations of the dataset and thus five measurements of the performance of model is obtained.
-We can then compute the average over these five measurements to obtain a less biased estimate of the model performance.
-Another advantage of this approach is that we can obtain standard error for the model performance.
-
-Cross-validation is rarely done in Deep Learning, since the models typically take very long to train and any repitition is thus more costly.
-However, Deep Learning is also mostly applied to large datasets and if a large test set is available, the gains from cross-validation diminishes.
-Fortunately, the NNs applied to tabular data are much smaller than ones used for unstructured data and for this work we have access to sufficient computing power.
-And therefore cross-validation makes sense.
 
 For the regression tasks we will compare the various models using the mean squared error and for classificaion we use cross-entropy.
 These are the metrics directly being optimised during the training process.
@@ -96,6 +110,21 @@ Think [@Wang2017b] used CV since the report se's for hyperparameter tunings.
 
 
 ### Cross-validation
+
+For most of the experiments we will do a 5-fold cross validation [@Hastie2009, p. 241] to estimate the performance of a model. 
+That is, randomly dividing the dataset in five equal parts and then in turn, hold out one of those parts for validation purposes and train the model using the remaining four parts.
+\autoref{fig:cv} visually explains how the dataset is sub-divided.
+The performance of the model can then be evaluated on the held-out part.
+This process is repeated for every one of the five segmentations of the dataset and thus five measurements of the performance of model is obtained.
+We can then compute the average over these five measurements to obtain a less biased estimate of the model performance.
+Another advantage of this approach is that we can obtain standard error for the model performance.
+
+Cross-validation is rarely done in Deep Learning, since the models typically take very long to train and any repitition is thus more costly.
+However, Deep Learning is also mostly applied to large datasets and if a large test set is available, the gains from cross-validation diminishes.
+Fortunately, the NNs applied to tabular data are much smaller than ones used for unstructured data and for this work we have access to sufficient computing power.
+And therefore cross-validation makes sense.
+
+![5-Fold Cross-validation dataset split schematic.\label{fig:cv}](figures/cv.pdf)
 
 ## General Approach
 - which numeric normalisation

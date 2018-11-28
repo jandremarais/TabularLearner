@@ -1,15 +1,3 @@
-# Software and Code
-\label{app:code}
+# Datasets
 
-+ Deep Learning Library: Keras
-+ Hardware: AWS p2-instance
-+ R and Python
-+ github
-+ compiling thesis with Rmarkdown with version control with Github
-
-## Code and Reproducibility
-
-Note that all of the code used in the thesis, including the source documents, is made available in the Thesis Github repository [^repo]. More instructions on how to implement the code is contained in the file named `README.md`, in the repository.
-
-
-[^repo]: https://github.com/jandremarais/Thesis
+Details of each of the datasets used in \Cref{chp:exp} and elsewhere.

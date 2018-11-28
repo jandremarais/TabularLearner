@@ -353,6 +353,7 @@ Another thing the authors found when comparing SELUs with other activations is t
 - Blankout
 - Swap Noise
 - [@kasar2018] - hybrid bootstrap
+- using GANS are interesting by out of scope.
 
 Tabular data is very different to image data and the standard augmentations used in computer vision does not make sense with tabular data.
 You cannot rotate or scale an observation from a tabular data without losing its meaning.
