@@ -80,7 +80,7 @@ class TabularMixUpCallback(Callback):
     learner:Learner
     alpha:float=0.4
     stack_x:bool=False
-    stack_y:bool=True
+    stack_y:bool=False
         
     def on_batch_begin(self, last_input, last_target, train, **kwargs):
         last_cats, last_conts = last_input
