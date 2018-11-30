@@ -1,6 +1,4 @@
-from fastai import *
-from fastai.tabular import *
-from fastai.callbacks.mixup import *
+from fastai.torch_core import nn
 
 
 class TabularModel(nn.Module):
@@ -74,39 +72,6 @@ def selu_weights_init(m):
 def get_layer_name(m):
     return m.__class__.__name__
 
-@dataclass
-class TabularMixUpCallback(Callback):
-    "Callback that creates the mixed-up input and target."
-    learner:Learner
-    alpha:float=0.4
-    stack_x:bool=False
-    stack_y:bool=False
-        
-    def on_batch_begin(self, last_input, last_target, train, **kwargs):
-        last_cats, last_conts = last_input
-        last_cats = torch.cat([e(last_cats[:,i]) for i,e in enumerate(self.learner.model.embeds)],1)
-        if not train: return ([last_cats,last_conts], last_target) 
-        lambd = np.random.beta(self.alpha, self.alpha, last_target.size(0))
-        lambd = np.concatenate([lambd[:,None], 1-lambd[:,None]], 1).max(1)
-        lambd = last_conts.new(lambd)
-        shuffle = torch.randperm(last_target.size(0)).to(last_conts.device)
-        xcats1, xconts1, y1 = last_cats[shuffle], last_conts[shuffle], last_target[shuffle]
-        if self.stack_x:
-            # new_input = [last_input, last_input[shuffle], lambd]
-            new_cats = [last_cats, last_cats[shuffle], lambd]
-            new_conts = [last_conts, last_conts[shuffle], lambd]
-        else: 
-            # new_input = (last_input * lambd.view(lambd.size(0),1) + x1 * (1-lambd).view(lambd.size(0),1))
-            new_cats = (last_cats * lambd.view(lambd.size(0),1) + xcats1 * (1-lambd).view(lambd.size(0),1))
-            new_conts = (last_conts * lambd.view(lambd.size(0),1) + xconts1 * (1-lambd).view(lambd.size(0),1))
-        if self.stack_y:
-            new_target = torch.cat([last_target[:,None].float(), y1[:,None].float(), lambd[:,None].float()], 1)
-        else:
-            if len(last_target.shape) == 2:
-                lambd = lambd.unsqueeze(1).float()
-            new_target = last_target.float() * lambd + y1.float() * (1-lambd)
-        return ([new_cats,new_conts], new_target) 
-    
 def tabular_learner(data, layers, emb_szs=None, metrics=None,
                     ps=None, emb_drop=0., y_range=None, use_bn=True, 
                     act_func='relu', residual=False, mixup_alpha=0, **kwargs):
