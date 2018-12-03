@@ -441,28 +441,39 @@ Now we have covered all of the basics for simple (1-layer) neural networks.
 
 ## Representation Learning
 
-+ What is the Neural Network actually doing?
+We are now familiar with the mathematical operations of basic layers, how they are connected and how their weights are tweaked to minimise a loss function.
+In this section we will discuss why this works and what the NN is actually doing to model the data.
+The central idea is that of a data *representation* [@Bengio2013] and that at each layer of the network the data is transformed into a higher-level abstraction of itself.
+Understanding and interpreting NNs remains a challenge [@Frosst2017], but the notion of learning an optimal data representation allows us to gain a deeper intuition of the inner mechanics of NNs.
 
-+ See [@Bengio2013]
+Machine learning models are very sensitive to the form and the properties of the input given to it.
+Thus a large part of building machine learning models is to find the best way of representing the raw data to make it easier for the models to extract useful information.
+This is typically a laborious manual task of creating, analyzing, evaluating and selecting appropriate features[^feature_engineering], and requires practitioner expertise and domain knowledge.
+This *feature engineering* process is more trial-and-error than a systematic recipe.
+Therefore if one can effectively automate this process, it will save a lot of time and raise the performance ceiling of models.
+Automatically learning representations of the data that make it easier to extract useful information for classifiers or other predictors is called representation learning [@Bengio2013].
 
-Each layer of the network is trained to produce a higher-level representation of the observed patterns, based on the data it receives as input from the layer below, by optimizing an objective function.
-Every level produces a representation of the input pattern that is more abstract than the previous level because it is obtained by composing more non-linear operations.
+[^feature_engineering]: http://blog.kaggle.com/2014/08/01/learning-from-the-best/
 
-The most central idea in deep learning is that of representation.
-Traditionally, input features to a machine learning algorithm must be hand-crafted from raw data, relying on practitioner expertise and domain knowledge to determine explicitpatterns of prior interest. 
-The engineering process of creating, analyzing, selecting, and  evaluating  appropriate  features  can be  laborious and time consuming, and is often thought of as a ”black art” requiring creativity,  trial-and-error, and oftentimes luck.  
-In contrast, deep learning techniques learn optimal features  directly from the data itself, without any human guidance, allowing for the automatic discovery of latent data relationships that might otherwise be unknown or hidden.
+A NN can be viewed from the perspective of representation learning.
+Consider a classification task.
+Since the final layer of a NN is a linear model, in order for the network to produce accuracte predictions, the previous layers should be able to project the data into a space where the classes are linearly separable.
+Thus the network learns a representation of the data that is optimal for classification.
 
-That being said, preprocessing of data in deep learning is not totally free of human engineering.
-See in the Normalisation section what measures should be taken to ensure a NN can learn effectively from tabular data.
+Each of the simple but non-linear modules of a NN transform the representation at one level (starting with the raw input) into a representation at a higher, slightly more abstract level.
+With the composition of enough such transformations, very complex functions can be learned [@Lecun2015].
+These transformations can emphasise (and create) features that are important for discrimination and drop those which are redundant.
 
-Also manifold learning. 
-Show PCA of different level activations and show how the classes get separated during training.
-The feature extraction layers transforms the inputs, which are not separable in the input space, to a representation where they are separable.
+Let us work through a simple example to illustrate the representations learned by a NN.
+Consider a dataset with two classes, the two curves on a plane shown in \autoref{fig:simple_dataset}.
+Clearly, the observations from the two classes are not linearly separable in their raw form.
+Thus if we fit as single layer NN to this data (linear model), we will get an unsatisfactory decision boundary.
+
+![Simple dataset with two linearly inseparable classes.\label{fig:simple_dataset}](figures/simple_dataset.pdf)
+
+
 A sufficiently detailed architecture can separate nearly any arrangments of points.
-PCA vs AE.
 If non-linear, find any surface manifold, in contras to hyperplane without.
-AEs can only learn to represent data that it has actually seen before, not necessarily out of sample space.
 
 
 ## Vanilla MLP on Tabular Data
