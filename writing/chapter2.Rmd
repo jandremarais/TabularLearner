@@ -493,7 +493,31 @@ In the following chapters we explore the approaches available to find optimal re
 [^colah]: http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/
 
 ## Vanilla MLP on Tabular Data
-- run through an example of a simple MLP
-- acts as an baseline
-- idenitify its drawbacks
-- how the next chapters will build on it
+
+In this chapter we have discussed the basics of NNs and how to train them.
+To compliment this discussion we will run through a relatively simple but real-world classification task on tabular data here.
+The aim of this is example is to solidfy the understanding of the basics, compare the expected beahviour and the behaviour in practise for each of the discussed concepts and to highlight where sticking with the basics comes up short.
+
+We are going to use the Adult dataset.
+We are going to see how we process the features.
+How we are going to choose the learning rate and batch size and weight decay and number of epochs.
+How we are going to choose the size of the layers and the depth of the network.
+Different activation functions?
+
+This acts as a baseline to which we can compare the network with advanced components.
+
+Identify things we can improve upon.
+Better preprocessing of the data. 
+One-hot encode creates sparse input and requires large weight matrices.
+Continuous variables requires zero mean and unit variance normalisation - but is this the best way?
+We are naively combining very different types of features in one layer.
+The dataset is relatively small.
+We struggle to find the right balance between overfitting and underfitting.
+Fixed learning rate.
+Can't interpret it.
+
+
+
+
+
+

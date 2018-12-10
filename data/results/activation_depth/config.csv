@@ -1,5 +1,0 @@
-,activation,n_layer
-model_1,relu,2
-model_2,relu,8
-model_3,selu,2
-model_4,selu,8

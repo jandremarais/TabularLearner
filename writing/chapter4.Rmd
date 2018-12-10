@@ -421,6 +421,10 @@ They tested it on 6 classification datasets from the UCI Machine Learning reposi
 They used a 2-layer MLP with 128 neuros each and a batch size of 16.
 They found that mixup improved the performance on 4 out of the 6 datasets.
 
+See \autoref{fig:simple_dataset_mixup}.
+
+![Illustration of points created by mixup augmentation.\label{fig:simple_dataset_mixup}](figures/simple_dataset_mixup.pdf)
+
 ### Unsupervised Pretraining
 - DAEs
 [@Miotto2016] presented a novel unsupervised deep feature learning method to derive a general-purpose patient representation for EHR data that facilitates clinical predictive modelling.

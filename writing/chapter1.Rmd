@@ -2,12 +2,12 @@
 
 ## Deep Learning
 
-This thesis is about using *Deep Learning* (DL) approaches to solve *Machine Learning* (ML) tasks where tabular data are the inputs.
+This thesis is about using *Deep Learning* (DL) approaches to solve *Machine Learning* (ML) tasks with tabular data inputs.
 The field of DL is an extention of the class of ML algorithms called *Artifical Neural Networks* (NNs).
 The rapid development in computing power and the growing abundance of data available, awoken the slumbering field of NNs and resulted in optimisation and architecture design advancements, creating the DL field as we know it today [@Lecun2015].
 
 DL is receiving a remarkable amount of attention in academia and elsewhere (see \autoref{fig:dlpapers}).
-DL has already shown tremendous value in application areas such as *Computer Vision* (CV) [@Hu2017], audio processing [Battenberg2017], and *Natural Language Processing* (NLP) [@Devlin2018], significantly improving upon the then *State of the Art* (SotA).
+DL has already shown tremendous value in application areas such as *Computer Vision* (CV) [@Hu2017], audio processing [@Battenberg2017], and *Natural Language Processing* (NLP) [@Devlin2018], significantly improving on the then *State of the Art* (SotA).
 In the aformentioned application areas, DL reached a maturity level sufficient to be able to run these systems in a production/commercial environment, *e.g.* voice assistants [@Sarikaya2017] like Amazon Alexa, face recognition[^faceid] with Apple iPhones and language translation [@Wu2016] with Google to name a few.
 
 [^faceid]: https://www.apple.com/business/site/docs/FaceID_Security_Guide.pdf
@@ -30,7 +30,7 @@ For example in CV, advancements in classifying pictures of pets will most likely
 
 A data domain in which DL does not flourish is that of tabular data.
 Although work is being done on the problem [@Shavitt2018, @Song2018] and SotA results were received on rare occasions [@Brebisson2015] (and this competition[^port]), the area is nowhere near as mature or receiving as much attention compared to CV and NLP.
-ML tasks operating on tabular data are typically more effectively solved by using tree-based methods [@Delgado2014], which is also evident by looking at the winning solutions of relevant Kaggle competitions[^kaggle].
+ML tasks operating on tabular data are typically more effectively solved by using tree-based methods as found by a large study done in [@Delgado2014],  and also evident by looking at the winning solutions of relevant Kaggle competitions[^kaggle].
 This is possibly largely influenced by the heterogeneity of tabular data [@Shavitt2018], which forms part of the discussion in the next section.
 
 [^kaggle]: https://www.kaggle.com
@@ -44,7 +44,7 @@ See \autoref{tab:adult} for an extract of the Adult[^adult1] dataset, an example
 [^adult1]: http://archive.ics.uci.edu/ml/datasets/Adult
 
 ```{r, results='asis'}
-df = read_csv('../data/adult_sample.csv')
+df = read_csv('../data/adult/adult_sample.csv')
 xtable(df, caption = 'Preview of the Adult dataset.\\label{tab:adult}')
 ```
 
@@ -54,12 +54,12 @@ The data comes from a US census and the specific task was to predict whether or 
 
 There are many important ML applications using tabular data:
 
-- Various tasks on Electronic Health Records (EHR) like predicting in-hopsital mortality and prolonge length of stay [@Rajkomar2018].
+- Various tasks on Electronic Health Records (EHR) like predicting in-hopsital mortality and prolonged length of stay [@Rajkomar2018].
 - Recommender systems for items like videos [@Covington2016] or property listings [@haldar2018].
 - Click-through rate (CTR) prediction for predicting which item a user will click on next [@Song2018]. 
-- Predicting which clients are at risk of defaulting on their accounts[^loandef]
-- Predicting store sales [@Guo2016]
-- Drug discovery [@Klambauer2017]
+- Predicting which clients are at risk of defaulting on their accounts[^loandef].
+- Predicting store sales [@Guo2016].
+- Drug discovery [@Klambauer2017].
 
 [^loandef]: https://www.kaggle.com/c/loan-default-prediction
 
@@ -69,7 +69,7 @@ It is not unusual for tabular datasets to be noisy.
 A proportion of the observations may have missing features and/or incorrect values.
 The continuous can be on vastly different scales, some containing outliers, and the categorical features can have high cardinality and lead to sparsity.
 
-The most important part of building models for tabular datasets and the part that can result in the largest performance gains are the processing and manipulation of the input features [@Rajkomar2018].
+The most important part of building models for tabular datasets and the part that can result in the largest performance gains is the processing and manipulation of the input features [@Rajkomar2018].
 This includes preprocessing, merging, customising, filtering and cleaning of the data.
 In a process called feature engineering one strives to create new features from the original features based on some domain knowledge of the data or otherwise, that makes it easier for the model to learn from interactions betwen features and estimate the target.
 This is a extremely laborious task with no clear recipe to follow and usually requires domain expertise to implement sucessfully.
@@ -85,40 +85,39 @@ By reviewing the most recent literature on the topic and doing empirical studies
 ## Challenges for Deep Learning on Tabular Data
 
 This thesis acts as a tutorial for applying Deep Learning to tabular data.
-We review the recent literature on general DL and more specifically applying DL to tabular data.
+We review the recent literature on DL in general and then zooming in on applying DL to tabular data.
 We have identified the major challenges of using DL approaches on tabular data and will review the literature in this context.
 These challenges are summarised below, posed as questions:
 
-- **How should input features be represented numerically?**: We have mentioned that tabular data consists of mixed feature types, a combination of categorical and continuous feautes. The question here relates to how these features should be processed and presented to the model during training.
+- **How should input features be represented numerically?**: We have mentioned that tabular data consists of mixed feature types, a combination of categorical and continuous features. The question here relates to how these features should be processed and presented to the model during training.
 - **How can we exploit feature interactions?**: Once we have found the optimal feature representation for all feature types, we will need a way to effectively learn the interactions between them and how they relate to the target. This a crucial part for effective ML models on tabular data.
-- **How can we be more sample efficient?**:  Tabular datasets are typically not as large as datasets in CV and NLP, and furthermore there is no general large dataset with universal properties that a model can learn from and transfer its knowledge. Thus a key challenge is being able to learn from less data.
+- **How can we be more sample efficient?**:  Tabular datasets are typically not as large as datasets in CV and NLP, and furthermore there is no general large dataset with universal properties that a model can learn from and transfer its knowledge. Thus, a key challenge is being able to learn from less data.
 - **How do we interpret the model decisions?**: The use of DL is often restricted by its perceived lack of interpretability. Therefore we need ways of explaining the model output in order for it to be useful in many applications.
 
 Clearly, there are plenty of considerations when it comes to using DL with tabular data. 
 The aim of this thesis is to find the best ways of overcoming these challenges, by giving a detailed review of the relevant literature and backing up the claims with empirical results.
-The work will help the reader understand the *status quo* of the field and what is required for DL to be as effective as in data domains such as CV and NLP.
+The work will help the reader understand the *status quo* of the field and what is required for DL to be as effective as in other data domains such as CV and NLP.
 
-Other objectives (still need to edit):
-+ Learn how the existing approaches can be tweaked or adapted to optimally fit to our data.
-+ Provide rigorous empirical evaluations of the selected existing approaches as well as the novel adaptions proposed in this thesis on the dataset, such that the conclusions made here can safely be used in future research on this dataset and possibly other tabular data problems.
-+ Design reproducible experiments for any researcher or person with an interest in the field to replicate the results and further build on the approaches.
-
+A large part of this work consists of comparing different techniques and algorithms on datasets that are relevant to us.
+Furthermore, we suggest ways of improving these techniques, which also needs comparision.
 Since theory and practice does not always go hand-in-hand, it is usually advantageous to complement a theoretical study with empirical results. 
-Another motivation for empirical study is that we regard the ability to implement an approach equally as important as understanding the theory behind it. 
+In addition, we regard the ability to implement an approach equally as important as understanding the theory behind it. 
 We characterise a good empirical experiment as one that is *rigorous* and *reproducible*. 
+
 Recently the field of DL has been criticised for the growing gap between the understanding of its techniques and its practical successes[^talk] where most of the recent focus was on the latter. 
 The speakers urged the deep learning community to be more rigorous in their experiments where, for them, the most important part of rigor is better empiricism, not more mathematical theories. 
-Better empiricism in classification may include for example practices such as using cross-validation to estimate the generalisation ability of a model and reporting standard errors. 
+Better empiricism in classification may include, for example, practices such as using cross-validation to estimate the generalisation ability of a model and reporting standard errors. 
 Empirical studies should be more than just trying to beat the benchmark and should also consist of simple experiments that aid in the understanding of how the techniques work. 
 
-[^talk]: How do I cite the talk given at NIPS2017 - https://www.youtube.com/watch?v=Qi1Yry33TQE
+[^talk]: Talk given at NIPS2017 - https://www.youtube.com/watch?v=Qi1Yry33TQE
 
-On the other hand, we want all our experiments to be as reproducible as possible, *i.e.* provide all the code, data and necessary documentation to reproduce the experiments that were done in this thesis[^git]. 
-This is often an overlooked feature of experiments, but is however crucial for transparent and accountable reporting and making your work useful for others to build upon.
+In addition, we want all our experiments to be as reproducible as possible, *i.e.* provide all the code, data and necessary documentation to reproduce the experiments that were done in this thesis[^git]. 
+This is often an overlooked feature of experiments, but is however crucial for transparent and accountable reporting and making your work useful for others to build on.
 
 [^git]: All of these are shared publicly at https://github.com/jandremarais/tabularLearner
 
-The next section covers fundamental concepts of Statistical Learning Theory.
+A more detailed summary of the thesis is outlined shortly.
+First we cover the fundamental concepts of Statistical Learning Theory.
 These concepts are referred to throughout the thesis and therefore it will be beneficial to be familiar with them.
 
 ## Overview of Statistical Learning Theory/Machine learning
@@ -223,7 +222,6 @@ Let $|\mathcal{G}|=K$ denote the number of discrete categories in the set $\math
 The simplest form of classification is known as binary classification and refers to scenarios where the input is associated with only one of two possible classes, *i.e.* $K=2$. 
 When $K>2$, the task is known as multiclass classification. 
 In multi-label classification an input may be associated with multiple classes (out of $K$ available classes), where the number of classes that each observation belongs to, is unknown.
-A thorough discussion of MLC methods is given in \Cref{chp:mlc}. 
 Here we start by introducing the two single label classification setups, *viz*. binary and multiclass classification.
 
 In multiclass classification, given the input values $\boldsymbol{X}$, we would like to accurately predict the output, $G$, which we denote by $\hat{G}$.
@@ -237,9 +235,11 @@ $$
 $$
 for $k=1,\dots, K$. Here $\hat{f}_{k}$ is an estimate of the true function, $f_{k}$, which is meant to capture the relationship between the inputs and output of class $k$. 
 As with the linear regression case described above, we can use a linear model $\hat{f}_{k}(\boldsymbol{X})=\hat{\boldsymbol{w}}_{k}^{T}\boldsymbol{X}$ to approximate the true function. 
-The linear model for classification divides the input space into a collection of regions labelled according to the classification, where the division is done by linear *decision boundaries* (see \autoref{fig:sgd} for an illustration). 
+The linear model for classification divides the input space into a collection of regions labelled according to the classification, where the division is done by linear *decision boundaries* (see \autoref{fig:lin_bound} for an illustration). 
 The decision boundary between classes $k$ and $l$ is the set of points for which $\hat{f}_{k}(\boldsymbol{x})=\hat{f}_{l}(\boldsymbol{x})$. 
 These set of points form an affine set or hyperplane in the input space.
+
+![Linear model on simple binary classification dataset.\label{fig:lin_bound}](figures/linear_boundary.pdf)
 
 After the weights are estimated from the data, an observation represented by $\boldsymbol{x}$ (including the unit element) can be classified as follows:
 
@@ -259,7 +259,7 @@ Through this transformation, the estimates of the posterior probabilities both s
 The above model is the well-known *logistic regression* model [@Hastie2009, p. 119]. 
 With this formulation there is no closed form solution for the weights. 
 Instead, the weight estimates may be searched for by maximising the log-likelihood function. 
-One way of doing this is by minimising the negative log-likelihood using gradient descent, which will be discussed in the following section.
+One way of doing this is by minimising the negative log-likelihood using gradient descent, which will be discussed in the next chapter.
 
 Finally in this section, note that any supervised learning problem can also be viewed as a function approximation problem. 
 Suppose we are trying to predict a variable $Y$ given an input vector $\boldsymbol{X}$, where we assume the true relationship between them to be given by
@@ -273,8 +273,8 @@ In the remainder of the thesis, we refer to $\hat{f}$ as the *model*, *classifie
 
 ## Outline
 
-This chapter should provide the reader with a sufficient background and context to work through the rest of the thesis.
-The outline for the rest of the thesis is described next.
+This chapter provided the context, motivations, objectives and theoretical backround for this thesis
+The outline for the rest of the thesis is given next.
 
 In \Cref{chp:nn} we cover the basics of NNs.
 The building blocks of NNs are discussed, introducing neurons, basic layers and how NNs are trained, including basic regularisation.
@@ -291,12 +291,12 @@ It mainly serves as a literature review of all the work done on DL for tabular d
 It is organised by the modelling challenges faced when working with DL and tabular data, investigating and comparing what other researchers have done to solve the problems.
 The core of the content is about finding the right representation for tabular data, through embeddings, and designing architectures that can efficiently learn feature interactions, like with attention models, possibly with the help of unsupervised pretraining.
 
-In \Cref{chp:exp} we emirically evaluate the claims made in the literature.
+In \Cref{chp:exp} we empirically evaluate the claims made in the literature.
 It acts as an ablation study to evaluate and compare various approaches to tackling the various challenges.
 Thus the main experiments are evaluating NNs at various samples sizes, the gains from doing unsupervised pretraining and using data augmentation, and comparing attention modules with classic fully-connected layers.
-The chapter also includes a section showing an example of how the resulting NNs can be interpreted using.
+The chapter also includes a section showing an example of how the resulting NNs can be interpreted using permutation importance and knowledge distillation.
 
-The thesis concludes with \Cref{chp:conc} which summarises the work that has been done, and highlights the main take-home points.
+The thesis concludes with \Cref{chp:conc} which summarises the work that was done, and highlights the main take-home points.
 Here we validate the if the objectives of the thesis has been achieved.
 The limitations of this study are discussed and promising futre research directions are identified.
 
