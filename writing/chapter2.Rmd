@@ -9,17 +9,17 @@ Each neuron can generate and receive signals.
 A received signal may be described as an input to a neuron, whereas a sent signal may be described as an output from that neuron.
 If two neurons are connected, it means that the output from the one neuron serves as input to the other.
 In a very simple model of the brain, one may argue that a neuron receives several signals, which it weighs and combines, and if the combined value of the inputs is higher than a certain threshold, the neuron sends a output signal to the next neuron.
-An artifical neural network tries to mimic this model of the human brain: it is set up to consist of several layers of connected units (or neurons).
+\autoref{fig:neurons} (a) provides a schematic of a biological neuron.
+
+An artifical neural network tries to mimic this model of the human brain - it is set up to consist of several layers of connected units (or neurons).
 With exception of units in the first and final layers, each unit outputs a weighted combination of its inputs, combined with a simple non-linear transformation.
 In each layer of the neural network, the input is passed through each of the neurons. 
 In turn, their output is passed to the next layer.
 
 The transformation at each neuron is controlled by a set of parameters, also known as weights. 
-Training a neural network involves 
-tuning these weights in order to obtain some desired output. 
+Training a neural network involves tuning these weights in order to obtain some desired output. 
 During training, the neural network receives as input a set of training data. 
-The neural network weights are then learned in such a way that, when given a new set of inputs, the output predicted by the neural network 
-matches the corresponding response of interest as closely as possible.
+The neural network weights are then learned in such a way that, when given a new set of inputs, the output predicted by the neural network matches the corresponding response of interest as closely as possible.
 The process of using the training data to tweak the weights is done by means of an optimisation algorithm called Stochastic Gradient Descent (SGD).
 
 Although recently there has been plenty of excitement around neural networks, it is well known that they were invented many years ago.
@@ -29,53 +29,65 @@ Only recently a series of breakthroughs allowed neural networks to be more effec
 
 The aim of this chapter is to provide an overview of neural networks, emphasising the basic structure (\Sref{sec:structure}) and the way in which they are trained (\Sref{sec:training}).
 This is done with a view to discuss modern neural network structures and training policies in \Cref{chp:dl}, which in turn will help us shed light on Deep Learning for tabular data.
-This chaper includes a section on representation and manifold learning in an attempt to understand what a NN is actually doing.
-Finaly, the chapter concludes with an example implementation of a vanilla NN trained on tabular data.
+This chaper includes a section on representation and manifold learning (\Sref{sec:rep}) in an attempt to understand what a NN is actually doing.
+Finaly, the chapter concludes with an example implementation of a vanilla NN trained on tabular data (\Sref{sec:vanilla_example}).
 
 ## The Structure of a Neural Network \label{sec:structure}
 
-Recall, a NN processes an input by sending it through a series of layers, each applying some transformation to its input, to eventually produce an output and each layers consists of smaller computational units, called neurons.
-To understand and formulate the NN structure, we will start by describing the operation inside a single neuron and then gradually put the pieces together to form layers and then a complete NN.
-Suppose we want a function that estimates a taxi fare given the distance travelled, duration of the trip and number of passengers.
-A single neuron can act as such a function by taking a weighted average of these three inputs to produce an estimate of the taxi fare.
-\autoref{fig:neuron} is a graphical representation of this function.
+In basic terms, a neural network processes an input $boldsymbol{x}$ by sending it through a series of layers. 
+The neurons in each layer apply some transformation to their inputs, resulting in a set of outputs which are again passed on to the next layer of neurons. 
+Eventually, the final layer produces the neural network output. 
+In this section we provide more detail regarding the neural network structure. 
+We start with a description of the operations inside each neuron, and follow with a discussion of the way in which the neurons may be connected in layers in order to form a complete neural network structure.
+Our discussion is based upon a simple regression example.
+
+Suppose we are in pursuit of a function which is able to estimate some continuous target, $y$, given a $p$-dimensional input $\boldsymbol{x}$, *e.g.* estimating the taxi fare from features such as distance travelled, time elapsed and number of passengers.
+A single neuron may act as such a function.
+It models $y$ by computing a weighted average of the input features.
+This operation is illustrated in \autoref{fig:neurons} (b).
+
+```{r, fig.cap="Comparison of a biological (a) and an artificial (b) neuron[^imcred].\\label{fig:neurons}"}
+# library(png)
+library(jpeg)
+library(grid)
+library(gridExtra)
+img1 <- rasterGrob(as.raster(readJPEG("figures/biological_neuron.jpg")), interpolate = FALSE)
+img2 <- rasterGrob(as.raster(readJPEG("figures/single_neuron.jpg")), interpolate = FALSE)
+t1 <- textGrob('(a)')
+t2 <- textGrob('(b)')
+grid.arrange(img1, img2, t1, t2, ncol = 2, heights=9:1)
+```
+
+[^imcred]: Image credit: https://www.jeremyjordan.me/intro-to-neural-networks/
+
 In equation form, this function can be written as:
 $$
-w_{1}\cdot \text{distance} + w_{2}\cdot\text{time}+w_{3}\cdot\text{passengers}+b=\text{fare},
+w_{1}\cdot x_{1} + w_{2}\cdot x_{2}+ \dots + w_{p}\cdot x_{p}+b=y,
 $$
-where $w_{i}$, $i=\{1,2,3\}$, are the weights applied to each of the inputs and $b$ a constant added to the equation, better known as the bias term in machine learning.
+where $\{w_{k}\}_{k=1}^{p}$, are the weights applied to each of the inputs $\{x_{k}\}_{k=1}^{p}$ and $b$ the constant bias term.
 Clearly, this equation is simply the very common linear model and thus also can be written as:
 $$
-\boldsymbol{x}^{\intercal}\boldsymbol{w} + b=z,
+\boldsymbol{x}^{\intercal}\boldsymbol{w} + b=y,
 $$
-where $\boldsymbol{x}=[\text{distance}\quad\text{time}\quad\text{passengers}]^{\intercal}$ is the input, $\boldsymbol{w}=[w_{1}\quad w_{2}\quad w_{3}]^{\intercal}$ the weights and $z$ the output, *i.e.* the taxi fare. For convenience, we sometimes compress the above equation to $\boldsymbol{x}^{\intercal}\boldsymbol{w}=z$, where $\boldsymbol{x}$ includes the bias term and the weight vector $\boldsymbol{w}$ a unit element, *i.e.* $\boldsymbol{x}=[b\quad \text{distance}\quad\text{time}\quad\text{passengers}]^{\intercal}$ is the input, $\boldsymbol{w}=[1\quad w_{1}\quad w_{2}\quad w_{3}]^{\intercal}$.
+where $\boldsymbol{x}=[x_{1}\quad x_{2}\quad \dots\quad x_{p}]^{\intercal}$ is the input, $\boldsymbol{w}=[w_{1}\quad w_{2}\quad \dots\quad w_{p}]^{\intercal}$ the weights and $y$ the output. 
+We may compress the above equation to $\boldsymbol{x}^{\intercal}\boldsymbol{w}=y$, where $\boldsymbol{x}$ includes the bias term and the weight vector $\boldsymbol{w}$ a unit element, *i.e.* $\boldsymbol{x}=[1\quad x_{1}\quad\dots\quad\ x_{p}]^{\intercal}$ is the input, $\boldsymbol{w}=[b\quad w_{1}\quad \dots\quad w_{p}]^{\intercal}$.
 
-<!-- ![\label{fig:neuron}]() -->
+The weights convey the importance of each input features in predicting the target.
+The larger $|w_{k}|$ is, the greater is the contribution of $x_{k}$ towards the output.
+If $w_{k}=0$, $x_{k}$ has no influence on the target.
+However the weights are unknown therefore we need to estimate them.
 
-The weights determine how much each of the inputs contribute to the fare.
-For example, the distance (in km's) may be the most important driver of the taxi fare but the duration of the trip (in minutes) has little influence and the number passemgers has no effect.
-Then the weights may look something like this:
-$$
-w_{1}=10, \quad w_{2}=0.5 \quad \text{and} \quad w_{3}=0.
-$$
-But we do not know what these weights are before hand and therefore need to estimate them.
-With the classical linear model, these weights (or coefficients) are estimated using the ordinary least squares (OLS) method.
-Since a NN consists of many inter-conncected neurons, the OLS methods will not suffice.
+In linear regression this is done by means of the method of ordinary least squares.
+Since a neural network consists of many inter-conncected neurons, an alternative estimation procedure is required. 
 This is the topic of the next section.
 
-Suppose a single neuron (or a linear model if you like) is not flexible enough to model the taxi fare given the distance, time and number of passengers.
-Now we decide to add another neuron.
-This neuron also accepts the same inputs as the first, but uses a different set of weights to estimate the fare.
-Now we have two neurons, each producing a different output:
-$$
-\boldsymbol{x}^{\intercal}\boldsymbol{w}_{1} = z_{1}\quad \text{and}\quad \boldsymbol{x}^{\intercal}\boldsymbol{w}_{2} = z_{2}.
-$$
-So how do we get a final estimate of the fare from these two initial estimate?
-We feed it to another neuron of course, *i.e.*
-$$
-\boldsymbol{z}^{\intercal}\boldsymbol{w}_{3}=y
-$$
-See \autoref{fig:simple_nn} for a graphical representation.
+Often a linear model will be too rigid to model a certain response of interest. 
+In order to fit a more flexible model, we may add more neurons.
+Consider the use of two neurons, where the second neuron accepts the same input as the first neuron, but uses a different set of weights.
+Thus we have two different outputs produced by the two neurons, *i.e.*. $z_{1}=\boldsymbol{x}^{\intercal}\boldsymbol{w}_{1}$ and $z_{2}= \boldsymbol{x}^{\intercal}\boldsymbol{w}_{2}$.
+In order to produce a final estimate from the initial two estimates, *viz.* $z_{1}$ and $z_{2}$, a third neuron is imported. 
+That is, $y=\boldsymbol{z}^{\intercal}\boldsymbol{w}_{3}$, where $\boldsymbol{z}=[z_{1}\quad z_{2}]^{\intercal}$
+(See \autoref{fig:simple_nn}).
 
 <!-- ![\label{fig:simple_nn}]() -->
 
@@ -439,7 +451,7 @@ Now we have covered all of the basics for simple (1-layer) neural networks.
 + lead into modern learning policies
 + lead into what it is learning
 
-## Representation Learning
+## Representation Learning \label{sec:rep}
 
 We are now familiar with the mathematical operations of basic layers, how they are connected and how their weights are tweaked to minimise a loss function.
 In this section we will discuss why this works and what the NN is actually doing to model the data.
@@ -492,7 +504,7 @@ In the following chapters we explore the approaches available to find optimal re
 
 [^colah]: http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/
 
-## Vanilla MLP on Tabular Data
+## Vanilla MLP on Tabular Data \label{sec:vanilla_example}
 
 In this chapter we have discussed the basics of NNs and how to train them.
 To compliment this discussion we will run through a relatively simple but real-world classification task on tabular data here.
