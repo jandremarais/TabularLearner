@@ -67,15 +67,15 @@ $$
 where $\{w_{k}\}_{k=1}^{p}$, are the weights applied to each of the inputs $\{x_{k}\}_{k=1}^{p}$ and $b$ the constant bias term.
 Clearly, this equation is simply the very common linear model and thus also can be written as:
 $$
-\boldsymbol{x}^{\intercal}\boldsymbol{w} + b=y,
+\boldsymbol{w}^{\intercal}\boldsymbol{x} + b=y,
 $$
 where $\boldsymbol{x}=[x_{1}\quad x_{2}\quad \dots\quad x_{p}]^{\intercal}$ is the input, $\boldsymbol{w}=[w_{1}\quad w_{2}\quad \dots\quad w_{p}]^{\intercal}$ the weights and $y$ the output. 
-We may compress the above equation to $\boldsymbol{x}^{\intercal}\boldsymbol{w}=y$, where $\boldsymbol{x}$ includes the bias term and the weight vector $\boldsymbol{w}$ a unit element, *i.e.* $\boldsymbol{x}=[1\quad x_{1}\quad\dots\quad\ x_{p}]^{\intercal}$ is the input, $\boldsymbol{w}=[b\quad w_{1}\quad \dots\quad w_{p}]^{\intercal}$.
+We may compress the above equation to $\boldsymbol{w}^{\intercal}\boldsymbol{x}=y$, where $\boldsymbol{x}$ includes the bias term and the weight vector $\boldsymbol{w}$ a unit element, *i.e.* $\boldsymbol{x}=[1\quad x_{1}\quad\dots\quad\ x_{p}]^{\intercal}$ is the input, $\boldsymbol{w}=[b\quad w_{1}\quad \dots\quad w_{p}]^{\intercal}$.
 
 The weights convey the importance of each input features in predicting the target.
 The larger $|w_{k}|$ is, the greater is the contribution of $x_{k}$ towards the output.
 If $w_{k}=0$, $x_{k}$ has no influence on the target.
-However the weights are unknown therefore we need to estimate them.
+However the weights are unknown and therefore we need to estimate them.
 
 In linear regression this is done by means of the method of ordinary least squares.
 Since a neural network consists of many inter-conncected neurons, an alternative estimation procedure is required. 
@@ -84,47 +84,45 @@ This is the topic of the next section.
 Often a linear model will be too rigid to model a certain response of interest. 
 In order to fit a more flexible model, we may add more neurons.
 Consider the use of two neurons, where the second neuron accepts the same input as the first neuron, but uses a different set of weights.
-Thus we have two different outputs produced by the two neurons, *i.e.*. $z_{1}=\boldsymbol{x}^{\intercal}\boldsymbol{w}_{1}$ and $z_{2}= \boldsymbol{x}^{\intercal}\boldsymbol{w}_{2}$.
-In order to produce a final estimate from the initial two estimates, *viz.* $z_{1}$ and $z_{2}$, a third neuron is imported. 
-That is, $y=\boldsymbol{z}^{\intercal}\boldsymbol{w}_{3}$, where $\boldsymbol{z}=[z_{1}\quad z_{2}]^{\intercal}$
-(See \autoref{fig:simple_nn}).
+Thus we have two different outputs produced by the two neurons, *i.e.*. $z_{1}=\boldsymbol{w}_{1}^{\intercal}\boldsymbol{x}$ and $z_{2}= \boldsymbol{w}_{2}^{\intercal}\boldsymbol{x}$.
+In order to produce a final estimate from the initial two estimates, *viz.* $z_{1}$ and $z_{2}$, they are passed to a third neuron.
+That is, $y=\boldsymbol{w}_{3}^{\intercal}\boldsymbol{z}$, where $\boldsymbol{z}=[z_{1}\quad z_{2}]^{\intercal}$.
+\autoref{fig:simple_nn} illustrates this pipepline in network form.
 
-<!-- ![\label{fig:simple_nn}]() -->
+```{r, fig.cap="A simple neural network accepting $p$-sized inputs, with one hidden layer which has two neurons.\\label{fig:simple_nn}", out.width="200px", align='center'}
+knitr::include_graphics('figures/simple_nn.png')
+```
 
-The first two neurons both took in the distance, time and passengers as input and produced a single output.
-These operations can be expressed as a single equation, *i.e.*
+The first two neurons each received all $p$ inputs and each produced a single output. 
+These two outputs were received by the third neuron, and combined in order to produce the final output, *viz.* $y$. 
+The operations performed by the first two neurons may be expressed as $\boldsymbol{z}=W\boldsymbol{x}^{\intercal}$, where
 $$
-\boldsymbol{x}^{\intercal}W=\boldsymbol{z}^{\intercal},
+ W=\begin{bmatrix}
+ \boldsymbol{w}_{1}^{\intercal} \\
+ \boldsymbol{w}_{2}^{\intercal}
+ \end{bmatrix}=
+ \begin{bmatrix}
+ w_{10} & w_{11} & w_{12} & \dots & w_{1p}\\
+ w_{20} & w_{21} & w_{22} & \dots & w_{2p}\\
+ \end{bmatrix} \quad \text{and}\quad \boldsymbol{z}=[z_{1}\quad z_{2}]^{\intercal}.
 $$
-where
-$$
-W=\begin{bmatrix}
-\boldsymbol{w}_{1}&\boldsymbol{w}_{2}
-\end{bmatrix}=
-\begin{bmatrix}
-1 & 1\\
-w_{11}&w_{12}\\
-w_{21}&w_{22}\\
-w_{33}&w_{32}\\
-\end{bmatrix} \quad \text{and}\quad \boldsymbol{z}=[z_{1}\quad z_{2}]^{\intercal}.
-$$
+
 The collection of these two neurons is what is called a layer.
-Since our third neuron (which is also a layer but with a single neuron) takes the output of this layer as input, it is possible to express the complete input-output relationship in one equation, *i.e.*
+Since our third neuron (which is also a layer but with a single neuron) receives the output of this layer as input, it is possible to express the complete input-output relationship in one equation, *i.e.*
 $$
-\boldsymbol{z}^{\intercal}\boldsymbol{w}_{3}=\boldsymbol{x}^{\intercal}W\boldsymbol{w}_{3}=y.
+y=\boldsymbol{w}_{3}^{\intercal}\boldsymbol{z}=\boldsymbol{w}_{3}^{\intercal}W\boldsymbol{x}.
 $$
-Note here that the weights from the first layer, $W$, and the third neuron, $\boldsymbol{w}_{3}$, can collapse into a single vector $\boldsymbol{w}$, effectively reducing all of the neuron operations back into a single neuron representation and thus is clearly not a good way to model a network
+Note here that the weights from the first layer, $W$, and the third neuron, $\boldsymbol{w}_{3}$, can be collapsed into a single vector $\boldsymbol{w}$, effectively reducing all of the neuron operations back into a single neuron representation and thus the fitted model is still linear.
+In order to fit a non-linear model, a non-linear transformation function is applied to the output of each layer. 
+This function is called an *activation function*. 
 
-However, a NN has a way to prevent this collapsing from happening and to allow for non-linear relationships between the inputs and outputs.
-It does this through the use of an activation function, a simple non-linear transformation.
-An activation is applied after each linear layer.
-So now the NN equation can be represented as:
+Subsequently the neural network equation can be written as
 $$
-a_{2}\left(a_{1}(\boldsymbol{x}^{\intercal}W)\boldsymbol{w}_{3}\right)=y,
+y=a_{2}\left(\boldsymbol{w}_{3}^{\intercal}a_{1}(W\boldsymbol{x})\right),
 $$
-Where $a_{1}$ is the activation function after the first linear layer and $a_{2}$ the activation after the final layer.
-
-By introducing the non-linear activations, it greatly enlarges the class of functions that can be approximated by the network.
+where $a_{1}$ denotes the activation function applied after the first (linear) layer, and where $a_{2}$ is the the activation function applied after the final layer.
+                           
+The introduction of non-linear activation functions serves to enlarge the class of functions that can be approximated by the network.
 
 **TBC**
 
