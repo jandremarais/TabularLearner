@@ -34,6 +34,8 @@ Finaly, the chapter concludes with an example implementation of a vanilla NN tra
 
 ## The Structure of a Neural Network \label{sec:structure}
 
+### Neurons and Layers
+
 In basic terms, a neural network processes an input $boldsymbol{x}$ by sending it through a series of layers. 
 The neurons in each layer apply some transformation to their inputs, resulting in a set of outputs which are again passed on to the next layer of neurons. 
 Eventually, the final layer produces the neural network output. 
@@ -124,7 +126,7 @@ where $a_{1}$ denotes the activation function applied after the first (linear) l
                            
 The introduction of non-linear activation functions serves to enlarge the class of functions that can be approximated by the network.
 
-**TBC**
+### Activation Functions
 
 The activation function, $a(\cdot)$, was usually chosen to be the sigmoid function, $a(v)=\frac{1}{1+e^{-v}}$
 
@@ -153,6 +155,11 @@ a(x)=x\cdot\sigma(\beta x),
 $$
 where $\beta$ is a constant (can also be a trainable parameter), gave the best empirical results. 
 It consistently matched or outperformed ReLU's on deep networks applied to the domains of image classification and machine translation.
+\autoref{fig:activation_functions} shows how the activation functions introduces non-linearity.
+
+![Plots of various activation functions.\label{fig:activation_functions}](figures/activation_functions.pdf)
+
+### Size of the Network
 
 The number of units in the hidden layer, $M$, is also a value to be decided on.
 Too few units will not allow the network enough flexibility to model complex relationships and too many takes longer to train and increases the chance of overfitting. 
@@ -164,7 +171,6 @@ The following section discusse the popular activation functions used in DNNs.
 
 The units in $\boldsymbol{Z}$ are called hidden since they are not directly observed. The aim of this transformation is to derive features, $\boldsymbol{Z}$, so that the classes become linearly separable in the derived feature space [@Lecun2015].
 Many more of these hidden layers (combination of linear and non-linear transformations) can be used to derive features to input into the final classifier.
-This is what we refer to as deep neural networks (DNNs) or deep learning methods.
 
 + comment on number and size of layers
 + lead into modern architectures

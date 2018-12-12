@@ -389,6 +389,30 @@ But it still might produce combinations of features that are not actually possib
 
 All of these methods have hyperparameters that needs to be set. I haven't gone into detail as I still need to decide what is relevant to this thesis.
 
+```{r}
+df = read_csv('../data/adult/adult_sample.csv')
+new_row <- df[4,]
+new_row[1] <- df[1,1]
+new_row[5] <- df[5,5]
+df <- rbind(df, new_row)
+
+df[1,1] <- cell_spec(df[1,1], color='blue')
+df[5,5] <- cell_spec(df[5,5], color='green')
+df[7,1] <- cell_spec(df[7,1], color='blue')
+df[7,5] <- cell_spec(df[7,5], color='green')
+df[7,2] <- cell_spec(df[7,2], color='red')
+df[7,3] <- cell_spec(df[7,3], color='red')
+df[7,4] <- cell_spec(df[7,4], color='red')
+df[7,6] <- cell_spec(df[7,6], color='red')
+
+kable(df, 'latex', caption = 'Swap Noise Example', booktabs=TRUE, escape = FALSE) %>% 
+  kable_styling(position = 'center') %>% 
+  row_spec(4, color='red') %>% 
+  group_rows('Original Dataset', 1,6) %>% 
+  group_rows('Sample with swap noise', 7,7)
+```
+
+
 **Mixup**. 
 The way mixup creates artifical samples is by the following original formulation:
 $$

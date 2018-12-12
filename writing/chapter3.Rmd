@@ -52,9 +52,15 @@ At test time, no units are dropped out and their output is multiplied by $1-p$ (
 
 + in the original paper they also compare the technique to ensebmling
 
+See \autoref{fig:dropout} for an illustration of how dropout effects the connections between neurons.
+
+![The effect dropout has on connections between neurons.\label{fig:dropout}](figures/dropout.png)
+
 Interesetingly, [@haldar2018] found that dropout was not effective in their application.
 They pinned it down to dropout producing invalid input scenarious that distracted the model.
 Therefore they opted for hand crafted noise shapes taking into account the distribution of the relevant feature. 
+
+This shows that dropout does break up co-adaptations, which is probably the main reason why it leads to lower generalization errors.
 
 ### Data Augmentation
 

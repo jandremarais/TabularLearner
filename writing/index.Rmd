@@ -43,8 +43,10 @@ header-includes:
 knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo=FALSE)
 library(readr)
 library(xtable)
+library(kableExtra)
 options(xtable.timestamp = "")
 options(xtable.comment = FALSE)
+options(knitr.table.format = "latex")
 ```
 
 ```{r child = 'chapter1.Rmd'}
