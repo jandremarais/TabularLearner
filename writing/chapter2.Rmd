@@ -155,7 +155,10 @@ The local derivatives of the activation functions discussed here are plotted in 
 This will become more obvious after \Cref{sec:training}.
 
 To date, the most popular choice in activation function is the *Rectified Linear Units* (ReLU) non-linearity.
-It is defined as $\text{relu}(x)=\begin{cases}x\quad \text{if }x>0\\ 0\quad\text{otherwise}\end{cases}$. 
+It is defined as:
+$$
+\text{relu}(x)=\begin{cases}x\quad \text{if }x>0\\ 0\quad\text{otherwise}\end{cases}.
+$$ 
 Again, its shape and derivative is plotted in \autoref{fig:activation_functions} (a) and (b), respectively.
 The ReLU limits the gradient vanishing problem as its derivative is always 1 when $x$ is positive.
 This results in significantly shorter steps to convergence, as found by the authors in [@Krizhevsky2012].
@@ -170,28 +173,42 @@ The choice in network depth and layer width is the topic of the next section.
 
 ### Size of the Network
 
-The number of units in the hidden layer, $M$, is also a value to be decided on.
-Too few units will not allow the network enough flexibility to model complex relationships and too many takes longer to train and increases the chance of overfitting. 
-$M$ is mostly chosen by experimentation. 
-A good starting point would be to choose a large value and training the network with regularisation (discussed shortly).
+The network depth and the width of its hidden layers (*i.e.* the size of the network) are hyperparameters of the model.
+They control the capacity or the flexibility of a neural network; referring to its ability to model complex functions.
+The bigger the network, the more flexible the model is.
+Like with most such parameters, increasing the model size is usually benefical up to a certain point, after which its test performance starts to degrade (overfitting).
+In addition, more layers and more neurons adds to the time taken and hardware required to train the neural network.
 
-The difference between the above discussed neural networks and current state-of-the-art deep learning methods, is the number and type of hidden layers. 
-The following section discusse the popular activation functions used in DNNs.
+Thus the challenge is to find a network size that is large enough to capture all the complexities in the data, but small enough to avoid overfitting.
+Currently the best way of finding the optimal size of a network for a given problem is by experimentation.
+Note, that this is true for many of the compoments of neural networks and deep learning.
 
-The units in $\boldsymbol{Z}$ are called hidden since they are not directly observed. The aim of this transformation is to derive features, $\boldsymbol{Z}$, so that the classes become linearly separable in the derived feature space [@Lecun2015].
-Many more of these hidden layers (combination of linear and non-linear transformations) can be used to derive features to input into the final classifier.
+Theoretically, according to the universal approximation theorem [@Cybenko1989], a neural network with a single hidden layer and a finite number of neurons can approximate any continuous function.
+Which begs the question as to why we need more hidden layers.
+Even though a neural network can represent any function, it does not mean that the available learning algorithms can find these optimal weights [@Ba2013].
+It may also be that the number of neurons needed for a single hidden layer network to represent a specific function is infeasibly large.
+By choosing deeper networks we are assuming that the function we are trying to learn is composed of several simpler functions.
+Building in this prior proves to useful empirically [@Goodfellow2016, pp.197-198], especially for tasks of a hierarchical nature like in computer vision.
 
-+ comment on number and size of layers
-+ lead into modern architectures
-+ lead into parameter optimisation
+In our experiments we will see what effect the layer width and network depth have on the generalisation performance on tabular data.
+The networks used for tabular data learning problems are typically much shallower than those used for say computer vision and NLP.
+We investigate why this is the case.
+Later in this chapter we view this problem from a representation learning perspective which will also give us some insight on the matter.
+But first, in the next section, we discuss the process of training a neural network.
 
 ## Training a Neural Network \label{sec:training}
 
 ### Optimisation \label{sec:optimisation}
 
-As mentioned before, fitting a linear regression model can be reduced to finding the optimal weights to minimise the MSE function (with or without weight decay). In fact, typically model training procedures can be described as the search for its internal parameters that minimises or maximises some *objective function*. Therefore statistical learning and optimisation are closely related. Optimisation refers to the task of either minimising or maximising some function $J(x)$ by altering $x$. The function we want to optimise is called the objective function. When we are minimising the objective function, we may also refer to the objective function as the *cost* or *loss function*. These terms will be used interchangeably throughout the remainder of the thesis.
+As mentioned before, fitting a linear regression model can be reduced to finding the optimal weights to minimise the MSE function (with or without weight decay). 
+In fact, typically model training procedures can be described as the search for its internal parameters that minimises or maximises some *objective function*. 
+Therefore statistical learning and optimisation are closely related. 
+Optimisation refers to the task of either minimising or maximising some function $J(x)$ by altering $x$. 
+The function we want to optimise is called the objective function. When we are minimising the objective function, we may also refer to the objective function as the *cost* or *loss function*. 
+These terms will be used interchangeably throughout the remainder of the thesis.
 
-As mentioned in the previous section, parameter estimation (or optimisation) of a linear (or logistic regression) model is usually done using OLS or maximum likelihood estimation (MLE). In this section, however, we discuss an alternative parameter estimation method which is also relevant for the optimisation of neural networks.
+As mentioned in the previous section, parameter estimation (or optimisation) of a linear (or logistic regression) model is usually done using OLS or maximum likelihood estimation (MLE). 
+In this section, however, we discuss an alternative parameter estimation method which is also relevant for the optimisation of neural networks.
 
 Consider the MSE loss function:
 
