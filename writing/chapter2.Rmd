@@ -124,40 +124,49 @@ y=a_{2}\left(\boldsymbol{w}_{3}^{\intercal}a_{1}(W\boldsymbol{x})\right),
 $$
 where $a_{1}$ denotes the activation function applied after the first (linear) layer, and where $a_{2}$ is the the activation function applied after the final layer.
                            
-The introduction of non-linear activation functions serves to enlarge the class of functions that can be approximated by the network.
+The introduction of non-linear activation functions serves to enlarge the class of functions that can be approximated by the network *i.e.* making it possible for the network to learn complex, non-linear relationships between the inputs and the outputs.
+Next, we briefly discuss the various activation functions.
 
 ### Activation Functions
 
-The activation function, $a(\cdot)$, was usually chosen to be the sigmoid function, $a(v)=\frac{1}{1+e^{-v}}$
+There are plenty of activation functions to choose from, since any simple non-linear and differentiable function can be used. 
+Originally, the *sigmoid* activation function was a common choice [@Rumelhart1988].
+It can be expressed as $\text{sigmoid}(x)=\frac{1}{1+e^{-x}}$.
+The shape of the sigmoid activation can be seen in \autoref{fig:activation_functions} (a).
+It has an S-shape and its values range between 0 and 1.
+The reason it fell out of favour is because of issues related to the gradient based optimisation procedure of neural networks (which we discuss in more detail in \Cref{sec:training}).
+One of the issues is that the values of sigmoid activations are not centered around zero.
+This may cause the gradient weight updates to veer too far in different directions.
 
-In the previous section, we introduced activation functions, which are simple non-linear functions of its input. 
-These are usually applied after a fully connected layer (linear transformation) and are crucial for the flexibility of a deep neural network. 
-We also mentioned that the sigmoid activation, which was originally the go-to activation, is currently not the most popular choice.
-Another activation function originally thought to work well was, $a(x)=\tanh(x)$. 
-However, by far the most common activation function used at the time of writing is the Rectified Linear Units (ReLU) non-linearity.
-Its definition is much simpler than its name and is defined as $a(x)=\max(0,x)$. 
-It was introduced in [@Krizhevsky2012] and they showed that using ReLUs in their CNNs reduced the number of training iterations to reach the same point by a factor of 6 compared to using $\tan(x)$.
-The ReLU limits the gradient vanishing problem as its derivative is always one when x is positive.
-Gradient vanishing problem?
 
-There are a plethora of proposals for activation functions, since any simple non-linear (differentiable?) function can be used. 
-Some of the recent most popular choices are exponential linear units (ELUs) [@Clevert2015] and scaled exponential linear units (SELUs) [@Klambauer2017]. 
-The choice of activation function usually influences the convergence time and some might protect the training procedure from overfitting in some cases. 
-The different activation functions can be experimented with, however it would be sufficient in most cases to use ReLUs. 
-The other mentioned proposals have inconsistent gains over ReLUs and therefore it remains the standard choice.
+```{r, fig.cap="Plots of various activation functions (a) and their local derivatives (b).\\label{fig:activation_functions}", fig.subcap=c('',''), out.width='50%', fig.show='hold'}
+knitr::include_graphics(c('figures/activation_functions.pdf', 'figures/activation_functions_derivative.pdf'))
+```
 
-However, very recently [@Ramachandran2017] used automated search techniques to discover novel activation functions. 
-The exhaustive and reinforcement learning based searched identified a few promising novel activation functions on which the authors then did further empirical evaluations. 
-They found that the so-called *Swish* activation function,
 
-$$
-a(x)=x\cdot\sigma(\beta x),
-$$
-where $\beta$ is a constant (can also be a trainable parameter), gave the best empirical results. 
-It consistently matched or outperformed ReLU's on deep networks applied to the domains of image classification and machine translation.
-\autoref{fig:activation_functions} shows how the activation functions introduces non-linearity.
+The hyperbolic tangent or the *tanh* activation function, on the other hand, returns outputs centered around zero.
+It is expressed as $\text{tanh}(x)=\frac{e^{x}-e^{-x}}{e^{x}+e^{-x}}$ and its shape can be seen in \autoref{fig:activation_functions} (a).
+But the problem with both the sigmoid and tanh activation functions is that they can cause the gradients to saturate during training.
+By observing the tails of the sigmoid and tanh functions, it is clear that the gradient tends to zero as $|x|\to\infty$.
+This can cause the weight updates to be very close to zero and thus resulting in the network getting stuck at a certain point in the parameter space.
+Furthermore, the maximum gradient of the sigmoid activation function is 0.25 (at $x=0.5$), and because of the nature of the chain rule this causes the lower layers to train much slower than the higher layers.
+The tanh activation function typically have larger derivatives than the sigmoid and thus it is not as susceptible to this vanishing gradient problem, however, it is still not immune to it.
+The local derivatives of the activation functions discussed here are plotted in \autoref{fig:activation_functions} (b).
+This will become more obvious after \Cref{sec:training}.
 
-![Plots of various activation functions.\label{fig:activation_functions}](figures/activation_functions.pdf)
+To date, the most popular choice in activation function is the *Rectified Linear Units* (ReLU) non-linearity.
+It is defined as $\text{relu}(x)=\begin{cases}x\quad \text{if }x>0\\ 0\quad\text{otherwise}\end{cases}$. 
+Again, its shape and derivative is plotted in \autoref{fig:activation_functions} (a) and (b), respectively.
+The ReLU limits the gradient vanishing problem as its derivative is always 1 when $x$ is positive.
+This results in significantly shorter steps to convergence, as found by the authors in [@Krizhevsky2012].
+However, ReLUs may suffer from the "dead ReLU" problem, which is, if a ReLU neuron gets clamped to zero, then its weights will get zero gradient and may remain permanently "dead" during training.
+This sparsity of the activations is what some believe is the reason for the effectivenss of ReLUs [@Sun2014].
+If dead activations wants to be avoided, alternative activations functions are PReLUs [@He2015] and Leaky ReLUs [@Maas2013], but they fall out of the scope of this work.
+
+Typically, choosing the right activation function for a specific task comes down to trial and error, however, in most cases it would be sufficient to use ReLUs. 
+In our experiments we will show how the different activation functions perform on tabular data and compare it to the *Scaled Exponential Linear Units* (SELUs) [@Klambauer2017] activation, which is supposed to allow us to more effectively train deeper neural networks.
+The neural network depth refers to its number of hidden layers, whereas the width of a layer refers to the number of neurons it consists of.
+The choice in network depth and layer width is the topic of the next section.
 
 ### Size of the Network
 
@@ -431,6 +440,8 @@ One possible strategy for effective training is to decrease the learning rate ev
 
 Recently, in (https://arxiv.org/abs/1711.00489) (no bibtex entry), the authors found that, instead of learning rate decay, one can alternatively increase the batch size during training. They found that this method reaches equivalent test acccuracies compared to learning rate decay after the same amount of epochs. 
 But their method requires fewer parameter updates.
+
+### Weight initialisation
 
 ### Basic Regularisation
 

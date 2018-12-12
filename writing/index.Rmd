@@ -37,6 +37,7 @@ loa: loa.Rmd
 header-includes:
 - \usepackage{tikz}
 - \usetikzlibrary{arrows,shapes,positioning,shadows,trees}
+- \usepackage{subfig}
 ---
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
