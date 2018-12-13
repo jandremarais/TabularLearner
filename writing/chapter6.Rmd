@@ -3,7 +3,11 @@
 + What was done in the thesis?
 + Is Deep Learning useful for tabular data? 
 + If it is, when?
-+ Where should future work on the subject focus on?
 
+## Promising Future Directions
 
+- Where should future work on the subject focus on?
+
+Variational autoencoders for pretraining.
+Generative Adversarial Network for data augmentation.
 

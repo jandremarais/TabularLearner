@@ -200,18 +200,18 @@ But first, in the next section, we discuss the process of training a neural netw
 
 ### Optimisation \label{sec:optimisation}
 
-As mentioned before, fitting a linear regression model can be reduced to finding the optimal weights to minimise the MSE function (with or without weight decay). 
+As mentioned before, fitting a linear regression model can be reduced to finding the optimal weights to minimise the MSE function.
 In fact, typically model training procedures can be described as the search for its internal parameters that minimises or maximises some *objective function*. 
 Therefore statistical learning and optimisation are closely related. 
 Optimisation refers to the task of either minimising or maximising some function $J(x)$ by altering $x$. 
-The function we want to optimise is called the objective function. When we are minimising the objective function, we may also refer to the objective function as the *cost* or *loss function*. 
-These terms will be used interchangeably throughout the remainder of the thesis.
+The function we want to optimise is called the objective function. 
+When we are minimising the objective function, we may also refer to the objective function as the *cost* or *loss function*. 
+These terms will be used interchangeably throughout the thesis.
 
 As mentioned in the previous section, parameter estimation (or optimisation) of a linear (or logistic regression) model is usually done using OLS or maximum likelihood estimation (MLE). 
 In this section, however, we discuss an alternative parameter estimation method which is also relevant for the optimisation of neural networks.
 
 Consider the MSE loss function:
-
 $$
 \begin{aligned}
 L&=\sum_{i=1}^{N}L_{i}\\
@@ -219,35 +219,68 @@ L&=\sum_{i=1}^{N}L_{i}\\
 &=\sum_{i=1}^{N}\sum_{k=1}^{K}(y_{ik}-\boldsymbol{w}_{k}^{T}\boldsymbol{x}_{i})^{2},
 \end{aligned}
 $$
-where $f_{k}(\cdot)$ in this case is the linear model used to predict the $k$-th class posterior probability. Although the MSE loss is mostly used in a regression setup and not really well suited for classification, we make use of it here for illustration purposes.
+where $f_{k}(\cdot)$ in this case is the linear model used to predict the $k$-th class posterior probability. 
+Although the MSE loss is mostly used in a regression setup and not really well suited for classification, we make use of it here for illustration purposes.
 
-To find the weights, $\boldsymbol{w}$, that minimise $L$, we can follow a process of iterative refinement. That is, starting with a random initialisation of $\boldsymbol{w}$, one iteratively updates the values such that $L$ decreases. The updating steps are repeated until the loss converges. In order to minimise $L$ with respect to $\boldsymbol{w}$, we calculate the gradient of the loss function at the point $L(\boldsymbol{x};\boldsymbol{w})$. The gradient (or slope) of the loss function indicates the direction in which the function has the steepest rate of increase. Therefore, once we have determined this direction, we can update the weights by a step in the opposite direction - thereby reaching a smaller value of $L$.
+To find the weights, $\boldsymbol{w}$, that minimise $L$, we can follow a process of iterative refinement. 
+That is, starting with a random initialisation of $\boldsymbol{w}$, one iteratively updates the values such that $L$ decreases. 
+The updating steps are repeated until the loss converges.
+In order to minimise $L$ with respect to $\boldsymbol{w}$, we calculate the gradient of the loss function at the point $L(\boldsymbol{x};\boldsymbol{w})$.
+The gradient (or slope) of the loss function indicates the direction in which the function has the steepest rate of increase. 
+Therefore, once we have determined this direction, we can update the weights by a step in the opposite direction - thereby reaching a smaller value of $L$.
 
 The gradient of $L_{i}$ is computed by obtaining the partial derivative of $L_{i}$ with respect to $\boldsymbol{w}_{k}$, *i.e.*:
-
 $$
 \frac{\partial L_{i}}{\partial\boldsymbol{w_{k}}}=-2(y_{ik}-\boldsymbol{w}_{k}^{T}\boldsymbol{x}_{i})\boldsymbol{x}_{i}.
 $$
 After obtaining the above ${N}$ partial derivatives, an update at the $(r+1)$-th iteration may be obtained as follows:
-
 $$
 \boldsymbol{w}_{k}^{(r+1)}=\boldsymbol{w}_{k}^{(r)}-\gamma\sum_{i=1}^{n}\frac{\partial L_{i}}{\partial\boldsymbol{w_{k}^{(r)}}},
 $$
-where $\gamma$ is called the *learning rate* and determines the size of the step taken toward the optimal direction. One typically would like to set the learning rate small enough so that one does not overshoot the minimum, but large enough to limit the number of iterations before convergence. This value can be determined via a line search but is not always ideal since this may render the training time of DNNs too long. Another option is to reduce the learning rate after every fixed number of iterations. More detail regarding the implication of the learning rate will be given in \Cref{chp:dnn}.
+where $\gamma$ is called the *learning rate* and determines the size of the step taken toward the optimal direction. 
+One typically would like to set the learning rate small enough so that one does not overshoot the minimum, but large enough to limit the number of iterations before convergence. 
+This value can be determined via a line search but is not always ideal since this may render the training time of DNNs too long. 
+Another option is to reduce the learning rate after every fixed number of iterations. 
+More detail regarding the implication of the learning rate will be given in \Cref{chp:dnn}.
 
-The procedure of repeatedly evaluating the gradient of the objective function and then performing a parameter update, is called *gradient descent* [Cauchy, 1847]. Gradient descent forms the basis of the optimisation procedure for neural networks.
+The procedure of repeatedly evaluating the gradient of the objective function and then performing a parameter update, is called *gradient descent* [Cauchy, 1847]. 
+Gradient descent forms the basis of the optimisation procedure for neural networks.
 
-Note that a weight update is made by evaluating the gradient over a set of observations, $\{\boldsymbol{x}_{i},i=1,\dots,n\}$. One of the advantages of gradient descent is that at an iteration, the gradient need not be computed over the complete training dataset, *i.e.* $n\le N$. When updates are iteratively determined by using subsets of the data, the process is called *mini-batch gradient descent*. This is extremely helpful in large-scale applications, since it obviates computation of the full loss function over the entire dataset. This leads to faster convergence, because of more frequent parameter updates, and allows processing of data sets that are too large to fit into a computer's memory. The choice regarding batch size depends on the available computation power. Typically a batch consists of 64, 128 or 256 data points, since in practice many vectorised operation implementations work faster when their inputs are sized in powers of 2. The gradient obtained using mini-batches is only an approximation of the gradient of the full loss but it seems to be sufficient in practice [@Li2014]. Note at this point that the collection of iterations needed to make one sweep through the training data set is called an *epoch*.
+Note that a weight update is made by evaluating the gradient over a set of observations, $\{\boldsymbol{x}_{i},i=1,\dots,n\}$. 
+One of the advantages of gradient descent is that at an iteration, the gradient need not be computed over the complete training dataset, *i.e.* $n\le N$.
+When updates are iteratively determined by using subsets of the data, the process is called *mini-batch gradient descent*.
+This is extremely helpful in large-scale applications, since it obviates computation of the full loss function over the entire dataset. 
+This leads to faster convergence, because of more frequent parameter updates, and allows processing of data sets that are too large to fit into a computer's memory. 
+The choice regarding batch size depends on the available computation power. 
+Typically a batch consists of 64, 128 or 256 data points, since in practice many vectorised operation implementations work faster when their inputs are sized in powers of 2. 
+The gradient obtained using mini-batches is only an approximation of the gradient of the full loss but it seems to be sufficient in practice [@Li2014]. 
+Note at this point that the collection of iterations needed to make one sweep through the training data set is called an *epoch*.
 
-The extreme case of mini-batch gradient descent is when the batch size is selected to be 1. This is called *Stochastic Gradient Descent* (SGD). Recently SGD has been used much less, since it is more efficient to calculate the gradient in larger batches compared to only using one example. However, note that it remains common to use the term SGD when actually referring to mini-batch gradient descent. Gradient descent in general has often been regarded as slow or unreliable but it works well for optimising DNNs. SGD will most probably not find even a local minimum of the objective function. It typically however finds a very low value of the cost function quickly enough to be useful.
+The extreme case of mini-batch gradient descent is when the batch size is selected to be 1.
+This is called *Stochastic Gradient Descent* (SGD). 
+Recently SGD has been used much less, since it is more efficient to calculate the gradient in larger batches compared to only using one example. 
+However, note that it remains common to use the term SGD when actually referring to mini-batch gradient descent.
+Gradient descent in general has often been regarded as slow or unreliable but it works well for optimising DNNs.
+SGD will most probably not find even a local minimum of the objective function. 
+It typically however finds a very low value of the cost function quickly enough to be useful.
 
 ### Optimisation Example
 
-To illustrate the SGD algorithm, consider the linear model in a classification context. Suppose we are given a training data set with two-dimensional inputs and only two possible classes. Let the data be generated in the same way as described in [@Hastie2009, pp. 16-17]. 
+To illustrate the SGD algorithm, consider the linear model in a classification context. 
+Suppose we are given a training dataset with two-dimensional inputs and only two possible classes.
+Let the data be generated in the same way as described in [@Hastie2009, pp. 16-17]. 
 
-We want to fit a linear regression model to the data such that we can classify an observation to the class with the highest predicted score. In the binary case it is only necessary to model one class probability and then assign an observation to that class if the score exceeds some threshold (usually 0.5), otherwise it is assigned to the other class. Therefore the decision boundary is given by $\{\boldsymbol{x}:\boldsymbol{x}^{T}\hat{\boldsymbol{w}}=0.5\}$.
+We want to fit a linear regression model to the data such that we can classify an observation to the class with the highest predicted score. 
+In the binary case it is only necessary to model one class probability and then assign an observation to that class if the score exceeds some threshold (usually 0.5), otherwise it is assigned to the other class. 
+Therefore the decision boundary is given by $\{\boldsymbol{x}:\boldsymbol{x}^{T}\hat{\boldsymbol{w}}=0.5\}$.
 
-The example is illustrated in \autoref{fig:sgd}. The colour shaded regions represent the parts of the input space classified to the respective classes, as determined by the decision boundary based upon OLS parameter estimates. Gradient descent was applied to the determine the optimal weights using a learning rate of 0.001. Since the total number of training observations are small, it is not necessary to use SGD. In \autoref{fig:sgd}, the dashed lines represent the decision boundary defined by the gradient descent parameter estimates at different iterations. We observe that initially the estimated decision boundary is far from the OLS solution, but as the update iterations proceed, the decision boundary is rotated and translated until finally matching the OLS line. It took 29 iterations for the procedure to reach convergence.
+The example is illustrated in \autoref{fig:sgd}. 
+The colour shaded regions represent the parts of the input space classified to the respective classes, as determined by the decision boundary based upon OLS parameter estimates.
+Gradient descent was applied to the determine the optimal weights using a learning rate of 0.001. 
+Since the total number of training observations are small, it is not necessary to use SGD. 
+In \autoref{fig:sgd}, the dashed lines represent the decision boundary defined by the gradient descent parameter estimates at different iterations.
+We observe that initially the estimated decision boundary is far from the OLS solution, but as the update iterations proceed, the decision boundary is rotated and translated until finally matching the OLS line. 
+It took 29 iterations for the procedure to reach convergence.
 
 ```{r, cache=TRUE,eval=FALSE, fig.cap = "Plots of the gradient descent example. (a) The data points in input space. The shades in the background represent the class division in input space, with the decision boundary determined by linear least squares estimation. The dashed lines represent the decision boundaries learned at different iterations. (b) The loss calculated at each iteration. \\label{fig:sgd}"}
 # generate the data
@@ -355,16 +388,14 @@ plot_grid(p, p_loss, labels = c("(a)", "(b)"), nrow = 1, align = "vh", rel_width
 
 ### Backpropogation
 
-In \Cref{sec:optimisation} we discussed how to fit a linear model using the Stochastic Gradient Descent optimisation procedure. 
+In \Cref{sec:optimisation} we discussed how to fit a linear model using the Stochastic Gradient Descent optimisation procedure.
 Currenlty, SGD is the most effective way of training deep networks. 
 To recap, SGD optimises the parameters $\theta$ of a networks to minimise the loss,
-
 $$
 \theta = \arg\min_{\theta}\frac{1}{N}\sum_{i=1}^{N}l(\boldsymbol{x}_{i}, \theta).
 $$
 With SGD the training proceeds in steps and at each step we consider a mini-batch of size $n\le N$ training samples. 
 The mini-batch is used to approximate the gradient of the loss function with respect to the paramaters by computing, 
-
 $$
 \frac{1}{n}\frac{\partial l(\boldsymbol{x}_{i},\theta)}{\partial \theta}.
 $$
@@ -378,7 +409,6 @@ The neural network described in the previous section has a set of unknown adjust
 They are the $\alpha_{0m}, \boldsymbol{\alpha}_{m}$ paramters of the linear function of the inputs, $\boldsymbol{X}$, and the $\beta_{0k}, \boldsymbol{\beta}_{k}$ paramaters of the linear transformation of the derived features, $\boldsymbol{Z}$. 
 Denote the complete set of parameters by $\theta$. 
 Then the objective function for regression can be chosen as the sum-of-squared-errors:
-
 $$
 L(\theta) = \sum_{k=1}^{K}\sum_{i=1}^{N}\left(y_{ik}-f_{k}(\boldsymbol{x}_{i})\right)^{2}
 $$
@@ -396,14 +426,14 @@ This is possible because of the modular nature of a neural network, allowing the
 This is done by a forward and backward sweep over the network, keeping track only of quantities local to each unit.
 
 In detail, the backpropogation algorithm for the sum-of-squared error objective function,
-
 $$
 \begin{aligned}
 L(\theta)&=\sum_{i=1}^{N}L_{i}\\
 &=\sum_{i=1}^{N}\sum_{k=1}^{K}(y_{ik}-f_{k}(\boldsymbol{x}_{i}))^{2},
 \end{aligned}
 $$
-is as follows. The relevant derivatives for the algortihm are:
+is as follows. 
+The relevant derivatives for the algortihm are:
 
 $$
 \begin{aligned}
@@ -413,15 +443,14 @@ $$
 $$
 
 Given these derivatives, a gradient descent update at the $(r+1)$-th iteration has the form,
-
 $$
 \begin{aligned}
 \beta_{km}^{(r+1)}&=\beta_{km}^{(r)}-\gamma_{r}\sum_{i=1}^{N}\frac{\partial L_{i}}{\partial \beta_{km}^{(r)}},\\
 \alpha_{ml}^{(r+1)}&=\alpha_{ml}^{(r)}-\gamma_{r}\sum_{i=1}^{N}\frac{\partial L_{i}}{\partial \alpha_{ml}^{(r)}},
 \end{aligned}
 $$
-where $\gamma_{r}$ is called the learning rate. Now write the gradients as
-
+where $\gamma_{r}$ is called the learning rate.
+Now write the gradients as
 $$
 \begin{aligned}
 \frac{\partial L_{i}}{\partial \beta_{km}}&=\delta_{ki}z_{mi},\\
@@ -430,7 +459,6 @@ $$
 $$
 The quantities, $\delta_{ki}$ and $s_{mi}$ are errors from the current model at the output and hidden layer units respectively. 
 From their definitions, they satify the following,
-
 $$
 s_{mi}=\sigma'(\boldsymbol{\alpha}_{m}^{T}\boldsymbol{x}_{i})\sum_{k=1}^{K}\beta_{km}\delta_{ki},
 $$
@@ -464,7 +492,8 @@ But their method requires fewer parameter updates.
 
 There are many ways to prevent overfitting in deep neural networks. 
 The simplest strategies for single hidden layer networks are by early stopping and weight decay. 
-Stopping the training process early can prevent overfitting. When to stop can be determined by a validation set approach. 
+Stopping the training process early can prevent overfitting. 
+When to stop can be determined by a validation set approach. 
 Weight decay is the addition of a penalty term, $\lambda J(\theta)$, to the objective function, where,
 
 $$

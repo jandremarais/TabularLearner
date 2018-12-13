@@ -1,11 +1,32 @@
 # Deep Learning \label{chp:dl}
 
 ## Introduction
-- Modern Neural Network Approaches
-- story of combatting overfitting
-- Recent advancements in deep learning which could be useful to applying in tabular data
 
-## Autoeoncdoers
+Deep learning is a broad term.
+The difference between a classical neural network and a deep neural network, is merely its number of layers.
+Even a network with two hidden layers is sometimes referred to as deep.
+
+In this work, we use the term deep learning to refer to modern developments in the space of neural networks.
+In the last decade, tons of contributions have been made to the field: new types of layers, different ways of training and novel approachs to fight overfitting.
+Reviewing these developments requires much more space than a chapter, therefore, for the purpose of this work, we only highlight the developments we feel are important for our next chapter on deep learning for tabular data.
+
+Practically all deep learning developments are aimed at combatting overfitting, either explicitly or implicitly.
+Since neural networks can already approximate any function, but our learning algorithms cannot necassrily find these solutions, we need ways of learning more efficiently from the data.
+This chapter starts by introducing a different class of neural networks called *autoencoders* (\Sref{sec:ae}).
+Autoencoders are mostly used as an unsupervised learning technique to help us learn more robust representations from data without response variables, which we may then transfer to supervised learning algorithms.
+This process of transferring knowledge from one network to another is called transfer learning, which we discuss in \Sref{sec:tl}.
+
+Thereafter, we look at layers that help with regularisation: *dropout* (\Sref{sec:dropout}) and *batch normalisation* (\Sref{sec:bnorm}).
+Data augmentation is a technique used to artificially enlarge the training dataset and thus also helps fighting overfitting.
+We discuss this in \Sref{sec:daug}.
+The other types of layers we look at in this chapter are, *skip-connections* (\Sref{sec:resnet}), *attention* modules (\Sref{sec:attention}) and *embedding* layers (\Sref{sec:embeds}).
+They are designed to make deeper neural networks more effective, let them focus more on the important features and to process discrete input, respectively.
+
+Then we devote a section to a training policy called the *1cycle* policy (\Sref{sec:onecyc}).
+This method provides a way of automatically finding a good learning rate and drastically reduces the number of training iterations needed.
+We conclude this chapter with a discussion on the interpretability of neural networks (\Sref{sec:interp}).
+
+## Autoeoncoders \label{sec:ae}
 
 
 An autoencoder takes an input and first transforms it into some (smaller) latent representation using the part of the network called the encoder.
@@ -29,11 +50,13 @@ By using these learned representations as input significantly improved the perfo
 
 See also [@Vincent2008].
 
+Also variational autoencoders, but not for this work.
+
 https://arxiv.org/pdf/1803.09820.pdf
 
 ## Combatting Overfitting
 
-### Transfer Learning
+### Transfer Learning \label{sec:tl}
 
 The major critique against DNNs are that they require a huge amount of training data and that they take extremely long to train. 
 This is somewhat true, however, *transfer learning* provides an effective solution to these problems. 
@@ -42,7 +65,7 @@ Consider the case where a CNN was sucessfully trained on ImageNet.
 For any input image, each layer of the CNN produces some feature representation of the input image. 
 (Not sure where Zeiler paper is going to be discussed). 
 
-### Dropout
+### Dropout \Sref{sec:dropout}
 
 Overfitting can be reduced by using dropout [@Hinton2012] to prevent complex co-adaptions on the training data. Dropout consists of setting the output of a hidden unit to zero with a probability $p$ (in the original paper they used $p=0.5$). The units which are set to zero do not contribute to the forward pass and do not participate in backpropogation. Every time an input is presented, the neural network samples a different set of units to be dropped out. 
 
@@ -62,7 +85,7 @@ Therefore they opted for hand crafted noise shapes taking into account the distr
 
 This shows that dropout does break up co-adaptations, which is probably the main reason why it leads to lower generalization errors.
 
-### Data Augmentation
+### Data Augmentation \label{sec:daug}
 
 As mentioned before, our aim with predictive models is to generalise well to an unseen test set.
 In an ideal world we would train a model on all possible variations of the data to capture all interactions and relationships.
@@ -86,13 +109,15 @@ Note that this approach is dataset dependent.
 
 ## Modern Architectures
 
-### Normalisation
+### Normalisation \label{sec:bnorm}
 
 One of the things that complicate the training of neural networks is the fact that hidden layers have to adapt to the continuously changing distribution of its inputs. The inputs to each layer are affected by the paramaters of all its preceding layers and a small change in a preceding layer can lead to a much bigger difference in output as the network becomes deeper. When the input distribution to a learning system changes, it is said to experience covariate shift [@Shimodaira2000].
 
 Using ReLUs, carefull weight initialisation and small learning rates can help a network to deal with the internal covariate shift. However, a more effective way would be to ensure that the distribution of non-linearity inputs remains more stable while training the network. [@Ioffe2015] proposed *batch normalisation* to do just that.
 
-A batch normalisation layer normalises its inputs to a fixed mean and variance (similar to how the inputs of the network is normalised) and therefore it can be applied before any hidden layer in a network to prevent internal covariate shift. The addition of this layer dramatically accelerates the training of DNNs, also because it can be used with higher learning rates. It also helps with regularisation [@Ioffe2015], therefore in some cases dropout is not necessary.
+A batch normalisation layer normalises its inputs to a fixed mean and variance (similar to how the inputs of the network is normalised) and therefore it can be applied before any hidden layer in a network to prevent internal covariate shift. 
+The addition of this layer dramatically accelerates the training of DNNs, also because it can be used with higher learning rates. 
+It also helps with regularisation [@Ioffe2015], therefore in some cases dropout is not necessary.
 
 The batch normalising transform over a batch of univariate inputs, $x_{1}, \dots,x_{n}$ is done by the following steps:
 
@@ -131,7 +156,7 @@ Fully-connected NNs do not have this luxury and shows high variance in the train
 - batchnorm
 - selu?
 
-### Residual Networks
+### Skip-connections \label{sec:resnet}
 - resnet and densenet
 - how resnet is essentially boosting
 
@@ -144,16 +169,17 @@ $$
 Here, the combination is by addition, but other ways can also be used, like multiplication or concatenation.
 These layers are very useful when training deeper neural networks since they encourage gradient flow through interval layers.
 
-### Embeddings
+### Embeddings \label{sec:embeds}
 
 Like word embeddings.
 Learnable mapping of an item to a vector.
 
-### Attention
+### Attention \label{sec:attention}
 
 First proposed in neural machine translation [@Bahdanau2014] and now almost used ubiquitously in natural language processing applications.
 
-## One-cycle Policy
+## One-cycle Policy \label{sec:onecyc}
+
 - can include experiment here
 
 
@@ -245,7 +271,7 @@ usually  does  not  require  more  than  one  significant  figure  accuracy.   U
 edge of the dataset and architecture to decide which values to test.  For example, a more
 complex dataset requires less regularization so test smaller weight decay values. A  shallow  architecture  requires  more  regularization  so  test  largerweight decay values.
 
-## Model Interpretation
+## Model Interpretation \label{sec:interp}
 
 Although Deep Learning is now the state-of-the-art for many machine learning tasks, it still trailing behind other algorithms in terms of model interpretability.
 But keep in mind this is not an unusual trade-off; between prediction performance and model interpretability.
