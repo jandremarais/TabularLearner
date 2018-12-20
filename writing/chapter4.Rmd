@@ -115,6 +115,12 @@ As proof that these entity embeddings actually learns something useful, besides 
 
 ### Combining Features
 
+### Dropout
+
+Interesetingly, [@haldar2018] found that dropout was not effective in their application.
+They pinned it down to dropout producing invalid input scenarious that distracted the model.
+Therefore they opted for hand crafted noise shapes taking into account the distribution of the relevant feature. 
+
 ## Still to categorise
 
 Feature engineering in general is hard and time consuming with no clear recipe to follow.
@@ -450,7 +456,11 @@ See \autoref{fig:simple_dataset_mixup}.
 ![Illustration of points created by mixup augmentation.\label{fig:simple_dataset_mixup}](figures/simple_dataset_mixup.pdf)
 
 ### Unsupervised Pretraining
-- DAEs
+
+[@Miotto2016] used a stacked denoising autoencoder to learn patient representations from EHR data.
+They found that these representations were useful features in predicting future health states of patients.
+By using these learned representations as input significantly improved the performance of predictive models compared to those only using the raw inputs.
+
 [@Miotto2016] presented a novel unsupervised deep feature learning method to derive a general-purpose patient representation for EHR data that facilitates clinical predictive modelling.
 A stacked denoising autoencoder was used.
 Unsupervised feature learning attempts to overcome limitations of supervised feature space definition by automatically identifying patterns and dependencies in the data to learn a compact and general representation that make it easier to automatically extract useful information when building classifiers or other predictors [@Miotto2016].

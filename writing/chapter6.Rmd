@@ -9,5 +9,7 @@
 - Where should future work on the subject focus on?
 
 Variational autoencoders for pretraining.
-Generative Adversarial Network for data augmentation.
+Generative Adversarial Network for data augmentation (and other tab data specific augs).
+Feauture reuse
+per feature regularisation.
 

@@ -2,18 +2,18 @@
 
 ## Introduction
 
-Deep learning is a broad term.
+Deep learning is a broadly used term.
 The difference between a classical neural network and a deep neural network, is merely its number of layers.
 Even a network with two hidden layers is sometimes referred to as deep.
 
 In this work, we use the term deep learning to refer to modern developments in the space of neural networks.
-In the last decade, tons of contributions have been made to the field: new types of layers, different ways of training and novel approachs to fight overfitting.
+In the last decade, tons of contributions have been made to the field: new types of layers, different ways of training and novel approaches to fight overfitting.
 Reviewing these developments requires much more space than a chapter, therefore, for the purpose of this work, we only highlight the developments we feel are important for our next chapter on deep learning for tabular data.
 
 Practically all deep learning developments are aimed at combatting overfitting, either explicitly or implicitly.
 Since neural networks can already approximate any function, but our learning algorithms cannot necassrily find these solutions, we need ways of learning more efficiently from the data.
 This chapter starts by introducing a different class of neural networks called *autoencoders* (\Sref{sec:ae}).
-Autoencoders are mostly used as an unsupervised learning technique to help us learn more robust representations from data without response variables, which we may then transfer to supervised learning algorithms.
+Autoencoders are mostly used as an unsupervised learning technique to help us learn more robust representations from data without labelled data, which we may then transfer to supervised learning algorithms.
 This process of transferring knowledge from one network to another is called transfer learning, which we discuss in \Sref{sec:tl}.
 
 Thereafter, we look at layers that help with regularisation: *dropout* (\Sref{sec:dropout}) and *batch normalisation* (\Sref{sec:bnorm}).
@@ -26,46 +26,73 @@ Then we devote a section to a training policy called the *1cycle* policy (\Sref{
 This method provides a way of automatically finding a good learning rate and drastically reduces the number of training iterations needed.
 We conclude this chapter with a discussion on the interpretability of neural networks (\Sref{sec:interp}).
 
-## Autoeoncoders \label{sec:ae}
+## Denoising Autoeoncoders \label{sec:ae}
 
-An autoencoder takes an input and first transforms it into some (smaller) latent representation using the part of the network called the encoder.
-From the latent representation the second part of the network, called the decoder, tries to reconstruct the input by doing some transformation.
-Both the encoder and the decoder networks are NNs in their own right and thus usually consist of either fully conncected layers or convolutional layers (or both).
+The basic autoencoder is a neural network that is trained to attempt to reconstruct its inputs.
+The simplest form of an autoencoder is a neural network with with one hidden layer and an output layer the same size of the input layer (illustrated in \autoref{fig:ae}).
+The linear layer transforming the input to the hidden layer is referred to as the encoder, $\boldsymbol{z}=f(\boldsymbol{x})$, and the layer producing the output from the hidden layer is called the decoder, $\boldsymbol{x}'=g(\boldsymbol{z})$.
+The autoencoder can be trained in the same way as any other neural network, but by minimising a reconstruction loss.
+A reconstruction loss measures the distance between the reconstruction of the input and the actual input and thus the MSE loss function is common choice for continuous data.
 
-During training a reconstruction loss is minimised.
-A reconstruction loss measures the distance between the reconstruction of the input based on the latent representation and the actual input.
+```{r, fig.cap="A simple single hidden layer autoencoder with 4-dimensional inputs and 2 neurons in the hidden layer.\\label{fig:ae}", out.height="30%"}
+knitr::include_graphics('figures/ae.png')
+```
 
 Autoencoders technically belong to the self- (or semi-) supervised class of methods, although many still think of it as unsupervised.
-It is unsupervised in the sense that it does not require labelling, but it is stll supervised in the sense that it predicts an ouput; the input and thus self-supervised.
+It is unsupervised in the sense that it does not require labelling, but it is stll supervised in the sense that it predicts an ouput.
 
-A denoising autoencoder (DAE) is a variant of the vanilla autoencoder.
-A DAE also learns to reconstruct the input vector, but in this case from a corrupted version thereof.
-So during training, before an input is sent through the encoder, it first get injected with random noise.
-However, the output of the decoder is still being compared to the original input and thus the DAE is supposed to learn how to remove noise from the input - therefore, denoising.
+In this setting, if the number of neurons in the hidden layer is greater than or equal to the number of input features, the autoencoder will be able to perfectly reconstruct $\boldsymbol{x}$ from $\boldsymbol{z}$, *i.e.* $\boldsymbol{x}'=\boldsymbol{x}$.
+However this is not a very useful model and instead autoencoders are usually built with some type of constraint imposed.
+A common option is to restrict the number of neurons in the hidden layer to be smaller than the number of input features.
+This forces the autoencoder to capture only the most useful properties of the data in the hidden representation and can thus effectively be used as a way of dimensionality reduction [@Hinton2006a].
+When there are no non-linear activation functions after the linear layers, one can show that this autoencoder is equivalent to a *Principal Component Analysis* (PCA) of the inputs.
 
-[@Miotto2016] used a stacked denoising autoencoder to learn patient representations from EHR data.
-They found that these representations were useful features in predicting future health states of patients.
-By using these learned representations as input significantly improved the performance of predictive models compared to those only using the raw inputs.
+There is no restriction in the number or the size of the layers used for the encoder and decoder, and if activation functions are used, one can potentially learn a more powerful non-linear generalisation of PCA.
+However, if the encoder and decoder networks are allowed too much capacity, the autoencoder can learn to reconstuct the inputs without learning useful properties of the data.
+It is hard to tell if an autoencoder has learned a useful latent representation of the data.
+One way to evaluate it is to use the features extracted by the encoder for a supervised learning task and compare its performance with a model using the raw data as inputs.
+Autoencoders have also been used to initialise the weights of a supervised learning network, *i.e.* using the learned weight of the autoencoder as the initial weights for the supervised learning network of the same size [@Larochelle2009].
 
-See also [@Vincent2008].
+An autoencoder can learn to perfectly copy the input if the encoder and decoder have enough capacity, even though the latent representation is of a smaller diemsion than the inputs, and thus will not learn useful features of the data.
+Therefore we may want to consider other types of contraints to impose on the autoencoder.
 
-Another type of autoencoder is a *Variational Autoencoder* (VAE).
+A *denoising autoencoder* (DAE) [@Vincent2008] first adds noise to its inputs before it is passed to the encoder.
+Thus in order to minimise the reconstruction loss, the DAE should learn how to reconstruct the original input from a corrupted version of itself.
+[@Alain2014] shows that DAEs do learn useful structures of the data.
+
+The choice of the type of noise added to the inputs depends on the data types.
+One can block out inputs with zeros if zeros have no other meaning in the data or one might want to add gaussian noise to continuous outputs as long as it falls within the true range of the features.
+If there is too much noise in the corruption step, the DAE might not learn anything useful.
+The type and amount of noise to be use are things that should be experimented with.
+
+Another type of autoencoder is a *Variational Autoencoder* (VAE) [@Kingma2013].
 Instead of encoding the data into a latent vector representation, a VAE encodes the data as a Gaussian distribution.
 In the decoding step, observations are then sampled from the learned distribution before passing it to the fully connected layers.
 This is an interesting direction for future research but not in the scope of this work.
 
-https://arxiv.org/pdf/1803.09820.pdf
+## Pretraining and Transfer Learning \label{sec:tl}
 
-## Combatting Overfitting
+Unsupervised learning played a key part in the rise of deep learning (debatedly starting with [@Hinton2006]).
+It made it easier to train deeper neural networks with a process called *pretraining*.
+Pretraining is based on the assumption that representations learned from one task can sometimes be useful for accomplishing other tasks in the same input domain.
+For example, we can use a DAE to learn the structure of the data from unlabelled data and then use what it has learned as features or initialisation for a supervised learning task with the same type of inputs.
+We can also do supervised pretraining by first training the network to estimate one target variable and then use those weights or features when training to estimate a different target variable, for example.
 
-### Transfer Learning \label{sec:tl}
+Unsupervised pretraining for supervised learning is very common in NLP [@Devlin2018, @Howard2018] and supervised pretraining for supserivsed learning is very common in computer vision [@Yosinski2015, @He2015].
+It is not yet clear theoretically why pretraining works.
+It may be that using the pretrained weights as initialisation to the supervised model provides a better starting position on the loss surface and thus have regulartory effects [@Goodfellow2016, Ch. 14].
+Pretraining is most effective when there is little data available for the supervised task but a lot of data available for the pretraining task.
 
-The major critique against DNNs are that they require a huge amount of training data and that they take extremely long to train. 
-This is somewhat true, however, *transfer learning* provides an effective solution to these problems. 
-Recall that DNNs are examples of representation learning algorithms. 
-Consider the case where a CNN was sucessfully trained on ImageNet.
-For any input image, each layer of the CNN produces some feature representation of the input image. 
-(Not sure where Zeiler paper is going to be discussed). 
+The process of transferring what is learned doing one task (for example in pretraining) to another task (supervised learning for examples) is called *transfer learning*. When done effectively, pretraining and transfer learning can together dramatically reduce the number of training samples and computational power need to train a model.
+
+[@Zeiler2014] provides an insigtful investigation of the what a CNN learns when trained on image data. 
+From observing the types of features extracted for a trained image model (\autoref{fig:zeil}) it becomes clear why they are also effective on other image datasets. The learned filters seemed to look for generic image features like edges and color gradients which are useful for most computer vision tasks.
+
+```{r, fig.cap="Visualising the first layer convolutional filters leared by a neural network in a large image dataset. \\label{fig:zeil}", out.height="50%"}
+knitr::include_graphics("figures/zeiler_filters.jpeg")
+```
+
+## More Regularisation
 
 ### Dropout \label{sec:dropout}
 
@@ -82,10 +109,6 @@ During training these models are combined - similar to the process of ensembling
 See \autoref{fig:dropout} for an illustration of how dropout effects the connections between neurons.
 
 ![The effect dropout has on connections between neurons.\label{fig:dropout}](figures/dropout.png)
-
-Interesetingly, [@haldar2018] found that dropout was not effective in their application.
-They pinned it down to dropout producing invalid input scenarious that distracted the model.
-Therefore they opted for hand crafted noise shapes taking into account the distribution of the relevant feature. 
 
 This shows that dropout does break up co-adaptations, which is probably the main reason why it leads to lower generalization errors.
 
