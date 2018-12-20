@@ -50,7 +50,7 @@ options(xtable.comment = FALSE)
 options(knitr.table.format = "latex")
 ```
 
-```{r child = 'chapter1.Rmd'}
+```{r child = 'chapter1_edit.Rmd'}
 ```
 
 ```{r child = 'chapter2.Rmd'}

@@ -29,8 +29,7 @@ Only recently a series of breakthroughs allowed neural networks to be more effec
 
 The aim of this chapter is to provide an overview of neural networks, emphasising the basic structure (\Sref{sec:structure}) and the way in which they are trained (\Sref{sec:training}).
 This is done with a view to discuss modern neural network structures and training policies in \Cref{chp:dl}, which in turn will help us shed light on Deep Learning for tabular data.
-This chaper includes a section on representation and manifold learning (\Sref{sec:rep}) in an attempt to understand what a NN is actually doing.
-Finaly, the chapter concludes with an example implementation of a vanilla NN trained on tabular data (\Sref{sec:vanilla_example}).
+Finaly, the chapter concludes with a section on representation and manifold learning (\Sref{sec:rep}) in an attempt to understand what a neural network is actually doing.
 
 ## The Structure of a Neural Network \label{sec:structure}
 
@@ -263,7 +262,7 @@ The extreme case of mini-batch gradient descent is when the batch size is select
 This is called *Stochastic Gradient Descent* (SGD). 
 Recently SGD has been used much less, since it is more efficient to calculate the gradient in larger batches compared to only using one example. 
 However, note that it remains common to use the term SGD when actually referring to mini-batch gradient descent.
-Gradient descent in general has often been regarded as slow or unreliable but it works well for optimising DNNs.
+Gradient descent in general has often been regarded as slow or unreliable but it works well for optimising neural networks.
 SGD will most probably not find even a local minimum of the objective function. 
 It typically however finds a very low value of the cost function quickly enough to be useful.
 
@@ -528,58 +527,70 @@ As mentioned before, the learning rate also plays a big part in finding the opti
 Next we discuss how we can tune the learning rate to train faster and to find better local minima.
 More advanced regularisation techniques are discussed in \Cref{chp:dl}.
 
-### Learning Rate Annealing \label{sec:lr}
+### Adaptive Learning Rates and Annealing \label{sec:lr}
 
-There are no easy ways for determining $\gamma_{r}$. 
+Although the right learning rate can reduce training time and improve performance, there is no silver bullet when it comes to setting the parameter.
 A small learning rate slows downs the training time, but is safer against overfitting and overshooting the optimal solution.
 With a large learning rate, convergence may be reached quicker, but the optimal solution may not have been found. 
 One could do a line search of a range of possible values, but this usually takes too long for bigger networks. 
-One possible strategy for effective training is to decrease the learning rate every time after a certain amount of iterations.
+
+However, one does not need to keep the learning rate fixed throughout the training process.
+A popular approach is to decrease the learning rate by a fraction after a certain number of epochs or as the validation loss starts to converge, as done in [@He2015] for example.
+The intuition is that larger steps can be taken when we are still far away from an optimal position on the loss surface, and then gradually take smaller steps once we get closer to not overshoot it.
+Note, that this means that we would also need to tune the rate of decrease and the time steps of each decrease during training.
+Fortunately, it is believed that the learning algorithms are not that sensitive to this choice.
+
+In addition, there are ways of manipulating the learning rates at a local level, as opposed the aforementioned global methods.
+Adagrad [@Duchi2011] is an adaptive learning rate method which increases the learning rate at neurons with small gradients and *vice versa*.
+Adam [@Kingma2014] is the most commonly used weight update approach.
+It also uses the magnitude of the gradient to control each weight update, in addition to the previous iteration's gradients and it combines them in a smooth fashion.
+This resembles the physical property of momentum [@Bengio2012].
+For more detail, the reader can refer to the cited publications as it falls out of the scope of this work.
 
 ## Representation Learning \label{sec:rep}
 
 We are now familiar with the mathematical operations of basic layers, how they are connected and how their weights are tweaked to minimise a loss function.
-In this section we will discuss why this works and what the NN is actually doing to model the data.
+In this section we will discuss why this works and what the neural network is actually doing to model the data.
 The central idea is that of a data *representation* [@Bengio2013] and that at each layer of the network the data is transformed into a higher-level abstraction of itself.
-Understanding and interpreting NNs remains a challenge [@Frosst2017], but the notion of learning an optimal data representation allows us to gain a deeper intuition of the inner mechanics of NNs.
+Understanding and interpreting neural networks remains a challenge [@Frosst2017], but the notion of learning an optimal data representation allows us to gain a deeper intuition of the inner mechanics of neural networks.
 
 Machine learning models are very sensitive to the form and the properties of the input given to it.
 Thus a large part of building machine learning models is to find the best way of representing the raw data to make it easier for the models to extract useful information.
-This is typically a laborious manual task of creating, analyzing, evaluating and selecting appropriate features[^feature_engineering], and requires practitioner expertise and domain knowledge.
+This is typically a laborious manual task of creating, analyzing, evaluating and selecting appropriate features[^feature_engineering] requires practitioner expertise and domain knowledge.
 This *feature engineering* process is more trial-and-error than a systematic recipe.
 Therefore if one can effectively automate this process, it will save a lot of time and raise the performance ceiling of models.
 Automatically learning representations of the data that make it easier to extract useful information for classifiers or other predictors is called representation learning [@Bengio2013].
 
 [^feature_engineering]: http://blog.kaggle.com/2014/08/01/learning-from-the-best/
 
-A NN can be viewed from the perspective of representation learning.
+A neural network can be viewed from the perspective of representation learning.
 Consider a classification task.
-Since the final layer of a NN is a linear model, in order for the network to produce accuracte predictions, the previous layers should be able to project the data into a space where the classes are linearly separable.
+Since the final layer of a neural network is a linear model, in order for the network to produce accuracte predictions, the previous layers should be able to project the data into a space where the classes are linearly separable.
 Thus the network learns a representation of the data that is optimal for classification.
 
-Each of the simple but non-linear modules of a NN transform the representation at one level (starting with the raw input) into a representation at a higher, slightly more abstract level.
+Each of the simple but non-linear modules of a neural network transforms the representation at one level (starting with the raw input) into a representation at a higher, slightly more abstract level.
 With the composition of enough such transformations, very complex functions can be learned [@Lecun2015].
 These transformations can emphasise (and create) features that are important for discrimination and drop those which are redundant.
 
-Let us work through a simple example to illustrate the representations learned by a NN.
+Let us work through a simple example to illustrate the representations learned by a neural network.
 Consider a dataset with two classes; the two curves on a plane shown in \autoref{fig:simple_dataset}.
 Clearly, the observations from the two classes are not linearly separable in their raw form.
-Thus if we fit a single layer NN (*i.e.* only an output layer) to this data, we will get an unsatisfactory decision boundary, since the decision boundary can only be linear, as shown in \autoref{fig:simple_dataset_simpleNN}.
-However, if fit a two-layer NN, where the hidden layer has two neurons and a sigmoid acitvation, to the same dataset the decision boundary perfectly separates the two classes.
+Thus if we fit a single layer neural network (*i.e.* only an output layer) to this data, we will get an unsatisfactory decision boundary, since the decision boundary can only be linear, as shown in \autoref{fig:simple_dataset_simpleNN}.
+However, if we fit a two-layer neural network, where the hidden layer has two neurons and a sigmoid acitvation to the same dataset, the decision boundary perfectly separates the two classes.
 This is shown in \autoref{fig:simple_dataset_complexNN}.
 
 ![Simple dataset with two linearly inseparable classes.\label{fig:simple_dataset}](figures/simple_dataset.pdf)
 
-![Decision boundary of 1-layer NN.\label{fig:simple_dataset_simpleNN}](figures/simple_dataset_simpleNN.pdf)
+![Decision boundary of 1-layer neural network.\label{fig:simple_dataset_simpleNN}](figures/simple_dataset_simpleNN.pdf)
 
-![Decision boundary of 2-layer NN.\label{fig:simple_dataset_complexNN}](figures/simple_dataset_complexNN.pdf)
+![Decision boundary of 2-layer neural network.\label{fig:simple_dataset_complexNN}](figures/simple_dataset_complexNN.pdf)
 
 Since the hidden layer consists of only two neurons, we are able to plot the output from the hidden layer after the raw data has passed through it.
 This is depicted in \autoref{fig:simple_dataset_complexNN_rep}.
 This shows how the hidden layer projected the input data into a space where the observations from the two classes are linearly separable.
 Which leaves it to the final layer to find the best hyperplane between them.
 
-![Hidden representation of 2-layer NN.\label{fig:simple_dataset_complexNN_rep}](figures/simple_dataset_complexNN_rep.pdf)
+![Hidden representation of 2-layer neural network.\label{fig:simple_dataset_complexNN_rep}](figures/simple_dataset_complexNN_rep.pdf)
 
 Of course this is a very simple example, but the same concepts apply to more complicated datasets and models.
 However, even though it is technically possible to separate any arrangement of points with a sufficiently large network[^colah], in reality it can become quite challenging to find such representations.
@@ -588,30 +599,6 @@ Without the aforementioned, it is likely that the network will get stuck in a su
 In the following chapters we explore the approaches available to find optimal represenations of tabular data for classification and regression tasks.
 
 [^colah]: http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/
-
-## Vanilla MLP on Tabular Data \label{sec:vanilla_example}
-
-In this chapter we have discussed the basics of NNs and how to train them.
-To compliment this discussion we will run through a relatively simple but real-world classification task on tabular data here.
-The aim of this is example is to solidfy the understanding of the basics, compare the expected beahviour and the behaviour in practise for each of the discussed concepts and to highlight where sticking with the basics comes up short.
-
-We are going to use the Adult dataset.
-We are going to see how we process the features.
-How we are going to choose the learning rate and batch size and weight decay and number of epochs.
-How we are going to choose the size of the layers and the depth of the network.
-Different activation functions?
-
-This acts as a baseline to which we can compare the network with advanced components.
-
-Identify things we can improve upon.
-Better preprocessing of the data. 
-One-hot encode creates sparse input and requires large weight matrices.
-Continuous variables requires zero mean and unit variance normalisation - but is this the best way?
-We are naively combining very different types of features in one layer.
-The dataset is relatively small.
-We struggle to find the right balance between overfitting and underfitting.
-Fixed learning rate.
-Can't interpret it.
 
 
 

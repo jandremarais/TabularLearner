@@ -277,9 +277,8 @@ This chapter provided the context, motivations, objectives and theoretical backr
 The outline for the rest of the thesis is given next.
 
 In \Cref{chp:nn} we cover the basics of NNs.
-The building blocks of NNs are discussed, introducing neurons, basic layers and how NNs are trained, including basic regularisation.
+The building blocks of NNs are discussed, introducing neurons, basic layers and how NNs are trained, including basic regularisation techniques.
 We attempt to gain insight into what happens inside a NN from the perspective of representation and manifold learning.
-The chapter is concluded with an example implementation of a vanilla NN applied to a tabular dataset to further highlight its shortcomings.
 
 \Cref{chp:dl} continues the discussion by focussing on the key advancements in NNs in recent times.
 Improved ways of fighting overfitting like data augmentation, dropout and transfer learning are analysed here, as well as the SotA training policy called *1Cycle*.

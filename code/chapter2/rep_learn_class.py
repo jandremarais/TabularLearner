@@ -1,4 +1,4 @@
-from sklearn.datasets import make_moons, make_circles,
+from sklearn.datasets import make_moons, make_circles
 from matplotlib import pyplot as plt
 import pdb
 import numpy as np
@@ -13,7 +13,7 @@ import itertools
 from mpl_toolkits.mplot3d import Axes3D
 
 
-path = Path('../data')
+path = Path('../../data')
 
 # X, y = make_moons(n_samples=200, shuffle=True, noise=0.05, random_state=42)
 X, y = make_circles(n_samples=200, shuffle=True, noise=0.05, random_state=42, factor=0.5)
