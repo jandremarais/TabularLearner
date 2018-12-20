@@ -28,7 +28,6 @@ We conclude this chapter with a discussion on the interpretability of neural net
 
 ## Autoeoncoders \label{sec:ae}
 
-
 An autoencoder takes an input and first transforms it into some (smaller) latent representation using the part of the network called the encoder.
 From the latent representation the second part of the network, called the decoder, tries to reconstruct the input by doing some transformation.
 Both the encoder and the decoder networks are NNs in their own right and thus usually consist of either fully conncected layers or convolutional layers (or both).
@@ -36,7 +35,7 @@ Both the encoder and the decoder networks are NNs in their own right and thus us
 During training a reconstruction loss is minimised.
 A reconstruction loss measures the distance between the reconstruction of the input based on the latent representation and the actual input.
 
-Autoencoders technically belong the self (or semi) supervised class of methods, although many still think of it as unsupervised.
+Autoencoders technically belong to the self- (or semi-) supervised class of methods, although many still think of it as unsupervised.
 It is unsupervised in the sense that it does not require labelling, but it is stll supervised in the sense that it predicts an ouput; the input and thus self-supervised.
 
 A denoising autoencoder (DAE) is a variant of the vanilla autoencoder.
@@ -50,7 +49,10 @@ By using these learned representations as input significantly improved the perfo
 
 See also [@Vincent2008].
 
-Also variational autoencoders, but not for this work.
+Another type of autoencoder is a *Variational Autoencoder* (VAE).
+Instead of encoding the data into a latent vector representation, a VAE encodes the data as a Gaussian distribution.
+In the decoding step, observations are then sampled from the learned distribution before passing it to the fully connected layers.
+This is an interesting direction for future research but not in the scope of this work.
 
 https://arxiv.org/pdf/1803.09820.pdf
 
@@ -65,7 +67,7 @@ Consider the case where a CNN was sucessfully trained on ImageNet.
 For any input image, each layer of the CNN produces some feature representation of the input image. 
 (Not sure where Zeiler paper is going to be discussed). 
 
-### Dropout \Sref{sec:dropout}
+### Dropout \label{sec:dropout}
 
 Overfitting can be reduced by using dropout [@Hinton2012] to prevent complex co-adaptions on the training data. Dropout consists of setting the output of a hidden unit to zero with a probability $p$ (in the original paper they used $p=0.5$). The units which are set to zero do not contribute to the forward pass and do not participate in backpropogation. Every time an input is presented, the neural network samples a different set of units to be dropped out. 
 
@@ -73,7 +75,9 @@ This technique ensures that a unit does not rely on the presence of a particular
 
 At test time, no units are dropped out and their output is multiplied by $1-p$ (make sure) to compensate for the fact that all of the units are now active. Dropout does tremendously well to combat overfitting, but it slows down the covergence time of training.
 
-+ in the original paper they also compare the technique to ensebmling
+There are also parallels to be drawn between dropout and ensembling approaches [@Hinton2012].
+Since, at each training iteration a unique set of neurons are active which may then be viewed as a unique model.
+During training these models are combined - similar to the process of ensembling models.
 
 See \autoref{fig:dropout} for an illustration of how dropout effects the connections between neurons.
 
@@ -111,6 +115,9 @@ Note that this approach is dataset dependent.
 
 ### Normalisation \label{sec:bnorm}
 
+forcing the activations throughout a network to take on a unit gaussian distribution at the beginning of the training. 
+are significantly more robust to bad initialization.
+
 One of the things that complicate the training of neural networks is the fact that hidden layers have to adapt to the continuously changing distribution of its inputs. The inputs to each layer are affected by the paramaters of all its preceding layers and a small change in a preceding layer can lead to a much bigger difference in output as the network becomes deeper. When the input distribution to a learning system changes, it is said to experience covariate shift [@Shimodaira2000].
 
 Using ReLUs, carefull weight initialisation and small learning rates can help a network to deal with the internal covariate shift. However, a more effective way would be to ensure that the distribution of non-linearity inputs remains more stable while training the network. [@Ioffe2015] proposed *batch normalisation* to do just that.
@@ -146,19 +153,16 @@ The batch normalising transform over a batch of univariate inputs, $x_{1}, \dots
 
 The reason for the scale and shift step is to allow the layer to represent the identity transform if the normalised inputs are not suitable for the following layer, *i.e.* the scale and shift step will reverse the normalisation step if $\gamma=\sqrt{\sigma^{2}+\epsilon}$ and $\beta=\mu$.
 
-
 The batch normalisation layer attempts to normalise neuron activations to zero mean and unit variance [@Ioffe2015].
 It has become the stanard when training deep CNNs.
 Training with normalisation techniques is perturbed by Stochastic Gradient Descent (SGD), stochastic regularisation (like dropout) and the estimation of the normalisation parameters.
 Both RNNs and CNNs can stabilise learning via weight sharing, therefore they are less prone to perturbations.
 Fully-connected NNs do not have this luxury and shows high variance in the training error when trained with normalisation techniques.
 
-- batchnorm
-- selu?
+In the next chapter we will disscuss the work on Self-Normalising Neural Networks which claims to remove the need for layer normalisation.
+In practive, batchnorm is still very popular.
 
 ### Skip-connections \label{sec:resnet}
-- resnet and densenet
-- how resnet is essentially boosting
 
 Residual Networks became very popular after it was used to win one of the ImageNet competiions [@He2015].
 The residual connection layer can simply be formalised as
@@ -169,23 +173,37 @@ $$
 Here, the combination is by addition, but other ways can also be used, like multiplication or concatenation.
 These layers are very useful when training deeper neural networks since they encourage gradient flow through interval layers.
 
+DenseNet is another well-known network making use of skip connections.
+There was also a parallel drawn between ResNet and boosting methods since both are approaches to fitting a model to the residual.
+
 ### Embeddings \label{sec:embeds}
 
-Like word embeddings.
-Learnable mapping of an item to a vector.
+An embedding is a layer that maps a discrete input to a numeric vector representation.
+It was first used in NLP in order to represent words as numbers so that it can be processed by a numeric model.
+The goal is to map discrete inputs to a meaningful vector space where, for example, items with similar meaning exist close to eachother.
+
+Initially the mappings were configured independenty of the neural network with approaches using co-occurence measures.
+The real breakthrough came when the mappings were defined as learnable layers in the network.
+Thus they can be tuned just like any other parameter in the network.
+The parameters of the embedding function (or layer) are first randomly initialised and then gets tuned along with the rest of the NN during training.
+
+An embedding operation can either be viewed as a table lookup or a matrix multiplication of the discrete input in a one-hot encoded form.
 
 ### Attention \label{sec:attention}
 
-First proposed in neural machine translation [@Bahdanau2014] and now almost used ubiquitously in natural language processing applications.
+Attention is one of the standout breakthroughs made in deep learning in recent times.
+It was first (?) proposed in neural machine translation [@Bahdanau2014] and now almost used ubiquitously in natural language processing applications.
+It was also found useful in computer vision applications, like image captioning, and also in audio processing.
+
+The main idea of an attention module is to force a layer to only focus on a certain subset of its inputs at different stages of computation.
+For example, in image captioning, one may use a RNN to sequentially output words describing the image.
+With the use of an attention model, the network is restricted to only look at certain parts of an image at every step, avoiding having to look at the full image everytime.
+In an ideal world, an attention module should not be necessary and we would want the network to learn if certain parts of images are not required to look at.
+However, currently this built-in prior proves to be extremely helpful with current learning algorithms.
 
 ## One-cycle Policy \label{sec:onecyc}
 
-- can include experiment here
-
-
-[@Smith2018]
-
-+ reduce training time and increase performace
+The 1Cycle policy [@Smith2018] reduces training time and increases performance.
 
 Currently the process of setting the hyper-parameters, including designing the network architecture, requires expertise and extensive trial and error and is based more on serendipity than science. 
 
@@ -273,13 +291,33 @@ complex dataset requires less regularization so test smaller weight decay values
 
 ## Model Interpretation \label{sec:interp}
 
-Although Deep Learning is now the state-of-the-art for many machine learning tasks, it still trailing behind other algorithms in terms of model interpretability.
+Although Deep Learning is now the state-of-the-art for many machine learning tasks, it is still trailing behind other algorithms in terms of model interpretability.
 But keep in mind this is not an unusual trade-off; between prediction performance and model interpretability.
 DNNs are occasionally referred to as "black boxes" since it is very difficult to interpret what is going on inside the stacks of linear and non-linear layers.
-This one of deep learning's greatest criticisms and is large reason why it cannot be used in some production environments. 
-For example, in the clinical domain, model transparency is of utmost importance, given that predictions  might be used to affect real-world medical decision-making and patient treatments [@Shickel2017].
+This is one of deep learning's greatest criticisms and is a large reason why it cannot be used in some production environments. 
+For example, in the clinical domain, model transparency is of utmost importance, given that predictions might be used to affect real-world medical decision-making and patient treatments [@Shickel2017].
 
 Fortunately, some work has been done to gain insights from NNs.
+
+### Neural Network Specific
+
+We have showed previously that it is possible to inspect activations and weights of layers at different levels of the network.
+If the network is small, one might gain insight to what the network has learned or why it is making certain decisions.
+However, most useful neural networks are at least three layers deep, making its activations and weights more complex to interpret.
+
+When fully convolutional networks are used, there are ways to visualise which parts of the inputs were important in making a certain decision.
+These visualisations are called class activation maps.
+But they cannot be used with fully connected layers.
+
+Another common interpretation tool, in order to gain insight into what specific neurons are looking for, is to rank the inputs by the magnitude of their activation at that neuron.
+Then, if one would be able to manually spot similarities between the highest ranked inputs, one would have a potential description of the pattern that triggers that neuron.
+This process is manual and not guarranteed to produce useful insights, especially when there are many neurons to investigate.
+
+- Distilling Neural Networks, i.e. training a decision tree on train neural network generated data. https://arxiv.org/pdf/1711.09784.pdf
+- Mimic leanring [@Che2016]
+- Plotting embeddings in lower dimensional space with PCA or t-sne
+- evaluate which inputs get activated by a certain unit.
+- 
 
 ### Model Agnostic
 
@@ -292,11 +330,3 @@ If randomly permuting a feature did not affect the model performance at all, it 
 
 + Partial Dependece
 + SHAP
-
-### Neural Network Specific
-
-- Distilling Neural Networks, i.e. training a decision tree on train neural network generated data. https://arxiv.org/pdf/1711.09784.pdf
-- Mimic leanring [@Che2016]
-- Plotting embeddings in lower dimensional space with PCA or t-sne
-- evaluate which inputs get activated by a certain unit.
-- 

@@ -33,11 +33,11 @@ for i, params in config_df.iterrows():
         data = (src.split_by_idx(valid_ids).label_from_df(cols=dep_var).databunch(bs=512))
 
         if params['pretrain']: 
-                learn_dae = dae_learner(data, layers=[100,100], metrics=None, swap_noise=0.15)
+                learn_dae = dae_learner(data, layers=[500,250], metrics=None, swap_noise=0.15)
                 if fold == 0: lr_pre = request_lr(learn_dae)
                 learn_dae.fit_one_cycle(15, lr_pre)
 
-        learn = tabular_learner(data, layers=[100,100], metrics=accuracy, mixup_alpha=0)
+        learn = tabular_learner(data, layers=[500,250], metrics=accuracy, mixup_alpha=0)
 
         if params['pretrain']: 
                 # learn.split(lambda m: m.layers[-1])

@@ -120,7 +120,7 @@ A more detailed summary of the thesis is outlined shortly.
 First we cover the fundamental concepts of Statistical Learning Theory.
 These concepts are referred to throughout the thesis and therefore it will be beneficial to be familiar with them.
 
-## Overview of Statistical Learning Theory/Machine learning
+## Overview of Statistical Learning Theory \label{sec:SLT}
 
 Machine or statistical learning algorithms (used interchangably) are used to perform certain task that are too difficult or inefficient to solve with fixed rule-based programs. 
 These algorithms are able to learn how to perform a task from data. 

@@ -166,12 +166,18 @@ However, ReLUs may suffer from the "dead ReLU" problem, which is, if a ReLU neur
 This sparsity of the activations is what some believe is the reason for the effectivenss of ReLUs [@Sun2014].
 If dead activations wants to be avoided, alternative activations functions are PReLUs [@He2015] and Leaky ReLUs [@Maas2013], but they fall out of the scope of this work.
 
-Typically, choosing the right activation function for a specific task comes down to trial and error, however, in most cases it would be sufficient to use ReLUs. 
+Typically, choosing the right activation function for a specific task comes down to trial and error, however, in most cases it would be sufficient to use ReLUs after each hidden layer.
+When doing classification, it is often useful to produce outputs between 0 and 1 for each category as estimates of the conditional class probabilities.
+Therefore we may use a sigmoid activation function on the output layer.
+When doing (single label) multiclass classifcation it is also desirable for these ouputs to sum to 1, similar to prababilities.
+In that case we may use an activation function called the *softmax*, which is exactly the logit transformation introduced in \Sref{sec:SLT}: $\text{softmax}(\boldsymbol{x})_{k}=\frac{e^{x_{k}}}{\sum_{l=1}^{K}x_{l}}$.
+For regression tasks, we mostly omit an activation function on the output layer.
+
 In our experiments we will show how the different activation functions perform on tabular data and compare it to the *Scaled Exponential Linear Units* (SELUs) [@Klambauer2017] activation, which is supposed to allow us to more effectively train deeper neural networks.
 The neural network depth refers to its number of hidden layers, whereas the width of a layer refers to the number of neurons it consists of.
 The choice in network depth and layer width is the topic of the next section.
 
-### Size of the Network
+### Size of the Network \label{sec:netsize}
 
 The network depth and the width of its hidden layers (*i.e.* the size of the network) are hyperparameters of the model.
 They control the capacity or the flexibility of a neural network; referring to its ability to model complex functions.
@@ -182,6 +188,7 @@ In addition, more layers and more neurons adds to the time taken and hardware re
 Thus the challenge is to find a network size that is large enough to capture all the complexities in the data, but small enough to avoid overfitting.
 Currently the best way of finding the optimal size of a network for a given problem is by experimentation.
 Note, that this is true for many of the compoments of neural networks and deep learning.
+Later in this chapter, \Sref{sec:basicreg}, we will see why tunining the network size is not necessarily the best way of controlling overfitting.
 
 Theoretically, according to the universal approximation theorem [@Cybenko1989], a neural network with a single hidden layer and a finite number of neurons can approximate any continuous function.
 Which begs the question as to why we need more hidden layers.
@@ -190,7 +197,7 @@ It may also be that the number of neurons needed for a single hidden layer netwo
 By choosing deeper networks we are assuming that the function we are trying to learn is composed of several simpler functions.
 Building in this prior proves to useful empirically [@Goodfellow2016, pp.197-198], especially for tasks of a hierarchical nature like in computer vision.
 
-In our experiments we will see what effect the layer width and network depth have on the generalisation performance on tabular data.
+In our experiments we will see what effect the layer width and network depth have on the generalisation performance on different tabular datasets.
 The networks used for tabular data learning problems are typically much shallower than those used for say computer vision and NLP.
 We investigate why this is the case.
 Later in this chapter we view this problem from a representation learning perspective which will also give us some insight on the matter.
@@ -200,15 +207,13 @@ But first, in the next section, we discuss the process of training a neural netw
 
 ### Optimisation \label{sec:optimisation}
 
-As mentioned before, fitting a linear regression model can be reduced to finding the optimal weights to minimise the MSE function.
-In fact, typically model training procedures can be described as the search for its internal parameters that minimises or maximises some *objective function*. 
-Therefore statistical learning and optimisation are closely related. 
+Statistical learning and optimisation are closely related. 
 Optimisation refers to the task of either minimising or maximising some function $J(x)$ by altering $x$. 
-The function we want to optimise is called the objective function. 
+The function we want to optimise is called the *objective function*. 
 When we are minimising the objective function, we may also refer to the objective function as the *cost* or *loss function*. 
 These terms will be used interchangeably throughout the thesis.
 
-As mentioned in the previous section, parameter estimation (or optimisation) of a linear (or logistic regression) model is usually done using OLS or maximum likelihood estimation (MLE). 
+As mentioned in the previous chapter, parameter estimation (or optimisation) of a linear (or logistic regression) model is usually done using OLS or maximum likelihood estimation (MLE). 
 In this section, however, we discuss an alternative parameter estimation method which is also relevant for the optimisation of neural networks.
 
 Consider the MSE loss function:
@@ -237,13 +242,11 @@ After obtaining the above ${N}$ partial derivatives, an update at the $(r+1)$-th
 $$
 \boldsymbol{w}_{k}^{(r+1)}=\boldsymbol{w}_{k}^{(r)}-\gamma\sum_{i=1}^{n}\frac{\partial L_{i}}{\partial\boldsymbol{w_{k}^{(r)}}},
 $$
-where $\gamma$ is called the *learning rate* and determines the size of the step taken toward the optimal direction. 
+where $\gamma$ is called the *learning rate* and determines the size of the step taken towards the optimal direction. 
 One typically would like to set the learning rate small enough so that one does not overshoot the minimum, but large enough to limit the number of iterations before convergence. 
-This value can be determined via a line search but is not always ideal since this may render the training time of DNNs too long. 
-Another option is to reduce the learning rate after every fixed number of iterations. 
-More detail regarding the implication of the learning rate will be given in \Cref{chp:dnn}.
+The learning rate is a crucial parameter when training neural networks; we will discuss its significance in \Sref{sec:lr}.
 
-The procedure of repeatedly evaluating the gradient of the objective function and then performing a parameter update, is called *gradient descent* [Cauchy, 1847]. 
+The procedure of repeatedly evaluating the gradient of the objective function and then performing a parameter update, is called *gradient descent* (Cauchy, 1847). 
 Gradient descent forms the basis of the optimisation procedure for neural networks.
 
 Note that a weight update is made by evaluating the gradient over a set of observations, $\{\boldsymbol{x}_{i},i=1,\dots,n\}$. 
@@ -282,7 +285,9 @@ In \autoref{fig:sgd}, the dashed lines represent the decision boundary defined b
 We observe that initially the estimated decision boundary is far from the OLS solution, but as the update iterations proceed, the decision boundary is rotated and translated until finally matching the OLS line. 
 It took 29 iterations for the procedure to reach convergence.
 
-```{r, cache=TRUE,eval=FALSE, fig.cap = "Plots of the gradient descent example. (a) The data points in input space. The shades in the background represent the class division in input space, with the decision boundary determined by linear least squares estimation. The dashed lines represent the decision boundaries learned at different iterations. (b) The loss calculated at each iteration. \\label{fig:sgd}"}
+```{r, cache=TRUE,eval=TRUE, fig.cap = "Plots of the gradient descent example. (a) The data points in input space. The shades in the background represent the class division in input space, with the decision boundary determined by linear least squares estimation. The dashed lines represent the decision boundaries learned at different iterations. (b) The loss calculated at each iteration. \\label{fig:sgd}"}
+library(MASS)
+library(cowplot)
 # generate the data
 set.seed(1)
 
@@ -352,6 +357,8 @@ db_coords <- t(sapply(1:nrow(d_bounds), function(a) {
 colnames(db_coords) <- c("dx", "dy")
 d_bounds <- cbind(d_bounds, db_coords)
 
+library(ggplot2)
+library(dplyr)
 library(latex2exp)
 # Plot
 p <- D %>% 
@@ -390,7 +397,7 @@ plot_grid(p, p_loss, labels = c("(a)", "(b)"), nrow = 1, align = "vh", rel_width
 
 In \Cref{sec:optimisation} we discussed how to fit a linear model using the Stochastic Gradient Descent optimisation procedure.
 Currenlty, SGD is the most effective way of training deep networks. 
-To recap, SGD optimises the parameters $\theta$ of a networks to minimise the loss,
+To recap, SGD optimises the parameters $\theta$ of a network to minimise the loss,
 $$
 \theta = \arg\min_{\theta}\frac{1}{N}\sum_{i=1}^{N}l(\boldsymbol{x}_{i}, \theta).
 $$
@@ -401,13 +408,17 @@ $$
 $$
 Using a mini-batch of samples instead of one at a time produces a better estimate of the gradient over the full training set and it is computationally much more efficient.
 
-This section discusses the same procedure, but applied to a simple single hidden layer neural network. 
-This is made possible by the *backpropogation* algorithm. 
-Note, this process extends naturally to the training of deeper networks.
-
-The neural network described in the previous section has a set of unknown adjustable weights that defines the input-output function of the network. 
-They are the $\alpha_{0m}, \boldsymbol{\alpha}_{m}$ paramters of the linear function of the inputs, $\boldsymbol{X}$, and the $\beta_{0k}, \boldsymbol{\beta}_{k}$ paramaters of the linear transformation of the derived features, $\boldsymbol{Z}$. 
-Denote the complete set of parameters by $\theta$. 
+This section discusses the same procedure, but applied to a simple single hidden layer neural network for multiclass classification, decomposed as:
+$$
+\begin{aligned}
+f_{k}(\boldsymbol{x})&=g_{k}(\boldsymbol{\beta}^{\intercal}_{k}\boldsymbol{z}), \quad k=1,\dots,K\\
+z_{m}&=\sigma(\boldsymbol{\alpha}_{m}^{\intercal}\boldsymbol{x}),\quad m=1,\dots, M
+\end{aligned}
+$$
+where $\sigma(\cdot)$ is the sigmoid activation and $g(\cdot)$ the softmax activation.
+The neural network has a set of unknown adjustable weights that defines the input-output function of the network. 
+They are the parameters of the linear function of the inputs, $\boldsymbol{\alpha}_{m}=(\alpha_{0m}, \alpha_{1m},\dots,\alpha_{pm})$, and the paramaters of the linear transformation of the derived features, $\boldsymbol{\beta}_{k}=(\beta_{0k}, \beta_{1k},\dots,\beta_{mk})$.
+Denote the complete set of parameters by $\theta$.
 Then the objective function for regression can be chosen as the sum-of-squared-errors:
 $$
 L(\theta) = \sum_{k=1}^{K}\sum_{i=1}^{N}\left(y_{ik}-f_{k}(\boldsymbol{x}_{i})\right)^{2}
@@ -420,8 +431,9 @@ $$
 with corresponding classifier $G(\boldsymbol{x})=\arg\max_{k}f_{k}(\boldsymbol{x})$.
 Since the neural network for classification is a linear logistic regression model in the hidden units, the paramaters can be estimated by maximum likelihood. 
 According to @Hastie2009 [p. 395], the global minimiser of $L(\theta)$ is most likely an overfit solution and we instead require regularisation techniques when minimising $L(\theta)$.
+Furthermore, as the network becomes larger, MLE becomes intractable.
 
-Therefore, one rather uses gradient descent and backpropogation to minimise $L(\theta)$.
+Therefore, one rather uses gradient descent and the *backpropogation* algortihm [@Rumelhart1988] to minimise $L(\theta)$.
 This is possible because of the modular nature of a neural network, allowing the gradients to be derived by iterative application of the chain rule for differentiation. 
 This is done by a forward and backward sweep over the network, keeping track only of quantities local to each unit.
 
@@ -433,7 +445,7 @@ L(\theta)&=\sum_{i=1}^{N}L_{i}\\
 \end{aligned}
 $$
 is as follows. 
-The relevant derivatives for the algortihm are:
+Following the chain-rul, the relevant derivatives for gradient descent are:
 
 $$
 \begin{aligned}
@@ -446,10 +458,10 @@ Given these derivatives, a gradient descent update at the $(r+1)$-th iteration h
 $$
 \begin{aligned}
 \beta_{km}^{(r+1)}&=\beta_{km}^{(r)}-\gamma_{r}\sum_{i=1}^{N}\frac{\partial L_{i}}{\partial \beta_{km}^{(r)}},\\
-\alpha_{ml}^{(r+1)}&=\alpha_{ml}^{(r)}-\gamma_{r}\sum_{i=1}^{N}\frac{\partial L_{i}}{\partial \alpha_{ml}^{(r)}},
+\alpha_{ml}^{(r+1)}&=\alpha_{ml}^{(r)}-\gamma_{r}\sum_{i=1}^{N}\frac{\partial L_{i}}{\partial \alpha_{ml}^{(r)}}.
 \end{aligned}
 $$
-where $\gamma_{r}$ is called the learning rate.
+
 Now write the gradients as
 $$
 \begin{aligned}
@@ -465,52 +477,64 @@ $$
 which is known as the backpropogation equations.
 Using this, the weight updates can be made with an algortihm consisting of a forward and a backward pass over the network. 
 In the forward pass, the current weights are fixed and the predicted values $\hat{f}_{k}(\boldsymbol{x}_{i})$ are computed. 
-In the backward pass, the errors $\delta_{ki}$ are computed, and then backpropogated via the backpropogation equations to give obtain $s_{mi}$. 
+In the backward pass, the errors $\delta_{ki}$ are computed, and then backpropogated via the backpropogation equations to obtain $s_{mi}$. 
 These are then used to update the weights.
+This approach extends naturally to any size network and differentiable layers (functions).
 
 Backpropogation is simple and its local nature (each hidden unit passes only information to and from its connected units) allows it to be implented efficiently in parallel. 
 The other advantage is that the computation of the gradient can be done on a batch (subset of the training set) of observations. 
 This allows the network to be trained on very large datasets. 
-One sweep of the batch learning through the entire training set is known as an epoch. 
-It can take many training epochs for the objective function to converge. 
 
-### Learning Rate
+In summary, training a neural network consists of these four steps:
 
-The convergence times also depends on the learning rate, $\gamma_{r}$. 
-There are no easy ways for determining $\gamma_{r}$. 
-A small learning rate slows downs the training time, but is safer against overfitting and overshooting the optimal solution.
-With a large learning rate, convergence will be reached quicker, but the optimal solution may not have been found. 
-One could do a line search of a range of possible values, but this usually takes too long for bigger networks. 
-One possible strategy for effective training is to decrease the learning rate every time after a certain amount of iterations.
+1. Initialise the network weights: give random set of numbers to the network parameters.
+2. Forward propogation: pass the input through the network layers to produce an output.
+3. Calculate the error: compare the predicted output with the true output and measure the difference using an objective function.
+4. Backward propogation: calculate the gradients of the objective function with respect to the weights and update the weights accordingly.
 
-Recently, in (https://arxiv.org/abs/1711.00489) (no bibtex entry), the authors found that, instead of learning rate decay, one can alternatively increase the batch size during training. They found that this method reaches equivalent test acccuracies compared to learning rate decay after the same amount of epochs. 
-But their method requires fewer parameter updates.
+These four steps are typically repeated until convergence of the loss function.
+It can take many training epochs for the objective function to converge.
 
 ### Weight initialisation
 
-### Basic Regularisation
+Before one begins training a neural network, one needs to initialise its weights.
+We expect a well trained neural network to have an equal number of weights smaller than zero and greater than zero.
+If we initialise all weights to be zero, every neuron will compute the same output and therefore prodcue the same gradient and undergo the same weight update.
+We still want to initialise the weights as small as possible but each one unique.
+Sampling from zero mean and unit variance Gaussian distribution is a natural fit, however, the variance of the outputs from a randomly initialised neuron grows with increasing number of inputs.
+Therefore we may scale the weight vector by the square root of its number of inputs to normalise the variance to 1.
+This ensures that all neurons in the network initially have approximately the same output distribution and empirically improves the rate of convergence.
+[@He2015a] derived a weight initialisation specifically for ReLU neurons.
 
-There are many ways to prevent overfitting in deep neural networks. 
-The simplest strategies for single hidden layer networks are by early stopping and weight decay. 
-Stopping the training process early can prevent overfitting. 
-When to stop can be determined by a validation set approach. 
-Weight decay is the addition of a penalty term, $\lambda J(\theta)$, to the objective function, where,
+### Basic Regularisation \label{sec:basicreg}
 
-$$
-J(\theta)=\sum_{km}\beta^{2}_{km} + \sum_{ml}\alpha^{2}_{ml}.
-$$
-This is exactly what is done in ridge regression [@Hastie2009, Ch. 4]. 
-$\lambda \ge 0$ and larger values of $\lambda$ tends to shrink the weights towards zero. 
-This helps with the generalisation ability of a neural network, but recently more effective techniques to combat overfitting in DNNs have been developed. 
-These are dicussed in \Cref{sec:over}.
+From \Sref{sec:netsize} it seems that smaller neural networks can be preferred if the data is not complex enough to prevent overfitting.
+However, this is untrue and there are much better ways of regularising neural networks, which we discuss shortly and in the next chapter.
+Smaller networks are harder to train with local methods such as gradient descent because their loss functions have poor local minima that are easy to converge to.
+Whereas the local minima of larger networks are much better in terms of their actual loss [@Choromanska2014].
 
-It is common to standardise all inputs to have mean zero and standard deviation of one. 
-This ensures that all input features are treated equally. 
-Now we have covered all of the basics for simple (1-layer) neural networks.
+One of the preferred ways of fighting overfitting in neural networks is by using L1 or L2 regularisation, *i.e.* adding a penalty term proportional to the magnitude of the weights to the objective function.
+This is exactly what is done in Ridge Regression and the Lasso [@Hastie2009, Ch. 4].
+In L2 regularisation we add the term $\frac{1}{2}\lambda w^{2}$ to the objective and in L1 regularisation the penalty term $\lambda |w|$.
+These penalties forces the weights to be small and the $\lambda$ parameter controls the strength of the regularisation.
+The "$\frac{1}{2}$" in front of the L2 penalty is added for convenience to make the derivative equal to $\lambda w$.
+This makes it then equivalent to decaying each of the weights linearly towards zero: $w'=w-\lambda w$, which is also known as *weight decay*.
+In practice, L2 regularisation outperforms L1 regularisaion.
 
-+ move regularisation to next chapter
-+ lead into modern learning policies
-+ lead into what it is learning
+Another basic way of preventing the neural network to overfit is to stop the training process "early" and to not train until the training loss converges.
+A converged training loss is not equivalent to an optimal test loss and therefore the test or validation loss should be observerd during training.
+One approach is to stop training when the validation loss stops decreasing.
+As mentioned before, the learning rate also plays a big part in finding the optimal weights.
+Next we discuss how we can tune the learning rate to train faster and to find better local minima.
+More advanced regularisation techniques are discussed in \Cref{chp:dl}.
+
+### Learning Rate Annealing \label{sec:lr}
+
+There are no easy ways for determining $\gamma_{r}$. 
+A small learning rate slows downs the training time, but is safer against overfitting and overshooting the optimal solution.
+With a large learning rate, convergence may be reached quicker, but the optimal solution may not have been found. 
+One could do a line search of a range of possible values, but this usually takes too long for bigger networks. 
+One possible strategy for effective training is to decrease the learning rate every time after a certain amount of iterations.
 
 ## Representation Learning \label{sec:rep}
 
