@@ -281,132 +281,126 @@ The output of the attention module, $\boldsymbol{y}$, is then an elementwise mul
 More detail can be found in [@Xu2015].
 We will elaborate on the concepts of *Self-Attention* [@Cheng2016a] and *Multi-Head Attention* [@Vaswani2017] in \Cref{sec:tab_att}.
 
-## One-cycle Policy \label{sec:onecyc}
+## Super-Convergence \label{sec:onecyc}
 
-The 1Cycle policy [@Smith2018] reduces training time and increases performance.
+The process of setting the hyperparameters for learning algorithms are hard.
+It requires expertise, extensive trial and error and is more of an art form than a science.
+There are many hyperparameters to consider: learning rate, batch size, momentum, and weight decay, to name a few.
+Although the right parameters make a huge difference in training time and performance, there are no simple and easy ways to find them.
+Doing a grid search or a random search in the parameter space is computationally very expensive.
 
-Currently the process of setting the hyper-parameters, including designing the network architecture, requires expertise and extensive trial and error and is based more on serendipity than science. 
+In this section we summarise the work done in [@Smith2018] to give guidance on finding and setting the learning rate, batch size and weight decay.
+The approach suggested is based on finding the right balance between overfitting and underfitting by using the right hyperparameters.
+By looking at the validation loss at early stages of training, one will find clues to which parameters are optimal.
+This eliminates the necessity of running complete grid or random searches.
 
-Currently there are no simple and easy ways to set hyper-parameters – specifically, learning rate, batch size, momentum, and weight decay.
-Grid search or random search is expensive.
-Optimal parameters make a huge difference in training time and performance.
+By following the hyperparameter selection approach discussed next, one can achieve tremendous improvements in training time and accuracy.
+If done correctly one may exploit a property called *super-convergence* [@Smith2017], where neural networks can be trained an order of magnitude faster than with standard training methods.
+\autoref{fig:supercon} plots the test loss over each training iteration of the proposed hyperparameter strategy compared to a fixed learning rate policy.
+We see that with the proposed method, the model achieves a better accuracy than the standard approach and in eigthth of the training iterations.
+Next we discuss how to select hyperparameters to achieve super-convergence.
 
-Look for clues of overfitting and underfitting to determine best parameters.
+![Reduced training iterations and improved performance with super-convergence principle.\label{fig:supercon}](figures/supercon.png)
 
-The experiments discussed herein indicate that the learning rate, momentum, and regularization are tightly coupled and optimal values must be determined together.
+Firstly note that the effects of the learning rate, batch size and other regularisation techinques, like weight decay, are tightly coupled and should be tuned together.
+We start with setting the learning rate.
+In \Cref{chp:nn} we showed that the learning rate is an important parameter and that one can either keep it fixed during training or decrease it by some factor when it looks necessary.
+[@Smith15] suggests using *cyclical learning rates* (CLR).
+A CLR cycle consists of two stages, one where the learning rate linearly increases during training up until a certain maximum and one where the learning rate decreases linearly back to a chosen minimum.
+One needs to specify the number of epochs in each stage, also known as the step size and the minimum and maximum learning rate.
+One reason why CLR is believed to work is that variable learning rate allows the model to better dodge saddle points on the loss surface.
 
-by monitoring validation/test loss early in the training, enough information is available to tune the
-architecture  and  hyper-parameters  and  this  eliminates  the  necessity  of  running  complete  grid  or
-random searches.
+In his most reason work, [@Smith2018], the author suggest using only a single cycle of CLR, called the *1cycle* policy.
+The learning rate setting of the 1cycle policy is illustrated in \autoref{fig:onecyc}.
 
-Underfitting is when the machine learning model is unable to reduce the error for either the test or
-training set.  The cause of underfitting is an under
-capacity
-of the machine learning model; that is,
-it is not powerful enough to fit the underlying complexities of the data distributions.  Overfitting
-happens  when  the  machine  learning  model  is  so  powerful  as  to  fit  the  training  set  too  well  and
-the generalization error increases.
+![The learning rate schedule of the 1Cycle policy.\label{fig:onecyc}](figures/onecyc.png)
 
-The takeaway is that
-achieving the horizontal part of the test loss is the goal of hyper-
-parameter tuning
+Clearly one also needs to set the bounds of the learning rate, however luckily, the author designed a learning rate range test to help one do just that.
+In the learning rate range test, training starts with a small learning rate which is slowly increased linearly throughout a pre-training run.
+Typically the training loss will slowly start to decrease as the learning rate increases, up until a certain point at which the learning rate becomes to large and the loss starts to increase.
+The learning rate at this point is the largest learning rate one can use during training.
+The lower bound of the learning rate can be set to a factor of 10 times less than the max.
+See \autoref{fig:range_test} for example output of the range test and how to deterimin the learning rate bounds for the 1Cycle policy.
+One should be careful of too small a stepsize since that increases the rate of the learning rate increase which might make the training process unstable.
 
-The art of setting the network’s hyper-parameters amounts to ending up at the balance point between
-underfitting and overfitting
+![An example output of a learning rate range test.\label{fig:range_test}](figures/range_test.png)
 
-If the learning rate (LR) is too small, overfitting can occur.  Large learning rates help to regularize
-the training but if the learning rate is too large, the training will diverge.
+Note that large learning rates also acts as a form regularisation [@Smith15].
+Thus if one uses large learning rate, one might want to reduce some of the other regularisation controls.
+Along with the learning rate [@Smith2018] suggests and shows that larger batch sizes allow for training with larger learning rates and thus convergence can be reached quicker.
+So when setting the batch size one would choose the largest possible that fits into memory.
 
-To use CLR, one specifies minimum and maximum learning rate boundaries and a stepsize. The
-stepsize is the number of iterations (or epochs) used for each step and a cycle consists of two such
-steps – one in which the learning rate linearly increases from the minimum to the maximum and
-the other in which it linearly decreases. 
-
-n the LR range test, training starts with a small learning rate which is slowly increased linearly
-throughout a pre-training run.  This single run provides valuable information on how well the net-
-work can be trained over a range of learning rates and what is the maximum learning rate.  When
-starting with a small learning rate, the network begins to converge and, as the learning rate increases,
-it eventually becomes too large and causes the test/validation loss to increase and the accuracy to
-decrease.  The learning rate at this extrema is the largest value that can be used as the learning rate
-for the maximum bound with cyclical learning rates but a smaller value will be necessary when
-choosing a constant learning rate or the network will not begin to converge.
-
-the amount of regularization must be balanced for each dataset
-and architecture
-
-Contrary to this early work, this Section recommends using a larger batch size when using
-the 1cycle learning rate schedule, which is described in the above
-
-Weight decay is one form of regularization and it plays an important role in training so its value needs
-to be set properly.  The important point made above applies; that is, practitioners must balance the
-various forms of regularization to obtain good performance. the interested reader can see kuka et al. (2017) for a review of regularization methods.
-
-1.  Learning rate (LR): Perform a learning rate range test to a “large” learning rate.  The max
-LR depends on the architecture (for the shallow 3-layer architecture, large is 0.01 while for
-resnet, large is 3.0), you might try more than one maximum.  Using the 1cycle LR policy
-with a maximum learning rate determined from an LR range test, a minimum learning rate
-as a tenth of the maximum appears to work well but other factors are relevant, such as the
-rate of learning rate increase (too fast and increase will cause instabilities).
-
-2.  Total batch size (TBS): A large batch size works well but the magnitude is typically con-
-strained by the GPU memory. If your server has multiple GPUs, the total batch size is the
-batch size on a GPU multiplied by the number of GPUs. If the architecture is small or your
-hardware permits very large batch sizes, then you might compare performance of different
-batch sizes.  In addition, recall that small batch sizes add regularization while large batch
-sizes add less, so utilize this while balancing the proper amount of regularization. It is often
-better to use a larger batch size so a larger learning rate can be used.
-
-3.  Momentum:  Short runs with momentum values of 0.99, 0.97, 0.95, and 0.9 will quickly
-show the best value for momentum. If using the 1cycle learning rate schedule, it is better to
-use a cyclical momentum (CM) that starts at this maximum momentum value and decreases
-with increasing learning rate to a value of 0.8 or 0.85 (performance is almost independent
-of the minimum momentum value).  Using cyclical momentum along with the LR range
-test stabilizes the convergence when using large learning rate values more than a constant
-momentum does.
-
-4.  Weight decay (WD): This requires a grid search to determine the proper magnitude but
-usually  does  not  require  more  than  one  significant  figure  accuracy.   Use  your  knowl-
-edge of the dataset and architecture to decide which values to test.  For example, a more
-complex dataset requires less regularization so test smaller weight decay values. A  shallow  architecture  requires  more  regularization  so  test  largerweight decay values.
+The weight decay is another important value to be set properly along with the 1Cycle policy.
+Since it is a regularisation parameter it is important that it is in balance with the learning rate.
+The proposed way of setting the weight decay is through a grid search.
+Once can do a few short training runs at differnt weight decays and see if the validation loss gives any indication of which one is better.
+Another option is to test different weight decays during the learning rate range test and see how they behave.
+Then we will look for the weigth decay that produces the most stable loss and allows the use of the largest learning rate.
+In our experiments we follow these suggestions to find the best hyperparamters for each model and dataset.
 
 ## Model Interpretation \label{sec:interp}
 
 Although Deep Learning is now the state-of-the-art for many machine learning tasks, it is still trailing behind other algorithms in terms of model interpretability.
 But keep in mind this is not an unusual trade-off; between prediction performance and model interpretability.
-DNNs are occasionally referred to as "black boxes" since it is very difficult to interpret what is going on inside the stacks of linear and non-linear layers.
+Deep neural networks are occasionally referred to as "black boxes" since it is very difficult to interpret what is going on inside the stacks of linear and non-linear layers.
 This is one of deep learning's greatest criticisms and is a large reason why it cannot be used in some production environments. 
 For example, in the clinical domain, model transparency is of utmost importance, given that predictions might be used to affect real-world medical decision-making and patient treatments [@Shickel2017].
-
-Fortunately, some work has been done to gain insights from NNs.
+Fortunately, some work has been done to gain insights from neural networks.
+We discuss the topic briefly in the following sections.
 
 ### Neural Network Specific
 
-We have showed previously that it is possible to inspect activations and weights of layers at different levels of the network.
+We have showed in \Sref{sec:rep} that it is possible to inspect activations and weights of layers at different levels of the network.
 If the network is small, one might gain insight to what the network has learned or why it is making certain decisions.
 However, most useful neural networks are at least three layers deep, making its activations and weights more complex to interpret.
 
 When fully convolutional networks are used, there are ways to visualise which parts of the inputs were important in making a certain decision.
-These visualisations are called class activation maps.
-But they cannot be used with fully connected layers.
+These visualisations are called class activation maps [@Zhou2016] ([@Selvaraju2017] suggests a similar approach).
+But they cannot be used with fully connected layers and only with fully convolutional networks.
 
 Another common interpretation tool, in order to gain insight into what specific neurons are looking for, is to rank the inputs by the magnitude of their activation at that neuron.
 Then, if one would be able to manually spot similarities between the highest ranked inputs, one would have a potential description of the pattern that triggers that neuron.
+This approach is called *Activation Maximisation* [@Erhan2009].
 This process is manual and not guarranteed to produce useful insights, especially when there are many neurons to investigate.
 
-- Distilling Neural Networks, i.e. training a decision tree on train neural network generated data. https://arxiv.org/pdf/1711.09784.pdf
-- Mimic leanring [@Che2016]
-- Plotting embeddings in lower dimensional space with PCA or t-sne
-- evaluate which inputs get activated by a certain unit.
-- 
+An interesting take on model interpretation is shown in [@Frosst2017] and [@Che2016].
+Their ideas are based on the process of *knowledge distillation* [@Hinton2015] and leverages the fact that decision trees are easier to interpret.
+Knowledge distillation is the process of transferring the knowledge from one model (or an ensemble of models) to another model by training the target model to estimate the predictions of the source model (or ensemble).
+[@Frosst2017] and [@Che2016] used a soft-decision tree and boosted trees respectively to learn the mapping between the input and the neural network predictions.
+Once the tree based methods are trained, the usual intepretation tools of tree based models, like feature importance of evaluating how a sample traverses the tree, can be used to attempt to understand what the neural network is doing.
+It is interesting that in both publications the authors note that the tree based models trained on the neural network predictions achieved a better performance that the ones trained on the actual targets - indicating the value knowledge distillation can add.
 
 ### Model Agnostic
 
-#### Permutation Importance
+Besides interpretation tools specifically designed for neural networks, one can also make use of model agnostic tools, *i.e.* ones that can be used with any machine learning model.
+*The Permutation importance algorithm* computes feature importance scores for each input feature.
+The importance measure of a feature is deterimend by the model's sensitivity to a random permutation of the values of that feature.
+The expectation is that when a feature with a strong signal is shuffled before passed to the model, the performance of the model will drop significantly.
+On the other hand, if a feature has little effect on the target predictions, shuffling its values will not have a major impact on the model's performance.
 
-[@haldar2018] notes that the permutation test only produces sensical results on the assumption that the features are independent.
-Permuting the feature independently created examples that never occurred in real life, and the importance of features in that invalid space sent us in the wrong direction. 
-The test however is somewhat useful in determining features that were not pulling their weight.
-If randomly permuting a feature did not affect the model performance at all, it was a good indication that the model is probably not dependent on it.
+This technique was first introduced by [@Breiman2001] for the Random Forest algorithm but can also be generalised to other models.
+The steps for calculating the feature importances by the permuation importance algorithm are as follows:
 
-+ Partial Dependece
-+ SHAP
+1. Train a neural network on a dataset with $p$ input features.
+2. Evaluate the network on a validation set to obtain a performance metric $m_{0}$.
+3. For each of the $p$ input features, do:
+    - create a copy of the validation set and randomly shuffle the feature in this copy.
+    - Evaluate the neural network on this version of the validation set to obtain $m_{j}$, $j=1,\dots,p$.
+4. Rank the features based on $m_{j}-m_{0}$ (if a bigger $m$ is better).
+
+Permutation importance only produces sensical results on the assumption that the features are independent.
+Permuting the feature independently creates examples that never occurr in real life and the importance of features in that invalid space may be misleading.
+The test however can still be useful to identify inputs that are not important, *i.e.* not used by the model.
+If randomly permuting a feature does not affect the model performance at all, it may be a good indication that the model is not dependent on it.
+
+*Partial Dependence Plots* can be used to visaulise the relationship between input features and the target.
+This is another post-training interpretation tool and was first used in [@Friedman2001].
+Once a neural network is trained, we can evaluate what effect a change in any input feature has on a single prediction, by observing the change in the prediction.
+Say for example we want to see how feature $X_{1}$ influences the model prediction.
+By taking a single observation from the data we can evaluate how the model prediction changes by changing the value of $X_{1}$ to other possible values of $X_{1}$.
+And since this behaviour will most like vary for different observations, this process should be repeated for a subset of observations from the dataset.
+The average effect on the predictions at different values of $X_{1}$ can then be calculated along with standard errors of these effects.
+
+Other model agnostic interpretation tools, like SHAP values [@Lundberg2017], are also available.
+Here we only discussed the basic approaches.
+In the next two chapters we will show examples of how these model interpretation techniques can be implemented.

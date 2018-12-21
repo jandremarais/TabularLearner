@@ -481,6 +481,12 @@ These techniques are very familiar and effective in text, audio and image proces
 ## Other
 - 1cycle not used with tabular data before
 - How to interpret the model/decisions?
+
+[@haldar2018] notes that the permutation test only produces sensical results on the assumption that the features are independent.
+Permuting the feature independently created examples that never occurred in real life, and the importance of features in that invalid space sent us in the wrong direction. 
+The test however is somewhat useful in determining features that were not pulling their weight.
+If randomly permuting a feature did not affect the model performance at all, it was a good indication that the model is probably not dependent on it.
+
 - other processing
 - Regularisation Learning - https://arxiv.org/pdf/1805.06440.pdf
 

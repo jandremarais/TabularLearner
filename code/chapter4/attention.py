@@ -96,7 +96,7 @@ x,y = next(iter(data.train_dl))
 
 emb_szs = data.get_emb_szs({})
 model = AttentionModel(emb_szs, n_cats=len(data.cat_names), n_conts=len(data.cont_names),
-                       act_func=nn.LeakyReLU(inplace=True), d_model=10, h=3)
+                       act_func=nn.LeakyReLU(inplace=True), d_model=3, h=3)
 # pred = model(x[0])
 learn = Learner(data, model, metrics=accuracy)
 
