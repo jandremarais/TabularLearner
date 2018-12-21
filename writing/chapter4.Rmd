@@ -151,6 +151,9 @@ Majority of the time needs domain experts to help massage the data.
 Can follow a brute force approach but enumerating all the possible high-order features will exponentially increase the model search space which will just further increase the risk of overfitting.
 Can use multiple fully connected layers with non-linear activations of a NN.
 Fully-connected layers model all feature interactions impplicitly, but is not good enough to learn all types of interactions.
+
+### Attention \label{sec:tab_att}
+
 These layers are inefficient in learning multiplicative feature interactions.
 Hard to explain which features and combinations were important.
 [@Song2018] uses a multi-head self-attention mechanism which they call the interacting layer.
@@ -326,6 +329,12 @@ See in the Normalisation section what measures should be taken to ensure a NN ca
 - Residual Connections
 
 #### Self-normalising Units
+
+The batch normalisation layer attempts to normalise neuron activations to zero mean and unit variance [@Ioffe2015].
+It has become the stanard when training deep CNNs.
+Training with normalisation techniques is perturbed by stochastic gradient descent, stochastic regularisation (like dropout) and the estimation of the normalisation parameters.
+Both RNNs and CNNs can stabilise learning via weight sharing, therefore they are less prone to perturbations.
+Fully-connected NNs do not have this luxury and shows high variance in the training error when trained with normalisation techniques.
 
 Fully-connected DNNs with normalisation techniques are very sensitive to perturbations.
 DNNs exhibit a high variance in training error when trained using BatchNorm.

@@ -34,7 +34,7 @@ The linear layer transforming the input to the hidden layer is referred to as th
 The autoencoder can be trained in the same way as any other neural network, but by minimising a reconstruction loss.
 A reconstruction loss measures the distance between the reconstruction of the input and the actual input and thus the MSE loss function is common choice for continuous data.
 
-```{r, fig.cap="A simple single hidden layer autoencoder with 4-dimensional inputs and 2 neurons in the hidden layer.\\label{fig:ae}", out.height="30%"}
+```{r, fig.cap="A simple single hidden layer autoencoder with 4-dimensional inputs and 2 neurons in the hidden layer.\\label{fig:ae}", out.height="30%", fig.align='center'}
 knitr::include_graphics('figures/ae.png')
 ```
 
@@ -86,67 +86,90 @@ Pretraining is most effective when there is little data available for the superv
 The process of transferring what is learned doing one task (for example in pretraining) to another task (supervised learning for examples) is called *transfer learning*. When done effectively, pretraining and transfer learning can together dramatically reduce the number of training samples and computational power need to train a model.
 
 [@Zeiler2014] provides an insigtful investigation of the what a CNN learns when trained on image data. 
-From observing the types of features extracted for a trained image model (\autoref{fig:zeil}) it becomes clear why they are also effective on other image datasets. The learned filters seemed to look for generic image features like edges and color gradients which are useful for most computer vision tasks.
+From observing the types of features extracted for a trained image model (\autoref{fig:zeil}) it becomes clear why they are also effective on other image datasets. 
+The learned filters seemed to look for generic image features like edges and color gradients which are useful for most computer vision tasks.
+[@Howard2018] describes a good practice when doing transfer learning via gradual unfreezing and discriminative fine-tuning.
 
-```{r, fig.cap="Visualising the first layer convolutional filters leared by a neural network in a large image dataset. \\label{fig:zeil}", out.height="50%"}
+```{r, fig.cap="Visualising the first layer convolutional filters leared by a neural network in a large image dataset. \\label{fig:zeil}", out.height="50%", fig.align = "center"}
 knitr::include_graphics("figures/zeiler_filters.jpeg")
 ```
 
 ## More Regularisation
 
+In \Sref{sec:basicreg} we discussed basic regularisation methods for neural networks.
+There are many other ways of combatting overfitting.
+The following section discusses two regularisation techniques proven to be extremely powerful in almost every application of deep learning.
+
 ### Dropout \label{sec:dropout}
 
-Overfitting can be reduced by using dropout [@Hinton2012] to prevent complex co-adaptions on the training data. Dropout consists of setting the output of a hidden unit to zero with a probability $p$ (in the original paper they used $p=0.5$). The units which are set to zero do not contribute to the forward pass and do not participate in backpropogation. Every time an input is presented, the neural network samples a different set of units to be dropped out. 
+*Dropout* consists of randomly setting the output of a hidden neuron to zero with probability $p$.
+See \autoref{fig:dropout} for an illustration of how dropout effects the connections between neurons.
+The neurons which are set to zero do not contribute to the forward pass and do not participate in backpropogation. 
+Every time an input is presented, the neural network samples a different set of neurons to be dropped out. 
 
-This technique ensures that a unit does not rely on the presence of a particular set of other units. It is therefore forced to learn more robust features that are useful in conjunction with many different random subsets of the other units [@Krizhevsky2012].
+This technique ensures that a neuron does not rely on the signals of a particular set of other neurons,
+It is therefore forced to learn more robust features that are useful in conjunction with many different random subsets of the other units [@Krizhevsky2012].
 
-At test time, no units are dropped out and their output is multiplied by $1-p$ (make sure) to compensate for the fact that all of the units are now active. Dropout does tremendously well to combat overfitting, but it slows down the covergence time of training.
+In the original paper they used $p=0.5$ but the optimal selection will depend on the use case and is typically found by experimentation.
+At test time, no units are dropped out and their output is multiplied by $1-p$ to compensate for the fact that all of the units are now active. 
+Dropout does tremendously well to combat overfitting, but it slows down the covergence time of training.
 
 There are also parallels to be drawn between dropout and ensembling approaches [@Hinton2012].
-Since, at each training iteration a unique set of neurons are active which may then be viewed as a unique model.
+Since, at each training iteration a unique set of neurons are active which may then each be viewed as unique models.
 During training these models are combined - similar to the process of ensembling models.
 
-See \autoref{fig:dropout} for an illustration of how dropout effects the connections between neurons.
+```{r, fig.align="center", fig.cap="The effect dropout has on connections between neurons.\\label{fig:dropout}", out.width="80%"}
+knitr::include_graphics('figures/dropout.png')
+```
 
-![The effect dropout has on connections between neurons.\label{fig:dropout}](figures/dropout.png)
-
-This shows that dropout does break up co-adaptations, which is probably the main reason why it leads to lower generalization errors.
 
 ### Data Augmentation \label{sec:daug}
 
-As mentioned before, our aim with predictive models is to generalise well to an unseen test set.
+Recall that our aim with predictive models is to generalise well to an unseen test set.
 In an ideal world we would train a model on all possible variations of the data to capture all interactions and relationships.
 This is not possible in the real world.
 Such a dataset is not available and would be infinitely large.
+And even if it were, machine learning will then be unecessary since all the possible observations are observable and one could simply use a lookup or a search when predicting outcomes.
 
 In reality we have a finite subset of the full data distribution to train on.
 Any new samples with unique feature combinations will likely improve the models generalisablity.
-If the collection of new samples is not available, we can try to artificially create more.
+If the collection of new samples is not available, we can try to artificially create more through *data augmentation*.
 
-This is a standard approach especially in computer vision applications. For example, from a single image, we can rotate it, flip it horizontally, shift it any direction, crop it, and many other transformations without destroying the semantic content of the image.
+This is a standard approach especially in computer vision applications. For example, from a single image, we can rotate it, flip it horizontally, shift it in any direction, crop it, and many other transformations without destroying the semantic content of the image.
 But by doing so we are artificially increasing the size of the training set to help with overfitting.
-Of course this is not as effective as genuine new data samples, but it is a very effective and efficient substitute [@Perez2017].
-
+In \autoref{fig:aug} we see how a single image of a cat is turned into eight images by doing random transformations of the original image.
+In all of these images it is still possible to tell that it is an image of a cat.
+Of course this is not as effective as genuine new data samples, but it is a very effective and efficient substitute [@Perez2017]. 
 Data augmentation consistently leads to improved generalisation.
+
+```{r, fig.cap="Example data augmentations for images.\\label{fig:aug}", out.width="80%", fig.align = "center"}
+knitr::include_graphics('figures/augmentations.png')
+```
 
 Data augmentation can be formalised by the *Vicinal Risk Minimisation* principle [@Chapelle2001] where human knowledge is required to describe a vicinity around each observation in the training data so that artificial examples can be drawn from the vicinity distribution of the training sample to enlarge it.
 In image classification one can define the vicinity of an image as the set of its horizontal reflections and minor rotations, for example.
-Note that this approach is dataset dependent.
 
+Note that data augmentation is dataset and domain dependent and that the augmentations should preserve the semantic content or the signal in the observation.
+For example, taking too small crops of an image will ignore the context and may make it impossible to tell what is inside.
+And augmentations that are suitable for image data does not necessarily make sense for text data.
 
 ## Modern Architectures
 
+In the following sections we highlight some of the recently developed neural network layers and modules. 
+These operations were designed to make training more robust and efficient, to help learn more robust representations and be able to model more useful features, among others.
+
 ### Normalisation \label{sec:bnorm}
 
-forcing the activations throughout a network to take on a unit gaussian distribution at the beginning of the training. 
-are significantly more robust to bad initialization.
+One of the things that complicate the training of neural networks is the fact that hidden layers have to adapt to the continuously changing distribution of its inputs. 
+The inputs to each layer are affected by the paramaters of all its preceding layers and a small change in a preceding layer can lead to a much bigger difference in output as the network becomes deeper. 
+When the input distribution to a learning system changes, it is said to experience covariate shift [@Shimodaira2000].
 
-One of the things that complicate the training of neural networks is the fact that hidden layers have to adapt to the continuously changing distribution of its inputs. The inputs to each layer are affected by the paramaters of all its preceding layers and a small change in a preceding layer can lead to a much bigger difference in output as the network becomes deeper. When the input distribution to a learning system changes, it is said to experience covariate shift [@Shimodaira2000].
-
-Using ReLUs, carefull weight initialisation and small learning rates can help a network to deal with the internal covariate shift. However, a more effective way would be to ensure that the distribution of non-linearity inputs remains more stable while training the network. [@Ioffe2015] proposed *batch normalisation* to do just that.
+Using ReLUs, carefull weight initialisation and small learning rates can help a network to deal with the internal covariate shift. 
+However, a more effective way would be to ensure that the distribution of non-linearity inputs remains more stable while training the network.
+[@Ioffe2015] proposed *batch normalisation* to do just that.
 
 A batch normalisation layer normalises its inputs to a fixed mean and variance (similar to how the inputs of the network is normalised) and therefore it can be applied before any hidden layer in a network to prevent internal covariate shift. 
-The addition of this layer dramatically accelerates the training of DNNs, also because it can be used with higher learning rates. 
+The addition of this layer dramatically accelerates the training of deep neural networks, also because it can be used with higher learning rates. 
 It also helps with regularisation [@Ioffe2015], therefore in some cases dropout is not necessary.
 
 The batch normalising transform over a batch of univariate inputs, $x_{1}, \dots,x_{n}$ is done by the following steps:
@@ -174,16 +197,7 @@ The batch normalising transform over a batch of univariate inputs, $x_{1}, \dots
     $$
     where $\gamma$ and $\beta$ are the only two learnable paramaters of a batch normalisation layer.
 
-The reason for the scale and shift step is to allow the layer to represent the identity transform if the normalised inputs are not suitable for the following layer, *i.e.* the scale and shift step will reverse the normalisation step if $\gamma=\sqrt{\sigma^{2}+\epsilon}$ and $\beta=\mu$.
-
-The batch normalisation layer attempts to normalise neuron activations to zero mean and unit variance [@Ioffe2015].
-It has become the stanard when training deep CNNs.
-Training with normalisation techniques is perturbed by Stochastic Gradient Descent (SGD), stochastic regularisation (like dropout) and the estimation of the normalisation parameters.
-Both RNNs and CNNs can stabilise learning via weight sharing, therefore they are less prone to perturbations.
-Fully-connected NNs do not have this luxury and shows high variance in the training error when trained with normalisation techniques.
-
-In the next chapter we will disscuss the work on Self-Normalising Neural Networks which claims to remove the need for layer normalisation.
-In practive, batchnorm is still very popular.
+The reason for the scale and shift step is to allow the layer to represent the identity transform if the normalised inputs are not suitable for the following layer, *i.e.* the scale and shift step will reverse the normalisation step if $\gamma=\sqrt{\sigma^{2}+\epsilon}$ and $\beta=\mu$. Batch normalisation has now become a standard when training deep CNNs.
 
 ### Skip-connections \label{sec:resnet}
 
@@ -194,35 +208,78 @@ y=F(x)+x,
 $$
 *i.e.* combining the input to the layer(s) with the output of the layer(s).
 Here, the combination is by addition, but other ways can also be used, like multiplication or concatenation.
-These layers are very useful when training deeper neural networks since they encourage gradient flow through interval layers.
+The idea is also illustrated in \autoref{fig:skip_conn}.
 
-DenseNet is another well-known network making use of skip connections.
-There was also a parallel drawn between ResNet and boosting methods since both are approaches to fitting a model to the residual.
+```{r, fig.align="center", fig.cap="Diagram conceptualising a skip-connection.\\label{fig:skip_conn}", out.width="80%"}
+knitr::include_graphics('figures/skip_conn.png')
+```
+
+The DenseNet [@Huang2016] is another well-known network making use of skip connections.
+In a DenseNet each layer is connected to every other layer in the network.
+There are multiple benefits to using skip-connections: they alleviate the vanishing-gradient problem, strengthen feature propagation, encourage feature reuse, and may reduce the number of parameters required [@Huang2016].
+These benefits show in the empirical evaluations.
+It is interesting to note that one can draw a parallel between ResNets and boosting methods since both are approaches to fitting a model to the residual [@Huang2017].
 
 ### Embeddings \label{sec:embeds}
 
 An embedding is a layer that maps a discrete input to a numeric vector representation.
 It was first used in NLP in order to represent words as numbers so that it can be processed by a numeric model.
-The goal is to map discrete inputs to a meaningful vector space where, for example, items with similar meaning exist close to eachother.
+For instance the word "woman" may be represented by the vector $[1,3,5]$ and the word "man" by $[2,4,6]$.
+The goal is to map discrete inputs to a meaningful vector space where items with similar meaning exist close to each other.
+In contrast to using a one-hot encoded representation of words, where all words equally far apart.
+See \autoref{fig:emb} for an illustration of a such space[^emb_src].
 
-Initially the mappings were configured independenty of the neural network with approaches using co-occurence measures.
-The real breakthrough came when the mappings were defined as learnable layers in the network.
+```{r, fig.cap='Learned word embeddings in a 2-dimensional space.\\label{fig:emb}', fig.align="center", out.width="90%"}
+knitr::include_graphics('figures/embeds.png')
+```
+
+[^emb_src]: https://www.shanelynn.ie/get-busy-with-word-embeddings-introduction/
+
+Initially the mappings were configured independenty of the neural network with approaches based on co-occurences [@Mikolov2013].
+The real breakthrough came when the mappings were defined as learnable layers in the network (as done in all of the latest NLP research [@Howard2018, @Devlin2018]).
 Thus they can be tuned just like any other parameter in the network.
-The parameters of the embedding function (or layer) are first randomly initialised and then gets tuned along with the rest of the NN during training.
+The parameters of the embedding function (or layer) are first randomly initialised and then gets tuned along with the rest of the neural network during training.
 
-An embedding operation can either be viewed as a table lookup or a matrix multiplication of the discrete input in a one-hot encoded form.
+An embedding operation can either be viewed as a table lookup or a matrix multiplication of the discrete input in a one-hot encoded form, *i.e.* $\boldsymbol{e}=W\boldsymbol{x}$ where $\boldsymbol{x}$ is a discrete input in one-hot encoded form and $W:k\times p$ is the matrix containing the embedding where $p$ is the number discrete categories and $k$ is the embedding size.
+The embedding layer can be reused by all input features with the same input type, making it more efficient and reducing the memory footprint of the model.
 
 ### Attention \label{sec:attention}
 
-Attention is one of the standout breakthroughs made in deep learning in recent times.
-It was first (?) proposed in neural machine translation [@Bahdanau2014] and now almost used ubiquitously in natural language processing applications.
-It was also found useful in computer vision applications, like image captioning, and also in audio processing.
+Attention is one of the standout breakthroughs made in deep learning in recent times; especially playing an integral part to NLP's success and other sequence related tasks [@Vaswani2017, @Devlin2018].
+It was first popularised in neural machine translation [@Bahdanau2014] and now almost used ubiquitously in natural language processing applications.
+It was also found useful in computer vision applications, like image captioning [@Xu2015], and in audio processing [@Duong2016].
 
 The main idea of an attention module is to force a layer to only focus on a certain subset of its inputs at different stages of computation.
 For example, in image captioning, one may use a RNN to sequentially output words describing the image.
 With the use of an attention model, the network is restricted to only look at certain parts of an image at every step, avoiding having to look at the full image everytime.
+This is illustrated in \autoref{fig:imattn}.
+Notice how the network focusses on the bird part of the image when predicting the word "bird" and "flying" and then focussing on the water part of the image when predicting words like "body" and "water".
+Similarly, when used in machine translation, we can visualise the attention weights to see how the network focusses on a different subset of words for predicting each word in the target language (\autoref{fig:nlpattn}).
+
+```{r, fig.cap="Attention applied to image captioning.\\label{fig:imattn}", out.width="90%", fig.align='center'}
+knitr::include_graphics('figures/img_attention.jpeg')
+```
+
+```{r, fig.cap="Attention applied to machine translation.\\label{fig:nlpattn}", out.width="90%", fig.align='center'}
+knitr::include_graphics('figures/word_attn.png')
+```
+
 In an ideal world, an attention module should not be necessary and we would want the network to learn if certain parts of images are not required to look at.
 However, currently this built-in prior proves to be extremely helpful with current learning algorithms.
+
+The core of an attention module can be summarised with these equations:
+$$
+\begin{aligned}
+\boldsymbol{z}&=f(\boldsymbol{x})\\
+\boldsymbol{\alpha} &=\text{softmax}(f_{att}(\boldsymbol{x}))\\
+\boldsymbol{y}&=\boldsymbol{z}\otimes\boldsymbol{\alpha}
+\end{aligned}
+$$
+$\boldsymbol{z}$ it the ordinary activations produced by a layer $f$ given input $\boldsymbol{x}$.
+$\boldsymbol{\alpha}$ are the weights produced by the attention layer, $f_{att}$ after a logit transform so that the weights sum to one.
+The output of the attention module, $\boldsymbol{y}$, is then an elementwise multiplication, $\otimes$, of $\boldsymbol{z}$ and $\boldsymbol{\alpha}$, however other combinatorial operations can also be used.
+More detail can be found in [@Xu2015].
+We will elaborate on the concepts of *Self-Attention* [@Cheng2016a] and *Multi-Head Attention* [@Vaswani2017] in \Cref{sec:tab_att}.
 
 ## One-cycle Policy \label{sec:onecyc}
 
