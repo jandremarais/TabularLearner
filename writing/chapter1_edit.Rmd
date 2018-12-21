@@ -101,7 +101,7 @@ Although the deep learning field has advanced and matured a lot in recent years,
 In this thesis we explore ways of doing so.
 By reviewing the most recent literature on the topic, and through empirical work, we aim to summarise best practices when using deep learning for tabular data.
 
-## Challenges of Deep Learning for Tabular Data
+## Challenges of Deep Learning for Tabular Data \label{sec:tabchal}
 
 Some of the challenges of deep learning for tabular data have been alluded to in earlier sections of this chapter.
 These will form the framework for the literature review which follow later on, therefore they are summarised below, in terms of relevant questions to ask when applyting deep learning in the context of tabular data:

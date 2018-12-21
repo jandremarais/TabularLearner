@@ -1,64 +1,41 @@
 # Deep Learning for Tabular Data \label{chp:td}
 
 ## Introduction
-- core work
-- combination of other work with tabular data and other domains
-- not received much attention
-- automate feature engineering
 
-It is not exactly clear why DNNs are still in many cases inferior to gradient boosted trees when applied to tabular data, eventhough it outperforms all other algorithms in other application domains like text and speech. 
-We can look for differences between tabular data and unstructured data in their properties to try and understand why this is the case.
-A difference between the two data types that stand out is the relative importance of each of the important features with respect to the target. 
-In computer vision a large amount of pixels should change before an image is of something else.
-Whereas in tabular data a very small change in a single feature may have totally different behaviour with respect to the target [@Shavitt2018].
-The same authors mention that this can be addressed by including a separate reqularisation term for each of the weights in the network. 
-These regularisation terms are seen as additional model hyperparameters.
-It is easy to see that this approach is totally intractable since the only way to train these hyperpararmeters are brute force and repetitive tweaking and validatig (derivative free methods).
-A workaround is to make these regularisation parameters trainable like all of the other points in the network.
-This is achieved by minimising the counterfactual loss, a novel loss function proposed by [@Shavitt2018].
-They found that training NNs by optimising the counterfactual loss, outperform other regularisation approaches for NNs and results in NNs that are comparable to gradient boosted trees.
-The learned regularisation parameters can even help with interpretting feature importance.
+Up to now we have covered the basics of neural networks, as well as the more recent advancements in the era of deep learning.
+The aim of this chapter is to explore how the approaches and techniques we discussed can be leveraged when doing deep learning with tabular data.
+Tabular data is vastly different to so-called unstructured data like images, text and speech and therefore we do not expect all of the methods to be as effective.
+Deep learning on tabular data is not as well researched compared to the aformentioned data domains and thus it is not always clear how to solve certain modelling challenges.
+There is only a handful of publications reporting sucessful implementations of deep learning for tabular data on important applications such as recommender systems [@haldar2018], click-through rate prediction[^ctr] [@Song2018], analysis of electronic health records [@Rajkomar2018] and transport related problems [@Brebisson2015], to name a few.
 
-- NNs proved to be useful for tabular data at AirBnB [@haldar].
+The tabular data domain is still dominated by tree-based models like random forests and gradient boosted trees.
+This makes us curious as to why deep learning is not as effective here as it is in most other data domains.
+This chapter will help shed light on this issue and point to promising ways of improving the current state-of-the-art.
 
-Deep Learning has set new records on various benchmarks and led to various commercial applications.
-Recurrent Neural Networks achieved new levels in speech and natural language processing and are already deployed on mobile devices.
-Their counterparts, Convolutional Neural Networks (CNNs), excel in vision tasks. 
-CNNs are on par with human experts on detecting skin cancer.
-The latest self-driving cars rely on CNNs to understand video imagery.
-CNNs were also used in AlphaGo to evaluate board positions. [@Klambauer2017]
+This chapter is structured based on the tabular dataset challenges introduced in \Sref{sec:tabchal}.
+For each of the challenges we provide a recap of the issue, review the literature to discuss how they are currently being treated, and provide suggestions for improving these approaches, (where applicable).
+In \Sref{sec:inp_rep} we look at ways of representing the input features of a tabular dataset.
+\Sref{sec:feat_int} is abut approaches for leveraging feature interactions.
+A large part of this chapter is on how to be more sample efficient; this we discuss in detail in \Sref{sec:samp_eff}.
+Then we briefly investigate ways of interpreting deep neural networks for tabular data in \Sref{sec:interp}.
+In the final section we discuss the 1Cycle policy and hyperparameter selection for tabular data neural networks, in addition to other miscellaneous topics that do not fit into the above categorisation.
 
-But on structured data, Deep Neural Networks have still a long way to go.
-Random Forests, Gradient Boosted Trees and Support Vector Machines often outperforms DNNs on structured data, both in terms of accuracy and efficiency.
+[^ctr]: To predict the probability of a user clicking an item, critical to online applications.
 
-DNNs on tabular data also struggle to go deeper than 3 or 4 layers.
+## Input Representation \label{sec:inp_rep}
 
-Adopting NNs for tabular data receives far less attention and remains challenging.
-Fully connected model structure leads to very complex optimization hyper-planes with a high risk of falling into local optimums.
+**Sparse and high-dimensional inputs.** [@Song2018], [@Wang2017b], [@Qu2016], [@Cheng2016], [@anonymous2019], [@Covington2016]
+Not always the case, but common.
+High cardinality categorical features are sparse when one-hot encoded.
+DNNs can easily overfit these sparse and high-dimensional datasets.
+One-hot encoding + fully connected layer deals with the sparse inputs and the weight matrix is bigger.
+Separate embeddings are also easier to interpret.
+Each feature is fed separately into the network so that the layers above can learn specialised representations per feature.
+This improves generalisation (less parameters) speeds up training and reduces memory footprint [@Covington2016].
 
-Explanation can start with the most naive DNN and then systematically add components to improve it, from architectural changes to learning changes.
+Can used the Criteo[^criteo] dataset as an example of these challenging datasets.
 
-## Related Work
-- Recommender Systems: AirBnB [@haldar2018]
-- Healthcare/EHR: [@Rajkomar2018] showed how effective NNs are for EHR data. State of the art on various predictive tasks.
-- Taxi Trajectory: One of the first sucessful implementations of modern NNs for tabular data was in predicting the destination of a taxi ride based on its initial trajectory [@Brebisson2015]. 
-It was hosted as a Kaggle competition and this solution outperformed all other entries by a significant margin.
-**Click-through rate prediction (CTR)** [@Song2018]. To predict the probability of a user clicking an item, critical to online applications and recommender systems.
-
-## Input Representation
-
-It is widely held that 80% of the effort in an analytic model is preprocessing, merging, customizing, and cleaning datasets, not analysing them for insights [@Rajkomar2018].
-
-The success of predictive algorithms largely depends on feature selection and data representation.
-The feature selection process and finding the best data representation is largely a manual and painful process.
-
-In most machine learning tasks the greatest performance gains can be achieved by feature engineering wheras better algorithms only result inincremental boosts.
-In feature egineering one strives to create new features from the original features based on some domain knowledge of the data or otherwise, that makes it easier for the model to estimate the target.
-Although a crucial step to make the most out of the data, this can be a very laborious process.
-There is not formal path to follow in this stage and thus usually consists of many a trial and error, benefitted by domain knowledge of the data, only accessible in some cases.
-A huge advantage of using NNs on tabular data (and other data structures) is that the feature engineering process gets automated to some extent.
-A NN learns these optimal feature transformations implicitly during the training process.
-The hidden layers of a NN can be viewed as a feautre extractor that was optimised to map the inputs into the best possible features space for a model (the final layer of the network) to operate in.
+[^criteo]: http://labs.criteo.com/2014/09/kaggle-contest-dataset-now-available-academic-use/
 
 ### Numerical Features
 
@@ -79,10 +56,9 @@ It also helps the analyst to determine whether a feature is generated by some ot
   - rankGauss
   - scale to 0-1
 
-http://cs231n.github.io/neural-networks-2/
-
 It is common to standardise all inputs to have mean zero and standard deviation of one. 
-This ensures that all input features are treated equally. 
+This ensures that all input features are treated equally and that the optimisation process works more smoothly.
+And that the gradients don't saturate or explode.
 
 ### Categorical Features
 
@@ -95,7 +71,7 @@ First published work in modern times on entity embeddings was in the taxi destin
 Another Kaggle sucess story is for predicting the total sales of a store [@Guo2016].
 
 The embedding for discrete variables act in the exact same way.
-The embdding for each categorical variable gets concatenated to the continuous variables and then gets passed to the rest of the layers in the network.
+The embedding for each categorical variable gets concatenated to the continuous variables and then gets passed to the rest of the layers in the network.
 
 In [@Brebisson2015] they found that embeddings helped a lot. 
 The embeddings can also be visualised to investigate whether make sense or to gain further insight into the data and model decision making.
@@ -104,7 +80,7 @@ Then we can compare the categoires based on their relative distances and positio
 
 Entity embeddings are not too different to one-hot encoding a categorical input and sending it through a standard fully connected layer.
 An embedding is essentailly the same operation but a separate one for each of the categorical features.
-Doing it this way reduces memory usage and speeds up training of a NN. 
+Doing it this way reduces memory usage and speeds up training of a neural network. 
 This makes is incredibly useful for datasets with high cardinality features and many of them.
 It will also not be possible to interpret categories based on its embedding of the one-hot encoded path is followed.
 
@@ -115,34 +91,68 @@ As proof that these entity embeddings actually learns something useful, besides 
 
 ### Combining Features
 
-### Dropout
+**Dealing with mixed input types.** [@Song2018], [@Wang2017b], [@Qu2016], [@Cheng2016]
+Processing numerical and categorical features and their combinations.
+[@Song2018] embeds both the numerical and categorical features separately into a lower-dimensional representation.
+By mapping both types in the same feature space faciliates more effective learning of interactions between the mixed features.
+The embedding for the $j$-th categorical feature is obtained by [@Song2018], [@Wang2017b]:
+$$
+\boldsymbol{e}_{j}=V_{j}\boldsymbol{x}_{j}
+$$
+where $\boldsymbol{x}_{i}$ is the one-hot encoded vector representation of the $j$-th categorical variable and $V_{j}$ is the associated embedding/weight matrix.
+The weights in $V_{j}$ are learned along with all of the other parameters in the network.
+The embedding for the $j$-th numerical features is obtained by:
+$$
+\boldsymbol{e}_{j}=\boldsymbol{v}_{j}x_{j}
+$$
+where $x_{j}$ is a scalar and $\boldsymbol{v}_{j}$ is the associated weight vector.
+Why does it help to increase the dimension of the numerical features?
+Is it only for balanced representation when combined with categorical features?
+The numerical and categorical embeddings are concatenated to form a single vector representation [@Song2018].
+[@Wang2017b] does not embed numerical but just stack the normalised numerical features along with the categorical embeddings.
+[@Song2018] used $\log^{2}(z)$ if $Z>2$ to transform numeric features to minimise its variance.
+But how does that work for negative values?
+[@Wang2017b] used normal log transform.
+[@Wang2017b] uses normalisation but dont know what yet.
+[@Song2018] experimented to find the optimal embedding size [8,16,24,32], found it depended on the dataset.
+[@Wang2017b] used embedding sizes of $6\times(\text{cardinality})^{\frac{1}{4}}$.
+Not a lot of work on numerical features [@anonymous2019].
+[@Zhou2017] has an intersting take on multi-hot categorical features; where a feature can have more than category associated with it.
+The embedding layer for that instance then outputs a list of embeddings with lenght the same as the number of categories associated with that instance and feature.
+The list of embeddings then gets projected back into a fixed-length representation by doing a pooling operation.
+[@Covington2016] adresses numeric feature normalisation.
+[@Ioffe2015] shows how sensitive DNNs are to scaling and distribution.
+Proper normalisation of numeric features was critical for convergence [@Covington2016].
+[@Covington2016] does a transformation to equally distribute a numeric feature in [0,1) using the cumalitive distribution.
+The integral is approximated with linear interpolation on the quantiles of the feature values computed in a single pass over the data before training begins.
+In addition they add $\tilde{x}^{2}$ and $\sqrt{\tilde{x}}$ to give the network more expressive power.
 
-Interesetingly, [@haldar2018] found that dropout was not effective in their application.
-They pinned it down to dropout producing invalid input scenarious that distracted the model.
-Therefore they opted for hand crafted noise shapes taking into account the distribution of the relevant feature. 
+## Learning Feature Interactions \label{sec:feat_int}
 
-## Still to categorise
+Traditionally, input features to a machine learning algorithm must be hand-crafted from raw data, relying on practitioner expertise and domain knowledge to determine explicit patterns of prior interest. 
+The engineering process of creating, analyzing, selecting, and  evaluating  appropriate  features  can be  laborious and time consuming, and is often thought of as a "black art" requiring creativity,  trial-and-error, and oftentimes luck.  
+In contrast, deep learning techniques learn optimal features directly from the data itself, without any human guidance, allowing for the automatic discovery of latent data relationships that might otherwise be unknown or hidden.
+
+That being said, preprocessing of data in deep learning is not totally free of human engineering.
+See in the Normalisation section what measures should be taken to ensure a NN can learn effectively from tabular data.
 
 Feature engineering in general is hard and time consuming with no clear recipe to follow.
 But it is also very crucial to an effective learning system.
 The main aim is to find a low-dimensional representation of sparse and high-dimensional raw features and their meaningful combinations.
 Some of the challenges of feature engineering is listed below.
 
-Can used the Criteo[^criteo] dataset as an example of these challenging datasets.
+It is widely held that 80% of the effort in an analytic model is preprocessing, merging, customizing, and cleaning datasets, not analysing them for insights [@Rajkomar2018].
 
-[^criteo]: http://labs.criteo.com/2014/09/kaggle-contest-dataset-now-available-academic-use/
+The success of predictive algorithms largely depends on feature selection and data representation.
+The feature selection process and finding the best data representation is largely a manual and painful process.
 
-[@Zhou2017] is very similar to the rest of these citations.
-[@Covington2016] also embdding + MLP
-
-**Sparse and high-dimensional inputs.** [@Song2018], [@Wang2017b], [@Qu2016], [@Cheng2016], [@anonymous2019], [@Covington2016]
-Not always the case, but common.
-High cardinality categorical features are sparse when one-hot encoded.
-DNNs can easily overfit these sparse and high-dimensional datasets.
-One-hot encoding + fully connected layer deals with the sparse inputs and the weight matrix is bigger.
-Separate embeddings are also easier to interpret.
-Each feature is fed separately into the network so that the layers above can learn specialised representations per feature.
-This improves generalisation (less parameters) speeds up training and reduces memory footprint [@Covington2016].
+In most machine learning tasks the greatest performance gains can be achieved by feature engineering wheras better algorithms only result in incremental boosts.
+In feature egineering one strives to create new features from the original features based on some domain knowledge of the data or otherwise, that makes it easier for the model to estimate the target.
+Although a crucial step to make the most out of the data, this can be a very laborious process.
+There is no formal path to follow in this stage and thus usually consists of many a trial and error, benefitted by domain knowledge of the data, only accessible in some cases.
+A huge advantage of using NNs on tabular data (and other data structures) is that the feature engineering process gets automated to some extent.
+A NN learns these optimal feature transformations implicitly during the training process.
+The hidden layers of a NN can be viewed as a feautre extractor that was optimised to map the inputs into the best possible features space for a model (the final layer of the network) to operate in.
 
 **Extracting high-order combinations of features.** [@Song2018], [@Wang2017b], [@Qu2016], [@Guo2017]
 They key question here is to determine which feautres to combine and how to form meaningful high-order features.
@@ -151,6 +161,10 @@ Majority of the time needs domain experts to help massage the data.
 Can follow a brute force approach but enumerating all the possible high-order features will exponentially increase the model search space which will just further increase the risk of overfitting.
 Can use multiple fully connected layers with non-linear activations of a NN.
 Fully-connected layers model all feature interactions impplicitly, but is not good enough to learn all types of interactions.
+
+Standard approach
+
+Fully connected model structure leads to very complex optimization hyper-planes with a high risk of falling into local optimums.
 
 ### Attention \label{sec:tab_att}
 
@@ -189,11 +203,11 @@ $$
 This mapping from $\boldsymbol{e}_{j}$ to $\boldsymbol{e}_{j}^{\text{res}}$ is done for each features to form the interacting layer.
 The interacting layer is thus a representation of high-order features.
 These interacting layers can be stacked on-top of each other to form arbitrary order combinatorial features.
-[@Song2018] shows that residual connection gives better results.
+
 [@Wang2017b] uses the cross-network which is an automated way of building cross-features.
 Each layer produces higher-order interactions based on existing ones, and keeps the interactions from previous layers.
 The cross-network is trained jointly with a DNN.
-[@Wang2017b] also used a residual connection.
+
 [@Wang2017b] makes a case for finding a bounded-degree feature interactions, saying that all the Kaggle competions are won with feature engineering of low-degree interactions, whereas DNNs learn highly non-linear interactions implicitly.
 [@Wang2017b] cross-network consists of cross-layers that can be formalised as:
 $$
@@ -220,52 +234,14 @@ Furthermore it help to limit the model size to make learning more efficient.
 To achieve this they use automatic feature grouping, feature group reduction and recursive endocder with share embeddings.
 These ideas seems a little ad-hoc and not end-to-end.
 
-**Dealing with mixed input types.** [@Song2018], [@Wang2017b], [@Qu2016], [@Cheng2016]
-Processing numerical and categorical features and their combinations.
-[@Song2018] embeds both the numerical and categorical features separately into a lower-dimensional representation.
-By mapping both types in the same feature space faciliates more effective learning of interactions between the mixed features.
-The embedding for the $j$-th categorical feature is obtained by [@Song2018], [@Wang2017b]:
-$$
-\boldsymbol{e}_{j}=V_{j}\boldsymbol{x}_{j}
-$$
-where $\boldsymbol{x}_{i}$ is the one-hot encoded vector representation of the $j$-th categorical variable and $V_{j}$ is the associated embedding/weight matrix.
-The weights in $V_{j}$ are learned along with all of the other parameters in the network.
-The embedding for the $j$-th numerical features is obtained by:
-$$
-\boldsymbol{e}_{j}=\boldsymbol{v}_{j}x_{j}
-$$
-where $x_{j}$ is a scalar and $\boldsymbol{v}_{j}$ is the associated weight vector.
-Why does it help to increase the dimension of the numerical features?
-Is it only for balanced representation when combined with categorical features?
-The numerical and categorical embeddings are concatenated to form a single vector representation [@Song2018].
-[@Wang2017b] does not embed numerical but just stack the normalised numerical features along with the categorical embeddings.
-[@Song2018] used $\log^{2}(z)$ if $Z>2$ to transform numeric features to minimise its variance.
-But how does that work for negative values?
-[@Wang2017b] used normal log transform.
-[@Wang2017b] uses normalisation but dont know what yet.
-[@Song2018] experimented to find the optimal embedding size [8,16,24,32], found it depended on the dataset.
-[@Wang2017b] used embedding sizes of $6\times(\text{cardinality})^{\frac{1}{4}}$.
-Not a lot of work on numerical features [@anonymous2019].
-[@Zhou2017] has an intersting take on multi-hot categorical features; where a feature can have more than category associated with it.
-The embedding layer for that instance then outputs a list of embeddings with lenght the same as the number of categories associated with that instance and feature.
-The list of embeddings then gets projected back into a fixed-length representation by doing a pooling operation.
-[@Covington2016] adresses numeric feature normalisation.
-[@Ioffe2015] shows how sensitive DNNs are to scaling and distribution.
-Proper normalisation of numeric features was critical for convergence [@Covington2016].
-[@Covington2016] does a transformation to equally distribute a numeric feature in [0,1) using the cumalitive distribution.
-The integral is approximated with linear interpolation on the quantiles of the feature values computed in a single pass over the data before training begins.
-In addition they add $\tilde{x}^{2}$ and $\sqrt{\tilde{x}}$ to give the network more expressive power.
+### Skip-Connection
 
-**Interpreting DNNs.** [@Song2018]
-Model explainability is important for various reasons.
-Helps to know how to improve your model or where it goes wrong.
-Like a sanity check.
-If you cannot explain how a prediction is made, you cannot know how good it is.
-[@Song2018] uses the multi-head self-attention mechanism to evaluate correlations between features - globally and locally .
-[@Zhou2017] plots attention and categorical embeddings.
+[@Song2018] shows that residual connection gives better results.
 
+[@Wang2017b] also used a residual connection.
 
-**Small Datasets.**
+## Sample Effeciency \label{sec:samp_eff}
+
 It is well know that DNNs require a large amout of data to generalise well.
 Typically, tabular datasets are not as large as unstructured datasets like images and texts.
 There is also no large tabular dataset from which knowledge can be transferred from like ImageNet for computer vision and wikipedia for NLP.
@@ -279,100 +255,23 @@ They call it the transfer of structured knowledge.
 Data augmentation for tabular datasets is rarely studied.
 Can use corruption like DAEs or swap noise but then creates inputs that does not exist in the real data distribution.
 
+### Unsupervised Pretraining
 
-**Choosing DNN structural hyperparameters.**
-Since there are no shared patterns among the diverse tabular datasets, it is hard to design a universal architecture that will fit all.
-Most of these parameters are very dependent on the dataset and other modeling choices and therefore the need to tune them.
-Structural hyperparameters are usually found using some brute search.
-[@Song2018] used a sigmoid layer for binary classification.
-Embedding dimension: 16 [@Song2018], 32 [@Cheng2016]
-Hidden layer size: 32 [@Song2018]
-Number of hidden layers: 32
-Dropout: 0.5 [@Song2018], tuned [@Zhang2016] [@Qu2016] [@Guo2017] found dependent on dataset and model.
-Residual connections: [@Song2018], [@Wang2017b]
-[@Song2018] experimented to see how many layers they should choose [1,2,3,4].
-[@Song2018] experimented to find the optimal embedding size [8,16,24,32]
-[@Wang2017b] tested number of layers [2-5]
-[@Wang2017b] tested hidden layer sizes at [32-1024]
-[@Zhang2016], [@Qu2016], [@Guo2017], [@Covington2016] experimented for number and size of layers.
-Batchnorm:  [@Wang2017b]
-Activation functions: tanh [@Zhang2016], tanh vs sigmoid vs relu (tanh and relu depending on dataset) [@Qu2016], relu vs tanh (relu better) [@Guo2017]
-Shapes: Diamond, constant, increasing, decreasing [@Zhang2016] found that Diamond shape works best. found constant to work the best [@Guo2017]
+Feature learning problem is also relevant here like in \Sref{sec:feat_int}.
 
-**Choosing DNN learning hyperparameters.**
-Loss function: logloss with $L_{2}$ penalty [@Song2018], [@Wang2017b], [@Zhang2016], [@Qu2016] mini-batch aware l2 for large inputs [@Zhou2017],
-Batch size: 1024 [@Song2018] 512 [@Wang2017b]
-Optimiser: Adam [@Song2018], [@Wang2017b]
-Gradient clipping: [@Wang2017b]
-Learning rate: 0.001-0.0001 [@Wang2017b], [1, 0.1, ..., 0.0001] [@Zhang2016]
-Early stopping: [@Song2018], [@Wang2017b], [@Zhang2016]
-[@Zhang2016] compared dropout with L2 and found dropout to be better.
+[@Miotto2016] used a stacked denoising autoencoder to learn patient representations from EHR data.
+They found that these representations were useful features in predicting future health states of patients.
+By using these learned representations as input significantly improved the performance of predictive models compared to those only using the raw inputs.
 
-## Learning Interactions
+[@Miotto2016] presented a novel unsupervised deep feature learning method to derive a general-purpose patient representation for EHR data that facilitates clinical predictive modelling.
+A stacked denoising autoencoder was used.
+Unsupervised feature learning attempts to overcome limitations of supervised feature space definition by automatically identifying patterns and dependencies in the data to learn a compact and general representation that make it easier to automatically extract useful information when building classifiers or other predictors [@Miotto2016].
+These techniques are very familiar and effective in text, audio and image processing, but not with tabular data.
+[@Geras2014] on gradual increasing of corruption ratio; but applied to images.
 
-Automated Feature Engineering
-
-Traditionally, input features to a machine learning algorithm must be hand-crafted from raw data, relying on practitioner expertise and domain knowledge to determine explicit patterns of prior interest. 
-The engineering process of creating, analyzing, selecting, and  evaluating  appropriate  features  can be  laborious and time consuming, and is often thought of as a "black art" requiring creativity,  trial-and-error, and oftentimes luck.  
-In contrast, deep learning techniques learn optimal features directly from the data itself, without any human guidance, allowing for the automatic discovery of latent data relationships that might otherwise be unknown or hidden.
-
-That being said, preprocessing of data in deep learning is not totally free of human engineering.
-See in the Normalisation section what measures should be taken to ensure a NN can learn effectively from tabular data.
-
-
-### Fully-Connected Layers
-- how deep and how big
-- architecture shape
-
-### Going Deeper
-
-- Residual Connections
-
-#### Self-normalising Units
-
-The batch normalisation layer attempts to normalise neuron activations to zero mean and unit variance [@Ioffe2015].
-It has become the stanard when training deep CNNs.
-Training with normalisation techniques is perturbed by stochastic gradient descent, stochastic regularisation (like dropout) and the estimation of the normalisation parameters.
-Both RNNs and CNNs can stabilise learning via weight sharing, therefore they are less prone to perturbations.
-Fully-connected NNs do not have this luxury and shows high variance in the training error when trained with normalisation techniques.
-
-Fully-connected DNNs with normalisation techniques are very sensitive to perturbations.
-DNNs exhibit a high variance in training error when trained using BatchNorm.
-This hinders the learning process.
-Combined with dropout just magnifies the effect.
-[@Klambauer2017] suggested the use of SeLUs which is an activation function which helps the network to maintain zero mean and unit variance activations.
-By using this activation, there is no need for a BatchNorm layer.
-SNNs do not suffer from exploding or vanishing gradients.
-They paper tested on 123 tabular datasets to show that on average SNNs are the best.
-But it is quite finicky to get the implementation right.
-It requires a very specific weight initialisation, one that does not really make sense for embedding matrices.
-And even when you get it right, the improvement is not necessarily significant.
-That said, it has not been tested by others on tabular data, so it is worth a try.
-$$
-\text{selu}(x)=\lambda 
-\begin{cases}
-x & \text{if}~~~x>0\\
-\alpha e^{x}-\alpha & \text{if}~~~x\le 0\\
-\end{cases}
-$$
-Give more detail if it is proved to be useful.
-Also needs a specific type of dropout.
-
-[@Klambauer2017] tested SELUs on 121 classification datasets from the UCI Machine Learning repository.
-They compared DNNs with SELU activations to other DNNs and other classifiers like Random Forests and SVMs.
-They found that on the datasets with less than 1000 obervations, random forests and SVMs performed the best.
-However, for the datasets with more than 1000 observations, DNNs with SELU activations performed the best overall.
-The classifiers were compared by ranking them by their accuracy for each prediction task and doing a pairwise Wilcoxon test.
-
-Another thing the authors found when comparing SELUs with other activations is that the model selection approach for SELU DNNs resulted in much deeper networks than DNNs with other activations.
-
-### Attention
-
-### Parallel Streams
-
-## Dealing with Small Datasets
 
 ### Data Augmentation
+
 - Blankout
 - Swap Noise
 - [@kasar2018] - hybrid bootstrap
@@ -464,31 +363,123 @@ See \autoref{fig:simple_dataset_mixup}.
 
 ![Illustration of points created by mixup augmentation.\label{fig:simple_dataset_mixup}](figures/simple_dataset_mixup.pdf)
 
-### Unsupervised Pretraining
+### Regularisation Learning
 
-[@Miotto2016] used a stacked denoising autoencoder to learn patient representations from EHR data.
-They found that these representations were useful features in predicting future health states of patients.
-By using these learned representations as input significantly improved the performance of predictive models compared to those only using the raw inputs.
+A difference between the two data types that stand out is the relative importance of each of the important features with respect to the target. 
+In computer vision a large amount of pixels should change before an image is of something else.
+Whereas in tabular data a very small change in a single feature may have totally different behaviour with respect to the target [@Shavitt2018].
+The same authors mention that this can be addressed by including a separate reqularisation term for each of the weights in the network. 
+These regularisation terms are seen as additional model hyperparameters.
+It is easy to see that this approach is totally intractable since the only way to train these hyperpararmeters are brute force and repetitive tweaking and validatig (derivative free methods).
+A workaround is to make these regularisation parameters trainable like all of the other points in the network.
+This is achieved by minimising the counterfactual loss, a novel loss function proposed by [@Shavitt2018].
+They found that training NNs by optimising the counterfactual loss, outperform other regularisation approaches for NNs and results in NNs that are comparable to gradient boosted trees.
+The learned regularisation parameters can even help with interpretting feature importance.
 
-[@Miotto2016] presented a novel unsupervised deep feature learning method to derive a general-purpose patient representation for EHR data that facilitates clinical predictive modelling.
-A stacked denoising autoencoder was used.
-Unsupervised feature learning attempts to overcome limitations of supervised feature space definition by automatically identifying patterns and dependencies in the data to learn a compact and general representation that make it easier to automatically extract useful information when building classifiers or other predictors [@Miotto2016].
-These techniques are very familiar and effective in text, audio and image processing, but not with tabular data.
-[@Geras2014] on gradual increasing of corruption ratio; but applied to images.
+### Layer Normalisation
 
-- Knowledge distillation/psuedo labelling
+DNNs on tabular data also struggle to go deeper than 3 or 4 layers.
 
-## Other
-- 1cycle not used with tabular data before
-- How to interpret the model/decisions?
+Fully connected model structure leads to very complex optimization hyper-planes with a high risk of falling into local optimums.
+
+The batch normalisation layer attempts to normalise neuron activations to zero mean and unit variance [@Ioffe2015].
+It has become the stanard when training deep CNNs.
+Training with normalisation techniques is perturbed by stochastic gradient descent, stochastic regularisation (like dropout) and the estimation of the normalisation parameters.
+Both RNNs and CNNs can stabilise learning via weight sharing, therefore they are less prone to perturbations.
+Fully-connected NNs do not have this luxury and shows high variance in the training error when trained with normalisation techniques.
+
+Fully-connected DNNs with normalisation techniques are very sensitive to perturbations.
+DNNs exhibit a high variance in training error when trained using BatchNorm.
+This hinders the learning process.
+Combined with dropout just magnifies the effect.
+[@Klambauer2017] suggested the use of SeLUs which is an activation function which helps the network to maintain zero mean and unit variance activations.
+By using this activation, there is no need for a BatchNorm layer.
+SNNs do not suffer from exploding or vanishing gradients.
+They paper tested on 123 tabular datasets to show that on average SNNs are the best.
+But it is quite finicky to get the implementation right.
+It requires a very specific weight initialisation, one that does not really make sense for embedding matrices.
+And even when you get it right, the improvement is not necessarily significant.
+That said, it has not been tested by others on tabular data, so it is worth a try.
+$$
+\text{selu}(x)=\lambda 
+\begin{cases}
+x & \text{if}~~~x>0\\
+\alpha e^{x}-\alpha & \text{if}~~~x\le 0\\
+\end{cases}
+$$
+Give more detail if it is proved to be useful.
+Also needs a specific type of dropout.
+
+[@Klambauer2017] tested SELUs on 121 classification datasets from the UCI Machine Learning repository.
+They compared DNNs with SELU activations to other DNNs and other classifiers like Random Forests and SVMs.
+They found that on the datasets with less than 1000 obervations, random forests and SVMs performed the best.
+However, for the datasets with more than 1000 observations, DNNs with SELU activations performed the best overall.
+The classifiers were compared by ranking them by their accuracy for each prediction task and doing a pairwise Wilcoxon test.
+
+Another thing the authors found when comparing SELUs with other activations is that the model selection approach for SELU DNNs resulted in much deeper networks than DNNs with other activations.
+
+
+### Dropout
+
+Interesetingly, [@haldar2018] found that dropout was not effective in their application.
+They pinned it down to dropout producing invalid input scenarious that distracted the model.
+Therefore they opted for hand crafted noise shapes taking into account the distribution of the relevant feature. 
+
+## Interpretation \label{sec:interp}
+
+Plot embeddings
+Plot attention
+Methods discussed in previous chapter.
+
+**Interpreting DNNs.** [@Song2018]
+Model explainability is important for various reasons.
+Helps to know how to improve your model or where it goes wrong.
+Like a sanity check.
+If you cannot explain how a prediction is made, you cannot know how good it is.
+[@Song2018] uses the multi-head self-attention mechanism to evaluate correlations between features - globally and locally .
+[@Zhou2017] plots attention and categorical embeddings.
 
 [@haldar2018] notes that the permutation test only produces sensical results on the assumption that the features are independent.
 Permuting the feature independently created examples that never occurred in real life, and the importance of features in that invalid space sent us in the wrong direction. 
 The test however is somewhat useful in determining features that were not pulling their weight.
 If randomly permuting a feature did not affect the model performance at all, it was a good indication that the model is probably not dependent on it.
 
-- other processing
-- Regularisation Learning - https://arxiv.org/pdf/1805.06440.pdf
 
+## Other
 
-## Recommended Approach
+### Hyperparameter Selection
+
+- 1cycle not used with tabular data before
+
+**Choosing DNN structural hyperparameters.**
+Since there are no shared patterns among the diverse tabular datasets, it is hard to design a universal architecture that will fit all.
+Most of these parameters are very dependent on the dataset and other modeling choices and therefore the need to tune them.
+Structural hyperparameters are usually found using some brute search.
+[@Song2018] used a sigmoid layer for binary classification.
+Embedding dimension: 16 [@Song2018], 32 [@Cheng2016]
+Hidden layer size: 32 [@Song2018]
+Number of hidden layers: 32
+Dropout: 0.5 [@Song2018], tuned [@Zhang2016] [@Qu2016] [@Guo2017] found dependent on dataset and model.
+Residual connections: [@Song2018], [@Wang2017b]
+[@Song2018] experimented to see how many layers they should choose [1,2,3,4].
+[@Song2018] experimented to find the optimal embedding size [8,16,24,32]
+[@Wang2017b] tested number of layers [2-5]
+[@Wang2017b] tested hidden layer sizes at [32-1024]
+[@Zhang2016], [@Qu2016], [@Guo2017], [@Covington2016] experimented for number and size of layers.
+Batchnorm:  [@Wang2017b]
+Activation functions: tanh [@Zhang2016], tanh vs sigmoid vs relu (tanh and relu depending on dataset) [@Qu2016], relu vs tanh (relu better) [@Guo2017]
+Shapes: Diamond, constant, increasing, decreasing [@Zhang2016] found that Diamond shape works best. found constant to work the best [@Guo2017]
+
+**Choosing DNN learning hyperparameters.**
+Loss function: logloss with $L_{2}$ penalty [@Song2018], [@Wang2017b], [@Zhang2016], [@Qu2016] mini-batch aware l2 for large inputs [@Zhou2017],
+Batch size: 1024 [@Song2018] 512 [@Wang2017b]
+Optimiser: Adam [@Song2018], [@Wang2017b]
+Gradient clipping: [@Wang2017b]
+Learning rate: 0.001-0.0001 [@Wang2017b], [1, 0.1, ..., 0.0001] [@Zhang2016]
+Early stopping: [@Song2018], [@Wang2017b], [@Zhang2016]
+[@Zhang2016] compared dropout with L2 and found dropout to be better.
+
+## Still to categorise
+
+[@Zhou2017] is very similar to the rest of these citations.
+[@Covington2016] also embdding + MLP

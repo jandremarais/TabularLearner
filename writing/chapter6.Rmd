@@ -13,3 +13,5 @@ Generative Adversarial Network for data augmentation (and other tab data specifi
 Feauture reuse
 per feature regularisation.
 
+- more datasets
+- review the code
