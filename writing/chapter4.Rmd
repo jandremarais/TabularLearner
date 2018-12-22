@@ -79,66 +79,96 @@ This will apply the same type of scaling as the zero mean and unit variance tran
 Thus the need to preprocess numeric features is removed.
 The caveat is that the quality of the transformation depends on the batch statistics and thus if the batch is not representative of the full data distribution (which is likely if the batch size is small), then it might derail the training procedure.
 
+The fact is that the only way to know for sure which normalisation to apply to numeric features is by experimations, since it varies between datasets.
+The standard normal scaling is a safe transformation to use if experimentation wants to be avoided.
+
 ### Categorical Features
 
-High cardinality categorical features are sparse when one-hot encoded.
-DNNs can easily overfit these sparse and high-dimensional datasets.
-One-hot encoding + fully connected layer deals with the sparse inputs and the weight matrix is bigger.
-Separate embeddings are also easier to interpret.
-Each feature is fed separately into the network so that the layers above can learn specialised representations per feature.
-This improves generalisation (less parameters) speeds up training and reduces memory footprint [@Covington2016].
+Most of the sparsity in tabular datasets come from categorical features.
+Since neural networks cannot process discrete categories or objects, we need to find a numeric representation for each class.
+The standard approach is to one-hot encode categorical features.
+That is, if we have a categorical feature with three possible categories, for example, the one-hot encoded form of the three categories will be: Category 1: $[1,0,0]$, Category 2: $[0,1,0]$ and $[0,0,1]$ for Category 3.
 
-Entity embedding not only reduces memory usage and speeds up neural networks compared with one-hot encoding, but more importantly by mapping similar values close to each other in the embedding space it reveals the intrinsic properties of the categorical variables, which you cannot obtain with one-hot encoding.
+There are multiple inefficiencies when using one-hot encodings with neural networks.
+The obvious one we have already mentioned is that it introduces sparsity to the data, since the dimension of the one-hot encoded form is equal to the number or categories in a feature.
+Thus if we have plenty of high-cardinality features in our dataset, the data will be extremely sparse and difficult to model.
+This also increases the size needed of the first linear layer and thus we need machines with greater memory and processing power.
+Neural networks can easily overfit such sparse data [@Covington2016].
 
+The other problem with one-hot encodings of categorical features is that there is no notion of similarity and distances between categories.
+In this representation, all categories are equally far apart now matter how semantically similar or dissimilar they are.
+This makes it harder for the model to learn useful patterns.
+
+An alternative to one-hot encodings as representations of categorical features for neural networks are *entity embeddings*.
+An entity embedding is the exact same operation as (word) embeddings we have discussed in \Sref{sec:embeds}, but applied to categories instead of words.
+Therefore an entity embedding assigns a numeric vector representation to each category in a categorical feature, for example: Category 1: $[0.05,-0.1,0.2]$, Category 2: $[0.2,0.01,0.3]$ and $[-0.1,-0.2,0.05]$ for Category 3.
+Once all of the categorical features have been embedded, their representations can be concatenated and passed to the rest of the network.
+
+The first published work in modern times on entity embeddings was in the taxi destination prediction challenge [@Brebisson2015].
+In another Kaggle sucess story, [@Guo2016] succesfully used entity embeddings for predicting the total sales of a store.
 Companies like [Instacart](https://tech.instacart.com/deep-learning-with-emojis-not-math-660ba1ad6cdc) and [Pinterest](https://medium.com/the-graph/applying-deep-learning-to-related-pins-a6fee3c92f5e) have reported the effective use of entity embeddings on their internal datasets. 
-These embeddings can be reused on different machine learning tasks and do have to be relearned for each dataset.
+Currently, all research on deep learning for tabular data makes use of entity embeddings - see for example [@Song2018], [@Wang2017b], [@Covington2016] and [@Zhou2017].
 
-First published work in modern times on entity embeddings was in the taxi destination prediction challenge [@Brebisson2015].
-Another Kaggle sucess story is for predicting the total sales of a store [@Guo2016].
+The reason why it is used all-round is because it does not have the same issues as the one-hot encoded representations.
+A similar formulation to \Sref{sec:embeds}, we define the embedding for the $j$-th categorical feature by:
+$$
+\boldsymbol{e}_{j}=V_{j}\boldsymbol{x}_{j}
+$$
+where $\boldsymbol{x}_{j}$ is the one-hot encoded vector representation of the $j$-th categorical variable and $V_{j}$ is the associated embedding/weight matrix.
+The weights in $V_{j}$ are learned along with all of the other parameters in the network.
 
-The embedding for discrete variables act in the exact same way.
-The embedding for each categorical variable gets concatenated to the continuous variables and then gets passed to the rest of the layers in the network.
+The first advantage of entity embeddings is that it speeds up training and reduces the memory footprint which further improves the generalisation ability of the network [@Covington2016], [@Guo2016].
+This especially useful when working with dimensional and sparse inputs.
+Suppose we have a dataset with two categorical features, $X_{1}$ and $X_{2}$, with cardinality of $C_{1}$ and $C_{2}$, respectively.
+Furthermore, suppose that the first hidden layer in the neural network accepts inputs of size $q$ and thus we need project an observation with these two features into a vector representation of the same size.
+If we were to use one-hot encoded representations of $X_{1}$ and $X_{2}$ we would need a weight matrix of size $(C_{1}+C_{2})\times q$.
+However, if we use entity embeddings of $X_{1}$ and $X_{2}$ we may have two weight matrices of sizes $C_{1}\times q/2$ and $C_{2}\times q/2$, which is in total half the number of parameters needed compared to the pure one-hot encoded representation.
 
-In [@Brebisson2015] they found that embeddings helped a lot. 
-The embeddings can also be visualised to investigate whether make sense or to gain further insight into the data and model decision making.
-The weights associated with each categories projection onto the embedding space can be plotted with any dimension reduction technique like t-sne or PCA.
-Then we can compare the categoires based on their relative distances and positions in this reduced space.
+The size of the embeddings is a hyperparamter of the model and again there is no way to tell what this value should be beforehand.
+Most publications rely on a grid search to find the optimal sizes.
+For example [@Song2018] experimented with embedding sizes [8,16,24,32] and found 16 to work the best, and [@Cheng2016] found that an embedding size of 32 was optimal for their use-case.
+The selection complete depends on the data and the network used.
 
-Entity embeddings are not too different to one-hot encoding a categorical input and sending it through a standard fully connected layer.
-An embedding is essentailly the same operation but a separate one for each of the categorical features.
-Doing it this way reduces memory usage and speeds up training of a neural network. 
-This makes is incredibly useful for datasets with high cardinality features and many of them.
-It will also not be possible to interpret categories based on its embedding of the one-hot encoded path is followed.
+[@Wang2017b] and [@Brebisson2015] used different embedding sizes for each categorical features and suggested these rules-of-thumb:
 
-We further demonstrate in this paper that entity embedding helps the neural network to generalize better when the data is sparse and statistics is unknown [@Guo2016].
+- $6\times(\text{cardinality})^{\frac{1}{4}}$ [@Wang2017b]
+- $\max(2, \min(\text{cardinality}/2,50))$
 
-As proof that these entity embeddings actually learns something useful, besides plotting the embedding matrix, one can also feed them along with the continuous features to other learning algorithms and see how it affects performance.
+It makes sense to have different embedding sizes for categorical features with different complexities.
+
+Entity embedding not only reduces memory usage and speeds up neural networks compared to one-hot encoding, but more importantly, by mapping similar values close to each other in the embedding space it reveals the intrinsic properties of the categorical variables, which one cannot obtain with one-hot encoding.
+This allows us to interpret the classes of the categorical features.
+The embeddings can be visualised to gain further insight into the data and model decision making.
+The weights associated with each category's projection onto the embedding space can be plotted with any dimension reduction technique like t-sne or PCA.
+Then we can compare the categories based on their relative distances and positions in this reduced space.
+In \autoref{fig:edu_embed} we plot a 2 component PCA of the embedding matrix of the Education categorical feature in the adult dataset.
+We see that the school categories all lie in the bottom-right corner of the space, with some notion of ranking from grade 5 (top-right) to grade 12 (bottom-left).
+The tertiary education classes are in a separate cluster and their levels of education correspond conveniently with the vertical axis.
+
+![PCA of the Education entity embedding weight matrix.\label{fig:edu_embed}](figures/education_embeds.png)
+
+To prove that these entity embeddings actually learns something useful, besides plotting the embedding matrix, one can also feed them along with the continuous features to other learning algorithms and see how it affects performance.
 [@Guo2016] found that the embeddings obtained from the trained neural network boosted the performance of all tested machine learning methods considerably when used as the input features. 
+These embeddings can be reused on different machine learning tasks and do not have to be re-learned for each dataset.
+Instacart and Pinterest, referenced above, reported sucessful implementation of this approach.
 
-[@Song2018] experimented to find the optimal embedding size [8,16,24,32], found it depended on the dataset.
-Embedding dimension: 16 [@Song2018], 32 [@Cheng2016]
-
-[@Wang2017b] used embedding sizes of $6\times(\text{cardinality})^{\frac{1}{4}}$.
-
-Embedding: [@Covington2016]
-
+The entity embedding approach is very flexible.
+One can reuse an embedding over different categorical features if the features have overlapping categories.
 [@Zhou2017] has an intersting take on multi-hot categorical features; where a feature can have more than category associated with it.
-The embedding layer for that instance then outputs a list of embeddings with lenght the same as the number of categories associated with that instance and feature.
+The embedding layer for that instance then outputs a list of embeddings with length the same as the number of categories associated with that instance and feature.
 The list of embeddings then gets projected back into a fixed-length representation by doing a pooling operation.
 
-
 ### Combining Features
+
+Once the continuous and categorical features have been processed and embedded, we need a way to combine them before passing it to the rest of the network.
+
+Standard: The embedding for each categorical variable gets concatenated to the continuous variables and then gets passed to the rest of the layers in the network.
 
 **Dealing with mixed input types.** [@Song2018], [@Wang2017b], [@Qu2016], [@Cheng2016]
 Processing numerical and categorical features and their combinations.
 [@Song2018] embeds both the numerical and categorical features separately into a lower-dimensional representation.
 By mapping both types in the same feature space faciliates more effective learning of interactions between the mixed features.
-The embedding for the $j$-th categorical feature is obtained by [@Song2018], [@Wang2017b]:
-$$
-\boldsymbol{e}_{j}=V_{j}\boldsymbol{x}_{j}
-$$
-where $\boldsymbol{x}_{i}$ is the one-hot encoded vector representation of the $j$-th categorical variable and $V_{j}$ is the associated embedding/weight matrix.
-The weights in $V_{j}$ are learned along with all of the other parameters in the network.
+
 The embedding for the $j$-th numerical features is obtained by:
 $$
 \boldsymbol{e}_{j}=\boldsymbol{v}_{j}x_{j}
