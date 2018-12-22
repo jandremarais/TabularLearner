@@ -16,10 +16,8 @@ In this chapter we aim for good empiricism by evaluating the models on different
 Our work is not necessarily about beating the benchmark and consist of simple experiments that aid in the understanding of how the techniques work, as used throughout the thesis.
 
 Furthermore, we want all our experiments to be as reproducible as possible.
-Therefore we provide all the code, data and necessary documentation to reproduce the experiments that were done in this thesis[^git2]. 
+Therefore we provide all the code, data and necessary documentation to reproduce the experiments that were done in this thesis (see \autoref{app:C}). 
 This is often an overlooked feature of experiments, but is however crucial for transparent and accountable reporting and making your work useful for others to build upon.
-
-[^git2]: All of these are shared publicly at https://github.com/jandremarais/tabularLearner
 
 The main aim of this chapter is to better understand the behaviours of certain models and parameters and to cross-check the literature with empirical observations.
 We focus on the same main issues when it comes to DL on tabular as in the previous chapter, which are: 
@@ -33,53 +31,15 @@ However, since these parameters are tightly linked with each other and other mod
 
 ## Datasets \label{sec:datasets}
 
-Our experiments are done on multiple datasets.
-Thus we can distinguish between findings that are only true for certain datasets and tasks and findings that hold more universallt.
+We chose to do our experiments on the Adult dataset for the following reasons:
 
-The criteria for selecting the datasets were:
-- Strong model performance baselines exist; so that we can determine how far we are from the SoTA and that is actually a relevant problem.
-- Entirely open source; so that anyone can access it, reproduce it and build on it.
-- More than 20,000 observations; since NNs are data hungry.
-- Does not require too much preprocessing; so that most of the energy goes into the modelling phase.
-- Contain a mix of continuous and categorical features.
++ **Simplicity**: We wanted a dataset that is representative of a real-world case but one that does not have specific modelling challenges like plenty of missing values or highly imbalanced classes. Our goal is to evaluate the models on a generic tabular dataset and not one that requires special attention or the skills of a domain expert. Thus when we fall short we know it is because of the model and not something that is in the data.
++ **Minimal preprocessing**: We want to focus our time on training the algorithms and not preprocessing the data. The Adult dataset is relatively clean.
++ **Open access**: Since we want our work to be reproducible, we want the dataset we use to be accessible by all.
++ **Good size**: Neural networks are data hungry and therefore for optimal performance we prefer a medium size dataset. If we want to test the performance of the models on smaller datasets, we can just run the experiment on a subset of the data.
++ **Strong baselines**: In order to know how well we are doing we need to able to compare our performance with those of others.
 
-We chose two datasets for regression, one for binary classification and one for multi(class/label) classification from the UCI machine learning repository [Dua2017]. 
-The chosen datasets are:
-
-**The Adult dataset[^adult]**. This dataset was collected during a census.
-The task here is to predict whether or a not a certain person's income exceeds $50,000 per year. 
-The features available are things like *age*, *education*, *sex* and *race*.
-In total there are 14 features and 48,842 observations.
-
-[^adult]: http://archive.ics.uci.edu/ml/datasets/Adult
-
-**Forest Cover Type[^forestcover]**: Predicting forest cover type from cartographic variables.
-This is a multiclass clasification task. There are 581,012 observations.
-
-[^forestcover]: https://archive.ics.uci.edu/ml/datasets/covertype
-
-**Taxi Fare Prediction**: Regression task (possibly) https://www.kaggle.com/c/new-york-city-taxi-fare-prediction
-
-- Maybe https://www.kaggle.com/c/costa-rican-household-poverty-prediction/data
-- Maybe https://www.kaggle.com/c/home-credit-default-risk
-
-Look at the datasets used by [@anonymous2019], also [@Zhang2017]
-
-- Criteo [@Song2018], [@Wang2017b], [@Qu2016], [@Guo2017]
-- Avazu [@Song2018]
-- KDD12 [@Song2018]
-- MovieLens-1M [@Song2018]
-- iPinYou [@Qu2016]
-- Forest Cover type [@Wang2017b]
-- Higgs [@Wang2017b]
-- Tox21 [@Klambauer2017]
-- Yahoo [@anonymous2019]
-- Letor [@anonymous2019]
-- Protein [@anonymous2019]
-- A9A [@anonymous2019]
-- Flight [@anonymous2019]
-
-Regularisation learning paper [@Shavitt2018] only tested their approach on one dataset.
+For more specifics on the dataset, one can refer to \autoref{app:A}
 
 ## Evaluation \label{sec:eval}
 

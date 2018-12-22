@@ -90,7 +90,7 @@ In order to produce a final estimate from the initial two estimates, *viz.* $z_{
 That is, $y=\boldsymbol{w}_{3}^{\intercal}\boldsymbol{z}$, where $\boldsymbol{z}=[z_{1}\quad z_{2}]^{\intercal}$.
 \autoref{fig:simple_nn} illustrates this pipepline in network form.
 
-```{r, fig.cap="A simple neural network accepting $p$-sized inputs, with one hidden layer which has two neurons.\\label{fig:simple_nn}", out.width="200px", align='center'}
+```{r, fig.cap="A simple neural network accepting $p$-sized inputs, with one hidden layer which has two neurons.\\label{fig:simple_nn}", out.width="200px", fig.align='center'}
 knitr::include_graphics('figures/simple_nn.png')
 ```
 

@@ -1,4 +1,4 @@
-# Introduction
+# Introduction \label{chp:intro}
 
 ## Deep Learning
 
@@ -104,7 +104,7 @@ By reviewing the most recent literature on the topic, and through empirical work
 ## Challenges of Deep Learning for Tabular Data \label{sec:tabchal}
 
 Some of the challenges of deep learning for tabular data have been alluded to in earlier sections of this chapter.
-These will form the framework for the literature review which follow later on, therefore they are summarised below, in terms of relevant questions to ask when applyting deep learning in the context of tabular data:
+These will form the framework for the literature review which follow later on, therefore they are summarised below, in terms of relevant questions to ask when applying deep learning in the context of tabular data:
 
 - **How should input features be represented numerically?**: We have mentioned that tabular data consist of mixed feature types, *i.e.* a combination of categorical and continuous features. The question here relates to how these features should be processed and presented to the model during training.
 - **How can we exploit feature interactions?**: Once we have found the optimal feature representation for all feature types, we will need a way to effectively learn the interactions between them and also a way to learn how they relate to the target. This a crucial step towards the effective application of deep learning models to tabular data.
@@ -115,7 +115,7 @@ Clearly there are plenty of considerations when it comes to using deep learning 
 The main objective of this thesis is to find the best ways of overcoming the above challenges. 
 Towards this objective, the study should lead to a thorough understanding of the *status quo* of the field, and of the necessary factors in order to ensure deep learning to be as effective in other data domains as it currently is in computer vision and NLP.
 
-The study is divided in two parts. 
+The study is divided into two parts. 
 We start by first providing an overview of the relevant literature.
 Subsequently, we make use of experimental work in order to compare various deep learning algorithms (and possible improvements) on relevant datasets. 
 Here an important aim will be to ensure our experiments to be *rigorous*.
@@ -123,7 +123,7 @@ The importance of rigorous research has relatively recently again been emphasise
 Currently much more emphasis is placed on the latter.
 The speakers urged the deep learning community to be more rigorous in their experiments where, for them, the most important part of rigor is better empiricism, not more mathematical theories. 
 Better empiricism in classification may include, for example, practices such as using cross-validation to estimate the generalisation ability of a model, and reporting standard errors. 
-Empirical studies should involve more than simply attempting to beat the benchmark, for example where possible, they should also involve simple experiments that facilitate understanding why some algorithms are successful, while other are not. 
+Empirical studies should involve more than simply attempting to beat the benchmark, for example where possible, they should also involve simple experiments that facilitate understanding why some algorithms are successful, while others are not. 
 
 [^talk]: Talk given at NIPS2017 - https://www.youtube.com/watch?v=Qi1Yry33TQE
 

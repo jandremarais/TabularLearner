@@ -1,17 +1,87 @@
 # Conclusion \label{chp:conc}
 
-+ What was done in the thesis?
-+ Is Deep Learning useful for tabular data? 
-+ If it is, when?
+In this work we set out to investigate a relatively under-explored area of deep learning; applying deep learning approaches to tabular datasets.
+The goal was to find and understand the best approaches for this task by reviewing the literature and doing an empirical study.
+To assist in this endeavour we also aimed to review the core concepts of neural networks and discuss the modern advancements in deep learning, with the hope of identifying approaches that are transferrable to our domain.
 
-## Promising Future Directions
+In this chapter we summarise the work of this thesis and evaluate how each of the chapters contributed to the set out objectives (\Sref{sec:summary}).
+The limitations of this work is discussed in \Sref{sec:lim}, how they affected the study and how it could be improved upon.
+We conclude this work with a section on promising future directions in this area of research (\Sref{sec:future}).
 
-- Where should future work on the subject focus on?
+## Summary \label{sec:summary}
 
-Variational autoencoders for pretraining.
-Generative Adversarial Network for data augmentation (and other tab data specific augs).
-Feauture reuse
-per feature regularisation.
+In \textbf{\Cref{chp:intro}} the motivation and the objectives of this work were introduced.
+It was stated that deep learning for tabular data is an important topic but that it has not received enough attention in the literature.
+The main issues that (we feel) need to be addressed in order to make progress in the field were highlighted.
+The chapter also provided an overview of the fundamentals of Statistical Leaning Theory, including different learning paradigms, loss functions, optimisation and overfitting, to serve as background for the problems we were trying to solve.
 
-- more datasets
-- review the code
+\textbf{\Cref{chp:nn}} was about neural networks and how to train them.
+Neurons, layers, activation functions and network architectures were described in detail to gain a complete understanding of the mechanics of neural networks.
+To describe how a neural network is trained, the backpropogation and stochastic gradient descent algorithms were introduced, with the help of examples.
+The chapter included a brief look at basic regularisation methods for neural networks.
+This was followed by a section on representation learning to gain insight to what a neural network is actually learning and how it does so.
+This chapter provided us with the fundamentals of neural networks to enhance our capacity to understand the more advanced developments in deep learning that follows.
+
+\textbf{\Cref{chp:dl}} was about deep learning in general. 
+The major developments contributing to the recent success of deep learning were investigated.
+The chapter introduced autoencoders and how they can be used for unsupervised pre-training, along with the concept of transfer leaning.
+Very effective regularisation techniques, data augmentation and dropout were described.
+This was followed by a review of the more modern layers and architecture designs in deep learning, which included normalisation layers, skip-connections, embeddings and the attention mechanism.
+The chapter included a section on the concept of superconvergence and how it can be achieved by using the 1Cycle policy and more effective hyperparameter selection.
+A brief discussion on the neural network specific and model agnostic tools available for interpretting deep neural networks was also provided.
+The topics that were focussed on in this chapter gave insight into how deep learning achieved its success in other data domains, which provided a good starting point in an attempt to improve deep learning for tabular data.
+
+\textbf{\Cref{chp:td}} was about deep learning for tabular data.
+In this chapter a review was done on all the latest literature on applying deep neural networks to tabular data.
+The main challenges to deep learning for tabular data, as stated in \Cref{chp:intro}, guided this review.
+The chapter explores the various ways of preprocessing continuous features and embedding categorical features in a way that is optimal for a neural network.
+Then it investigated how a neural network can be encouraged to learn better feature interactions, by using attention modules and cross-features.
+The SeLU activation was proposed, along with skip-connections, as ways to build deeper neural networks for more complex feature learning.
+This was followed by evaluating approaches that make deep neural networks more sample efficient.
+It focussed on denoising autoencoders as a way of pretraining a network and the data augmentation techniques, swap noise and mixup.
+Reference was made to per-feature regularisation.
+Then there was a discussion on more ways of intepretting neural networks for tabular data, considering the approaches disscussed earlier in the chapter.
+An example of interpretting a network with knowledge distillation was also given.
+The chapter concluded with an empirical investigation of superconvergence on tabular data.
+This chapter provided us with a solid technical understanding of the approaches available to overcome the challenges in the field.
+It also gave sufficient detail to be able to implement these promising approaches.
+
+\textbf{\Cref{chp:exp}} contains the empirical experiments.
+The first experiment ... 
+
+## Limitations \label{sec:lim}
+
+There were various aspects that limited the impact of this study.
+Two technical limitations were experienced:
+
++ **Acces to large compute:** Deep learning techniques are notorious for the amount of computing power they require. There was limited access to cloud computing providers on which some of the experiments were done. However, in most cases, we only had access to a small personal machine without a graphical processing unit (GPU). This significantly increased the running time of the experiments and hindered rapid iteration of different approaches. In future work we would make sure that sufficient computing power is available for experimenting in this field.
+  
++ **Acess to quality code:** Many of the recent developments discussed in this work had no official implementation at the time of writing. This forced us to rewrite many of the code in order to validate the results claimed in the literature and to be able to use it in our data and models. Sometimes technical details were left out of the original papers and we had to improvise to get a working example. By doing it this way we risked using code for our experiments that might not have been exactly what the authors intendend.
+
+The other limitations to this study were:
+
++ **Experiments on a single dataset:** Due to the technical limitations described above, we only had the capacity to process a single dataset for our experiments. This made our results inconclusive, but still adds value as an exploratory study. This study would have benefitted from experiments on datasets with different properties and with different tasks. We published all of our code online if anyone wants to build on this work.
+
++ **Based on pre-prints:** Deep learning is such a fast developing area of research and in an attempt to keep this work relevant, pre-prints of publications were cited. Pre-prints are not peer-reviewed and subject to change. We did our best to critically evaluate the work cited and to confirm findings with experiments. Although we tried to keep up with the deluge of publications, there remains a possibility that new publications arised during the post-research phase of this work.
+
+## Promising Future Directions \label{sec:future}
+
+Throughout this thesis we have identified promising research directions which, however, did not fit into the scope of this work.
+Besides repeating the empirical work on a wider variety of datasets, we propose the following to be a valuable research path to follow:
+
+**Generative models for tabular data**.
+Here we specifically refer to *Variational Autoencoders* (VAE) [@Kingma2013] and *Generative Adversarial Networks* (GAN) [Goodfellow2014].
+A VAE provides a probabilistic manner for describing an observation in a latent space.
+That is, instead of using a single value to describe an attribute in the latent space, like the standard autoencoder, a VAE uses a probability distribution as a description of a latent space attribute.
+The greatest value we think VAEs can add is as a method of unsupervised pretraining.
+When using DAEs for unsupervised pretraining, it needs to be injected with some noise.
+However, the best noise schemes we found, were swap noise and block out, but as mentioned before, neither makes complete sense in the tabular dataset environment.
+A VAE can provide a more robust way of doing unsupervised learning because it decoding function needs to learning to process probabilistic output and thus it is not reliant on noise injection.
+In addition, once trained, a VAE can be used to generate new samples by sampling from the latent probabilistic distribution, which may serve as a way to generate more training samples.
+
+We also believe that GANs offer a good alternative to generating new training samples.
+A GAN consists of two neural networks, a generator ($G$) and a discriminator ($D$).
+The task of $G$ is: given random noise as input, generate artificial samples of the data that are indistinguishable from the genuine samples.
+The task $D$ is to attempt to discriminate between the two.
+GANs have shown tremendous value in data synthesis, especial in the domains of computer vision and speech synthesis, producing life-like faces [@Karras2017] and voices [@Donahue2018].
+We think GANs can achieve similar success in data synthesis for tabular data and can thus also be used to artificially enlarge training datasets for supervised learning.

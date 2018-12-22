@@ -161,72 +161,51 @@ The list of embeddings then gets projected back into a fixed-length representati
 ### Combining Features
 
 Once the continuous and categorical features have been processed and embedded, we need a way to combine them before passing it to the rest of the network.
+The standard approach is to concatenate each categorical variable embedding to the continuous variables, as was done in [@haldar2018] and [@Wang2017b] for example, illustrated in \autoref{fig:comb_rep}.
+The potential problem with this approach is that some features might be over-represented in this vector.
+For example, one of the continuous features may be very important for prediction, but it gets lost when concatenated with all the entity embeddings each taking up more space in the combined representation.
 
-Standard: The embedding for each categorical variable gets concatenated to the continuous variables and then gets passed to the rest of the layers in the network.
-
-**Dealing with mixed input types.** [@Song2018], [@Wang2017b], [@Qu2016], [@Cheng2016]
-Processing numerical and categorical features and their combinations.
-[@Song2018] embeds both the numerical and categorical features separately into a lower-dimensional representation.
-By mapping both types in the same feature space faciliates more effective learning of interactions between the mixed features.
-
+In [@Song2018] they embed both the numerical and categorical features into the same sized embedding.
+By mapping both types in the same feature space facilitates more effective learning of interactions between the mixed features.
 The embedding for the $j$-th numerical features is obtained by:
 $$
 \boldsymbol{e}_{j}=\boldsymbol{v}_{j}x_{j}
 $$
 where $x_{j}$ is a scalar and $\boldsymbol{v}_{j}$ is the associated weight vector.
-Why does it help to increase the dimension of the numerical features?
-Is it only for balanced representation when combined with categorical features?
-The numerical and categorical embeddings are concatenated to form a single vector representation [@Song2018].
-[@Wang2017b] does not embed numerical but just stack the normalised numerical features along with the categorical embeddings.
+
+```{r, fig.cap="Combined representation of continuous and categorical features.\\label{fig:comb_rep}", fig.align='center', out.width="30%"}
+knitr::include_graphics("figures/mix_rep.png")
+```
 
 ## Learning Feature Interactions \label{sec:feat_int}
 
-Traditionally, input features to a machine learning algorithm must be hand-crafted from raw data, relying on practitioner expertise and domain knowledge to determine explicit patterns of prior interest. 
-The engineering process of creating, analyzing, selecting, and  evaluating  appropriate  features  can be  laborious and time consuming, and is often thought of as a "black art" requiring creativity,  trial-and-error, and oftentimes luck.  
-In contrast, deep learning techniques learn optimal features directly from the data itself, without any human guidance, allowing for the automatic discovery of latent data relationships that might otherwise be unknown or hidden.
-
-That being said, preprocessing of data in deep learning is not totally free of human engineering.
-See in the Normalisation section what measures should be taken to ensure a NN can learn effectively from tabular data.
-
-Feature engineering in general is hard and time consuming with no clear recipe to follow.
-But it is also very crucial to an effective learning system.
-The main aim is to find a low-dimensional representation of sparse and high-dimensional raw features and their meaningful combinations.
-Some of the challenges of feature engineering is listed below.
-
-It is widely held that 80% of the effort in an analytic model is preprocessing, merging, customizing, and cleaning datasets, not analysing them for insights [@Rajkomar2018].
-
-The success of predictive algorithms largely depends on feature selection and data representation.
-The feature selection process and finding the best data representation is largely a manual and painful process.
-
-In most machine learning tasks the greatest performance gains can be achieved by feature engineering wheras better algorithms only result in incremental boosts.
-In feature egineering one strives to create new features from the original features based on some domain knowledge of the data or otherwise, that makes it easier for the model to estimate the target.
+In most machine learning tasks the greatest performance gains can be achieved by feature engineering wheras better algorithms may only result in incremental boosts.
+In feature egineering one strives to create new features from the original features based on some domain knowledge of the data or otherwise, that makes it easier for the model to estimate the target and help capture high-order interactions between features.
 Although a crucial step to make the most out of the data, this can be a very laborious process.
-There is no formal path to follow in this stage and thus usually consists of many a trial and error, benefitted by domain knowledge of the data, only accessible in some cases.
-A huge advantage of using NNs on tabular data (and other data structures) is that the feature engineering process gets automated to some extent.
-A NN learns these optimal feature transformations implicitly during the training process.
-The hidden layers of a NN can be viewed as a feautre extractor that was optimised to map the inputs into the best possible features space for a model (the final layer of the network) to operate in.
+It is widely held that 80% of the effort in an analytic model is preprocessing, merging, customizing, and cleaning datasets, not analysing them for insights [@Rajkomar2018].
+There is no formal path to follow in this stage and thus usually consists of many a trial and error, benefitted by domain knowledge of the data, which is not always accessible.
+A huge advantage of using neural networks on tabular data (and other data structures) is that the feature engineering process gets automated to some extent (with the caveat of numerical feature preprocessing.).
+A neural network learns these optimal feature transformations and interactions implicitly during the training process.
+The hidden layers of a neural network can be viewed as a feauture extractor that was optimised to map the inputs into the best possible feature space for a model (the final layer of the network) to operate in.
 
-**Extracting high-order combinations of features.** [@Song2018], [@Wang2017b], [@Qu2016], [@Guo2017]
-They key question here is to determine which feautres to combine and how to form meaningful high-order features.
-Effective prediction usually relies on modelling high-order interactions between features.
-Majority of the time needs domain experts to help massage the data.
-Can follow a brute force approach but enumerating all the possible high-order features will exponentially increase the model search space which will just further increase the risk of overfitting.
-Can use multiple fully connected layers with non-linear activations of a NN.
-Fully-connected layers model all feature interactions impplicitly, but is not good enough to learn all types of interactions.
+The standard approach is to stack a few fully-connected layers one after the other to map the input representation to the output, as was done in [@Covington2016].
+Fully-connected layers model all feature interactions implicitly and in ideal world, we would expect this architecture to be sufficient.
+In practice, with out current learning algorithms, a simple MLP is not good enough to learn all types of interactions.
+A fully connected model structure leads to very complex optimisation hyperplanes with a high risk of falling into local optimums.
 
-Standard approach [@Covington2016] MLP
-
-Fully connected model structure leads to very complex optimization hyper-planes with a high risk of falling into local optimums.
+Therefore it is necessary to explicitly leverage expressive feature combinations or encourage the network to learn better high-order feature interactions.
+This issue receives attention in publications such as [@Song2018], [@Wang2017b], [@Qu2016] and [@Guo2017].
+The restrictions we impose on the fully-connected structure may further help to limit the model size to make learning more efficient.
+They key question we asked in this section is how do we help the network to determine which feautres to combine and how to form meaningful high-order features.
 
 ### Attention \label{sec:tab_att}
 
 These layers are inefficient in learning multiplicative feature interactions.
-Hard to explain which features and combinations were important.
 [@Song2018] uses a multi-head self-attention mechanism which they call the interacting layer.
-[@Zhou2017] also uses some form of attention but without the softmax layer to reserve intensity of activations.
-The idea comes from [@Vaswani2017] which itself stems from work done in [@Bahdanau2014].
+[@Zhou2017] follows a vaguely similar idea to attention by learning the weights to apply tothe hidden representations.
+Interestingly, they removed the softmax layer as a way to mimick probabilities to reserve the intensity of activations.
+
 Within in the interacting layer each feature is allowed to interact with every other feature and automatically determine which of those interactions are relevant to the output.
-They also combine a residual connection between layers so that different orders of feature interactions can be combined.
 To explain the attention mechanism, consider feature $j$ and the step to determine which high-order features involving feature $j$ are meaningful.
 We first define the correlation between features $j$ and $k$ under attenion head $h$ as:
 $$
@@ -252,7 +231,7 @@ Then finally the output is combined with its raw input (residual connection) and
 $$
 \boldsymbol{e}_{j}^{\text{res}}=\text{ReLU}\left(\tilde{\boldsymbol{e}}_{j}+W_{\text{res}}\boldsymbol{e}_{j}\right)
 $$
-This mapping from $\boldsymbol{e}_{j}$ to $\boldsymbol{e}_{j}^{\text{res}}$ is done for each features to form the interacting layer.
+This mapping from $\boldsymbol{e}_{j}$ to $\boldsymbol{e}_{j}^{\text{res}}$ is done for each feature to form the interacting layer.
 The interacting layer is thus a representation of high-order features.
 These interacting layers can be stacked on-top of each other to form arbitrary order combinatorial features.
 
@@ -271,26 +250,69 @@ Each cross layer adds back its input after feature crossing in a residual connec
 The degree of cross features grows with cross-network depth.
 The DNN trained in parallel is just a simple network with fully-connected layers and ReLUs.
 The output of the two streams are concatenated, send through a fully connected layer and a sigmoid layer.
+
 [@Qu2016] used something called a product layer, which takes pairwise inner or outer products of all feature combinations and concatenates it to all linear combinations.
 The output is then fed to 2 fully-connected layers.
 According to [@Guo2017] it is necessary to capture both low and high-order interactions (and wide&deep paper).
 They also have to parallel streams of networks, one the FM capturing the low order interactions and one the DNN captuting the high-order interactions.
+
 [@Cheng2016] believes it is both important to learn to memorise and generalise.
 Where memorise refers to recalling from known observations and generalise to predict accurately on unseen samples.
 They attempt to achieve this again with two streams, one linear layer (wide) and one deep network (deep).
 The wide stream learns to memorise and the deep network learns to generalise.
 Combined by a weighted sum.
-[@anonymous2019] Fully connected model structure leads to very complex optimization hyper-planes with a high risk of falling into local optimums.
-Therefore it is necessary to explicitly leverage expressive feature combinations.
-Furthermore it help to limit the model size to make learning more efficient.
-To achieve this they use automatic feature grouping, feature group reduction and recursive endocder with share embeddings.
-These ideas seems a little ad-hoc and not end-to-end.
+
 
 ### Skip-Connection
 
 [@Song2018] shows that residual connection gives better results.
+They also combine a residual connection between layers so that different orders of feature interactions can be combined.
 
 [@Wang2017b] also used a residual connection.
+
+### SeLU
+
+DNNs on tabular data also struggle to go deeper than 3 or 4 layers.
+
+Fully connected model structure leads to very complex optimization hyper-planes with a high risk of falling into local optimums.
+
+Batchnorm:  [@Wang2017b]
+
+The batch normalisation layer attempts to normalise neuron activations to zero mean and unit variance [@Ioffe2015].
+It has become the stanard when training deep CNNs.
+Training with normalisation techniques is perturbed by stochastic gradient descent, stochastic regularisation (like dropout) and the estimation of the normalisation parameters.
+Both RNNs and CNNs can stabilise learning via weight sharing, therefore they are less prone to perturbations.
+Fully-connected NNs do not have this luxury and shows high variance in the training error when trained with normalisation techniques.
+
+Fully-connected DNNs with normalisation techniques are very sensitive to perturbations.
+DNNs exhibit a high variance in training error when trained using BatchNorm.
+This hinders the learning process.
+Combined with dropout just magnifies the effect.
+[@Klambauer2017] suggested the use of SeLUs which is an activation function which helps the network to maintain zero mean and unit variance activations.
+By using this activation, there is no need for a BatchNorm layer.
+SNNs do not suffer from exploding or vanishing gradients.
+They paper tested on 123 tabular datasets to show that on average SNNs are the best.
+But it is quite finicky to get the implementation right.
+It requires a very specific weight initialisation, one that does not really make sense for embedding matrices.
+And even when you get it right, the improvement is not necessarily significant.
+That said, it has not been tested by others on tabular data, so it is worth a try.
+$$
+\text{selu}(x)=\lambda 
+\begin{cases}
+x & \text{if}~~~x>0\\
+\alpha e^{x}-\alpha & \text{if}~~~x\le 0\\
+\end{cases}
+$$
+Give more detail if it is proved to be useful.
+Also needs a specific type of dropout.
+
+[@Klambauer2017] tested SELUs on 121 classification datasets from the UCI Machine Learning repository.
+They compared DNNs with SELU activations to other DNNs and other classifiers like Random Forests and SVMs.
+They found that on the datasets with less than 1000 obervations, random forests and SVMs performed the best.
+However, for the datasets with more than 1000 observations, DNNs with SELU activations performed the best overall.
+The classifiers were compared by ranking them by their accuracy for each prediction task and doing a pairwise Wilcoxon test.
+
+Another thing the authors found when comparing SELUs with other activations is that the model selection approach for SELU DNNs resulted in much deeper networks than DNNs with other activations.
 
 
 ## Sample Effeciency \label{sec:samp_eff}
@@ -428,50 +450,6 @@ A workaround is to make these regularisation parameters trainable like all of th
 This is achieved by minimising the counterfactual loss, a novel loss function proposed by [@Shavitt2018].
 They found that training NNs by optimising the counterfactual loss, outperform other regularisation approaches for NNs and results in NNs that are comparable to gradient boosted trees.
 The learned regularisation parameters can even help with interpretting feature importance.
-
-### Layer Normalisation
-
-DNNs on tabular data also struggle to go deeper than 3 or 4 layers.
-
-Fully connected model structure leads to very complex optimization hyper-planes with a high risk of falling into local optimums.
-
-Batchnorm:  [@Wang2017b]
-
-The batch normalisation layer attempts to normalise neuron activations to zero mean and unit variance [@Ioffe2015].
-It has become the stanard when training deep CNNs.
-Training with normalisation techniques is perturbed by stochastic gradient descent, stochastic regularisation (like dropout) and the estimation of the normalisation parameters.
-Both RNNs and CNNs can stabilise learning via weight sharing, therefore they are less prone to perturbations.
-Fully-connected NNs do not have this luxury and shows high variance in the training error when trained with normalisation techniques.
-
-Fully-connected DNNs with normalisation techniques are very sensitive to perturbations.
-DNNs exhibit a high variance in training error when trained using BatchNorm.
-This hinders the learning process.
-Combined with dropout just magnifies the effect.
-[@Klambauer2017] suggested the use of SeLUs which is an activation function which helps the network to maintain zero mean and unit variance activations.
-By using this activation, there is no need for a BatchNorm layer.
-SNNs do not suffer from exploding or vanishing gradients.
-They paper tested on 123 tabular datasets to show that on average SNNs are the best.
-But it is quite finicky to get the implementation right.
-It requires a very specific weight initialisation, one that does not really make sense for embedding matrices.
-And even when you get it right, the improvement is not necessarily significant.
-That said, it has not been tested by others on tabular data, so it is worth a try.
-$$
-\text{selu}(x)=\lambda 
-\begin{cases}
-x & \text{if}~~~x>0\\
-\alpha e^{x}-\alpha & \text{if}~~~x\le 0\\
-\end{cases}
-$$
-Give more detail if it is proved to be useful.
-Also needs a specific type of dropout.
-
-[@Klambauer2017] tested SELUs on 121 classification datasets from the UCI Machine Learning repository.
-They compared DNNs with SELU activations to other DNNs and other classifiers like Random Forests and SVMs.
-They found that on the datasets with less than 1000 obervations, random forests and SVMs performed the best.
-However, for the datasets with more than 1000 observations, DNNs with SELU activations performed the best overall.
-The classifiers were compared by ranking them by their accuracy for each prediction task and doing a pairwise Wilcoxon test.
-
-Another thing the authors found when comparing SELUs with other activations is that the model selection approach for SELU DNNs resulted in much deeper networks than DNNs with other activations.
 
 ### Dropout
 

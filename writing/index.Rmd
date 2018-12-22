@@ -15,8 +15,8 @@ fontsize: 12pt
 papersize: letter
 classoption: oneside, openany
 margin-ratio: goldenblock
-title: "Deep Learning for Tabular Data: An Empirical Study"
-titel: "Diepleer Tegnieke vir Gestruktrueerde Data: 'n Empiriese Studie"
+title: "Deep Learning for Tabular Data"
+titel: "Diepleer Tegnieke vir Gestruktrueerde Data"
 author: Jan André Marais
 author-short: J.\ A.\ Marais
 degree-short: MCom (Mathematical Statistics)

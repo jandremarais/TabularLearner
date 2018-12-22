@@ -8,6 +8,7 @@
 \acro{CV}{Computer Vision}
 \acro{DL}{Deep Learning}
 \acro{EHR}{Electronic Health Records}
+\acro{GAN}{Generative Adversarial Network}
 \acro{kNN}{$k$-Nearest Neighbour}
 \acro{mAP}{Mean Average Precision}
 \acro{ML}{Machine Learning}
@@ -17,5 +18,6 @@
 \acro{RNN}{Recurrent Neural Network}
 \acro{SGD}{Stochastic Gradient Descent}
 \acro{SotA}{State-of-the-Art}
+\acro{VAE}{Variational Autoencoder}
 
 \end{acronym}

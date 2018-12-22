@@ -1,10 +1,20 @@
 # Software and Code\label{app:code}
 
-+ Deep Learning Library: Pytorch and Fastai
-+ Hardware: GTX1080Ti
-+ Python and Jupyter Notebooks for programming environemnt
+## Development Environment
+
++ Deep Learning Libraries: Pytorch and Fastai
++ Hardware:
+    
+    - MacBook Air (2017)
+    - Cloud Providers: AWS EC2[^aws], SalamanderAI[^sal], Google Compute Engine[^gce].
+    
++ Programming Language: Python
 + github for version control
 + RMarkdown for writing and compiling the thesis document
+
+[^aws]: https://aws.amazon.com/ec2/
+[^sal]: https://salamander.ai/ 
+[^gce]: https://cloud.google.com/compute/
 
 ## Code and Reproducibility
 
