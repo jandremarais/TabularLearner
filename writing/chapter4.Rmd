@@ -24,43 +24,69 @@ In the final section we discuss the 1Cycle policy and hyperparameter selection f
 
 ## Input Representation \label{sec:inp_rep}
 
-**Sparse and high-dimensional inputs.** [@Song2018], [@Wang2017b], [@Qu2016], [@Cheng2016], [@anonymous2019], [@Covington2016]
-Not always the case, but common.
+One of the major design considerations when building a deep neural network for tabular data is the input representation, *i.e.* how should one represent each feature numerically?
+This choice may heavily influnce the model's ability to extract patterns from the input and the effectiveness of the optimisation algorithm.
+What makes this decision harder is that the features in a tabular dataset are highly heterogeneous [@Shavitt2018].
+What we decide for one features might not be optimal for another and we want to ensure that no feature dominates another in the training process.
+
+A tabular dataset typically has continuous features and categorical features.
+Different approaches are needed to process each.
+But the processing should be done in such a way that the one feature type does not dominate the other in terms of feature extraction and optimisation.
+
+A tabular dataset can be high-dimensional and very sparse which makes the task more difficult but even more important to do effectively, as noted by many [@Song2018, @Wang2017b, @Qu2016, @Cheng2016, @anonymous2019, @Covington2016].
+An example of one such challenging tabular dataset is the Criteo dataset[^criteo].
+Its feature dimension is ~30 million, exhibiting sparsity of ~99%.
+Although not always as extreme, these properties are common in tabular datasets.
+
+[^criteo]: https://www.kaggle.com/c/criteo-display-ad-challenge
+
+### Numerical Features
+
+One of the things that make tree-based methods so attractive is that the scale and the distribution of the features hardly matter, as long as their relative ordering is meaningful.
+With neural networks, we are not that fortunate.
+Neural networks are very sensitive to the scale and distribution of its inputs [@Ioffe2015]. 
+If the features are on different scales, one might dominate the weight updates, and if a feature constains a large value, it may throw of the optimisation procedure and cause exploding or vanishing gradients [@Clevert2015].
+This means that one should do a proper standardisation of all continuous features in a tabular dataset.
+
+The typical standardisation approach for numerical features in deep learning is to do mean centering and variance scaling, *i.e.* $\tilde{x}=(x-\mu)/\sigma$, where $\mu$and $\sigma$ is the mean and standard deviation of $X$ respectively ($x\in X$).
+One would expect this transformation to be sufficient, but in practice, many have found otherwise.
+
+In [@haldar2018] they suggest to first inspect the distribution of each of the features.
+If a feature looks gaussian, do the standard normalisation, $(x-\mu)/\sigma$, but if the feature looks more like a power law distribution, transform it by $\log\left((1+x)/(1+\text{median})\right)$.
+This ensures that the bulk of the values lie between {-1,1} and that the median is close to zero.
+As an example, we illustrate what effect these transformations have on 2 continuous features in the Adult dataset, Age and Hours-per-week, in \autoref{fig:contnorm}.
+In \autoref{fig:contnorm} (a) we see that the features are on a roughly similar scale but their distributions are totally different.
+By applying mean centering and unit variance scaling (b) we see the values of the Hours-per-week feature are mostly in {-1,1} but for the Age features there are still plenty of values outside that range.
+When doing the power distribution transformation of [@haldar2018], we observe that the Age feature is now in the proposed value range.
+The downside to this approach is that it is not automatic and can become cumbersome with many variables.
+
+```{r, out.width="33%", fig.cap='Effect of normalisation on continuous variables.\\label{fig:contnorm}', fig.subcap=c('Original', 'Gaussian Norm', 'Power Norm'), fig.show='hold'}
+knitr::include_graphics(c('figures/cont_vars.pdf', 'figures/gaus_norm.pdf', 'figures/power_norm.pdf'))
+```
+
+To reduce the possibly high variance of numeric features [@Song2018] suggests to transform the a numeric feature to $\log^{2}(x)$ if $x>2$.
+This worked in their use-case but it is hard to imagine that this work on all other cases.
+This transformation causes a discontinuity at $x=2$ and a possible overlap between values the were originally less than 2 with those that were greater than 2.
+In addition, this transformation does not address the extreme values on the negative side.
+[@Wang2017b] simply used a standard log transform, $\log{x}$, to normalise continuous features.
+
+In [@Covington2016] they also found that the proper normalisation of numeric features were critical for the model to converge.
+Their approach was to transform the numeric features to be equally distributed in [0,1) using the cumulative distribution $\tilde{x}=\int_{\infty}^{x}df$, where $f$ is the distribution of $x$.
+They approximated the integral with linear interpolation on the quantiles of the feature values computed as a preprocessing step.
+
+Another possibility for numeric feature normalisation that we have not seen used in the deep learning for tabular data literature, is to use a batch normalisation layer as the initial layer to numeric features.
+This will apply the same type of scaling as the zero mean and unit variance transformation, but with transformation parameters learned from each batch.
+Thus the need to preprocess numeric features is removed.
+The caveat is that the quality of the transformation depends on the batch statistics and thus if the batch is not representative of the full data distribution (which is likely if the batch size is small), then it might derail the training procedure.
+
+### Categorical Features
+
 High cardinality categorical features are sparse when one-hot encoded.
 DNNs can easily overfit these sparse and high-dimensional datasets.
 One-hot encoding + fully connected layer deals with the sparse inputs and the weight matrix is bigger.
 Separate embeddings are also easier to interpret.
 Each feature is fed separately into the network so that the layers above can learn specialised representations per feature.
 This improves generalisation (less parameters) speeds up training and reduces memory footprint [@Covington2016].
-
-Can used the Criteo[^criteo] dataset as an example of these challenging datasets.
-
-[^criteo]: http://labs.criteo.com/2014/09/kaggle-contest-dataset-now-available-academic-use/
-
-### Numerical Features
-
-One of the things that make tree-based methods so attractive is that the numeric values of the features hardly matter, as long as their relative ordering is meaningful.
-On the other hand, NNs are very sensitive to the numeric value of the input. 
-This is related to the optimisation procedure.
-If an abnormal feature value is fed to the network during training, large gradients can backpropogate throught the network and/or result in vanishing gradients [@Clevert2015].
-
-[@haldar2018] suggest to restrict the values in the range of {-1,1} and so that the median is mapped to zero.
-They achieved this by inspecting each of the features and if a feature looks gaussian, do the normalisation $(x-\mu)/\sigma$ and if the feature looks more like a power law distribution, transform is by $\log\left((1+x)/(1+\text{median})\right)$.
-
-Another step the same authors suggest is to ensure the continuous variables follow a smooth distribution.
-This helps for generalisation, checking for bugs and general training efficiency.
-It also helps the analyst to determine whether a feature is generated by some other underlying process.
-
-+ how to normalize continuous variables
-  - mean subtract and error divide
-  - rankGauss
-  - scale to 0-1
-
-It is common to standardise all inputs to have mean zero and standard deviation of one. 
-This ensures that all input features are treated equally and that the optimisation process works more smoothly.
-And that the gradients don't saturate or explode.
-
-### Categorical Features
 
 Entity embedding not only reduces memory usage and speeds up neural networks compared with one-hot encoding, but more importantly by mapping similar values close to each other in the embedding space it reveals the intrinsic properties of the categorical variables, which you cannot obtain with one-hot encoding.
 
@@ -89,6 +115,18 @@ We further demonstrate in this paper that entity embedding helps the neural netw
 As proof that these entity embeddings actually learns something useful, besides plotting the embedding matrix, one can also feed them along with the continuous features to other learning algorithms and see how it affects performance.
 [@Guo2016] found that the embeddings obtained from the trained neural network boosted the performance of all tested machine learning methods considerably when used as the input features. 
 
+[@Song2018] experimented to find the optimal embedding size [8,16,24,32], found it depended on the dataset.
+Embedding dimension: 16 [@Song2018], 32 [@Cheng2016]
+
+[@Wang2017b] used embedding sizes of $6\times(\text{cardinality})^{\frac{1}{4}}$.
+
+Embedding: [@Covington2016]
+
+[@Zhou2017] has an intersting take on multi-hot categorical features; where a feature can have more than category associated with it.
+The embedding layer for that instance then outputs a list of embeddings with lenght the same as the number of categories associated with that instance and feature.
+The list of embeddings then gets projected back into a fixed-length representation by doing a pooling operation.
+
+
 ### Combining Features
 
 **Dealing with mixed input types.** [@Song2018], [@Wang2017b], [@Qu2016], [@Cheng2016]
@@ -110,22 +148,6 @@ Why does it help to increase the dimension of the numerical features?
 Is it only for balanced representation when combined with categorical features?
 The numerical and categorical embeddings are concatenated to form a single vector representation [@Song2018].
 [@Wang2017b] does not embed numerical but just stack the normalised numerical features along with the categorical embeddings.
-[@Song2018] used $\log^{2}(z)$ if $Z>2$ to transform numeric features to minimise its variance.
-But how does that work for negative values?
-[@Wang2017b] used normal log transform.
-[@Wang2017b] uses normalisation but dont know what yet.
-[@Song2018] experimented to find the optimal embedding size [8,16,24,32], found it depended on the dataset.
-[@Wang2017b] used embedding sizes of $6\times(\text{cardinality})^{\frac{1}{4}}$.
-Not a lot of work on numerical features [@anonymous2019].
-[@Zhou2017] has an intersting take on multi-hot categorical features; where a feature can have more than category associated with it.
-The embedding layer for that instance then outputs a list of embeddings with lenght the same as the number of categories associated with that instance and feature.
-The list of embeddings then gets projected back into a fixed-length representation by doing a pooling operation.
-[@Covington2016] adresses numeric feature normalisation.
-[@Ioffe2015] shows how sensitive DNNs are to scaling and distribution.
-Proper normalisation of numeric features was critical for convergence [@Covington2016].
-[@Covington2016] does a transformation to equally distribute a numeric feature in [0,1) using the cumalitive distribution.
-The integral is approximated with linear interpolation on the quantiles of the feature values computed in a single pass over the data before training begins.
-In addition they add $\tilde{x}^{2}$ and $\sqrt{\tilde{x}}$ to give the network more expressive power.
 
 ## Learning Feature Interactions \label{sec:feat_int}
 
@@ -162,7 +184,7 @@ Can follow a brute force approach but enumerating all the possible high-order fe
 Can use multiple fully connected layers with non-linear activations of a NN.
 Fully-connected layers model all feature interactions impplicitly, but is not good enough to learn all types of interactions.
 
-Standard approach
+Standard approach [@Covington2016] MLP
 
 Fully connected model structure leads to very complex optimization hyper-planes with a high risk of falling into local optimums.
 
@@ -239,6 +261,7 @@ These ideas seems a little ad-hoc and not end-to-end.
 [@Song2018] shows that residual connection gives better results.
 
 [@Wang2017b] also used a residual connection.
+
 
 ## Sample Effeciency \label{sec:samp_eff}
 
@@ -382,6 +405,8 @@ DNNs on tabular data also struggle to go deeper than 3 or 4 layers.
 
 Fully connected model structure leads to very complex optimization hyper-planes with a high risk of falling into local optimums.
 
+Batchnorm:  [@Wang2017b]
+
 The batch normalisation layer attempts to normalise neuron activations to zero mean and unit variance [@Ioffe2015].
 It has become the stanard when training deep CNNs.
 Training with normalisation techniques is perturbed by stochastic gradient descent, stochastic regularisation (like dropout) and the estimation of the normalisation parameters.
@@ -418,12 +443,17 @@ The classifiers were compared by ranking them by their accuracy for each predict
 
 Another thing the authors found when comparing SELUs with other activations is that the model selection approach for SELU DNNs resulted in much deeper networks than DNNs with other activations.
 
-
 ### Dropout
+
+[@Zhang2016] compared dropout with L2 and found dropout to be better.
 
 Interesetingly, [@haldar2018] found that dropout was not effective in their application.
 They pinned it down to dropout producing invalid input scenarious that distracted the model.
 Therefore they opted for hand crafted noise shapes taking into account the distribution of the relevant feature. 
+
+Dropout: 0.5 [@Song2018], tuned [@Zhang2016] [@Qu2016] [@Guo2017] found dependent on dataset and model.
+
+Other regularisation: $L_{2}$ penalty [@Song2018], [@Wang2017b], [@Zhang2016], [@Qu2016] mini-batch aware l2 for large inputs [@Zhou2017],
 
 ## Interpretation \label{sec:interp}
 
@@ -456,17 +486,12 @@ Since there are no shared patterns among the diverse tabular datasets, it is har
 Most of these parameters are very dependent on the dataset and other modeling choices and therefore the need to tune them.
 Structural hyperparameters are usually found using some brute search.
 [@Song2018] used a sigmoid layer for binary classification.
-Embedding dimension: 16 [@Song2018], 32 [@Cheng2016]
 Hidden layer size: 32 [@Song2018]
 Number of hidden layers: 32
-Dropout: 0.5 [@Song2018], tuned [@Zhang2016] [@Qu2016] [@Guo2017] found dependent on dataset and model.
-Residual connections: [@Song2018], [@Wang2017b]
 [@Song2018] experimented to see how many layers they should choose [1,2,3,4].
-[@Song2018] experimented to find the optimal embedding size [8,16,24,32]
 [@Wang2017b] tested number of layers [2-5]
 [@Wang2017b] tested hidden layer sizes at [32-1024]
 [@Zhang2016], [@Qu2016], [@Guo2017], [@Covington2016] experimented for number and size of layers.
-Batchnorm:  [@Wang2017b]
 Activation functions: tanh [@Zhang2016], tanh vs sigmoid vs relu (tanh and relu depending on dataset) [@Qu2016], relu vs tanh (relu better) [@Guo2017]
 Shapes: Diamond, constant, increasing, decreasing [@Zhang2016] found that Diamond shape works best. found constant to work the best [@Guo2017]
 
@@ -477,9 +502,8 @@ Optimiser: Adam [@Song2018], [@Wang2017b]
 Gradient clipping: [@Wang2017b]
 Learning rate: 0.001-0.0001 [@Wang2017b], [1, 0.1, ..., 0.0001] [@Zhang2016]
 Early stopping: [@Song2018], [@Wang2017b], [@Zhang2016]
-[@Zhang2016] compared dropout with L2 and found dropout to be better.
+
 
 ## Still to categorise
 
 [@Zhou2017] is very similar to the rest of these citations.
-[@Covington2016] also embdding + MLP
