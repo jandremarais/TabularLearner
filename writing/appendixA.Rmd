@@ -46,6 +46,9 @@ We indicate the continuous features and the classes for the categorical features
 + *native-country*: United-States, Cambodia, England, Puerto-Rico, Canada, Germany, Outlying-US(Guam-USVI-etc), India, Japan, Greece, South, China, Cuba, Iran, Honduras, Philippines, Italy, Poland, Jamaica, Vietnam, Mexico, Portugal, Ireland, France, Dominican-Republic, Laos, Ecuador, Taiwan, Haiti, Columbia, Hungary, Guatemala, Nicaragua, Scotland, Thailand, Yugoslavia, El-Salvador, Trinadad&Tobago, Peru, Hong, Holand-Netherlands
 
 The distributions of the continuous features are plotted in \autoref{fig:ad_cont} and the counts of the categories for each of the categorical features can be found in \autoref{fig:ad_cat}.
+The highest reported accuracy in the original paper [@Kohavi1996] was 85.9% by the NBTree algorithm and in an unpublished experiment[^kag_exp] one researcher achieve ~88% accuracy with boosted trees.
+
+[^kag_exp]: https://www.kaggle.com/kanav0183/catboost-and-other-class-algos-with-88-accuracy
 
 ![Histograms for each of the continuous features in the Adult dataset.\label{fig:ad_cont}](figures/adult_conts.png)
 

@@ -370,7 +370,7 @@ Knowledge distillation is the process of transferring the knowledge from one mod
 Once the tree based methods are trained, the usual intepretation tools of tree based models, like feature importance of evaluating how a sample traverses the tree, can be used to attempt to understand what the neural network is doing.
 It is interesting that in both publications the authors note that the tree based models trained on the neural network predictions achieved a better performance that the ones trained on the actual targets - indicating the value knowledge distillation can add.
 
-### Model Agnostic
+### Model Agnostic \label{sec:interp_ma}
 
 Besides interpretation tools specifically designed for neural networks, one can also make use of model agnostic tools, *i.e.* ones that can be used with any machine learning model.
 *The Permutation importance algorithm* computes feature importance scores for each input feature.

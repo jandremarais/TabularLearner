@@ -75,7 +75,7 @@ A VAE provides a probabilistic manner for describing an observation in a latent 
 That is, instead of using a single value to describe an attribute in the latent space, like the standard autoencoder, a VAE uses a probability distribution as a description of a latent space attribute.
 The greatest value we think VAEs can add is as a method of unsupervised pretraining.
 When using DAEs for unsupervised pretraining, it needs to be injected with some noise.
-However, the best noise schemes we found, were swap noise and block out, but as mentioned before, neither makes complete sense in the tabular dataset environment.
+However, the best noise schemes we found, were swap noise and blank-out, but as mentioned before, neither makes complete sense in the tabular dataset environment.
 A VAE can provide a more robust way of doing unsupervised learning because it decoding function needs to learning to process probabilistic output and thus it is not reliant on noise injection.
 In addition, once trained, a VAE can be used to generate new samples by sampling from the latent probabilistic distribution, which may serve as a way to generate more training samples.
 
