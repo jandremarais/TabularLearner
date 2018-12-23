@@ -27,7 +27,7 @@ The major developments contributing to the recent success of deep learning were 
 The chapter introduced autoencoders and how they can be used for unsupervised pre-training, along with the concept of transfer leaning.
 Very effective regularisation techniques, data augmentation and dropout were described.
 This was followed by a review of the more modern layers and architecture designs in deep learning, which included normalisation layers, skip-connections, embeddings and the attention mechanism.
-The chapter included a section on the concept of superconvergence and how it can be achieved by using the 1Cycle policy and more effective hyperparameter selection.
+The chapter included a section on the concept of superconvergence and how it can be achieved by using the 1Cycle policy and more effective hyperparameter selection, with the help of an example and experiment.
 A brief discussion on the neural network specific and model agnostic tools available for interpretting deep neural networks was also provided.
 The topics that were focussed on in this chapter gave insight into how deep learning achieved its success in other data domains, which provided a good starting point in an attempt to improve deep learning for tabular data.
 
