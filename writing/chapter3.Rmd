@@ -348,7 +348,7 @@ For example, in the clinical domain, model transparency is of utmost importance,
 Fortunately, some work has been done to gain insights from neural networks.
 We discuss the topic briefly in the following sections.
 
-### Neural Network Specific
+### Neural Network Specific \label{sec:interp_ns}
 
 We have showed in \Sref{sec:rep} that it is possible to inspect activations and weights of layers at different levels of the network.
 If the network is small, one might gain insight to what the network has learned or why it is making certain decisions.

@@ -487,9 +487,20 @@ The standard error are too small to show on the figure.
 The horizontal axis measures the average drop in the log loss when the feature is shuffled before prediction.
 The ranking of the features can be justified intuitively.
 It is reassuring to see that sex, race and native-country are some of the less important features when it comes to predicting the income of an indivdual.
-It would be interesting to compare this output with the feature importance that can be obtained from knowledge distillation [@Che2016].
 
 ![Permutation importance plot of a neural network trained on the Adult dataset.\label{fig:imp}](figures/perm_importance.png)
+
+Next we compare the permutation importance with the feature importance obtained from knowledge distillation to a boosted trees algorithm (see \Sref{sec:interp_ns}).
+To recap the process, we use the predictions of the neural network trained on the Adult dataset as the target for a boosting model to predict using the same input as that given to the neural network.
+Once the boosting model is trained on these targets, we can extract the feature importance based on the number of times the base trees used a certain feature to split on.
+The results are displayed in \autoref{fig:imp_xgb}.
+
+![Feature importance obtained from a boosted trees model trained on the neural network predictions.\label{fig:imp_xgb}](figures/xgb_importance.png)
+
+The ranking of the variables between the two approaches are somewhat the same, except for the marital-status and fnlwgt features.
+This difference might firstly be caused by the permutation importance method not picking up on multivariate feature interactions and thus incorrectly thinks that marital-status is an important feature, but in reality the performance drop was actually caused by another feature dependent on marital-status.
+The other explanation we can give is that the decision trees are more likely to split on features with more splitting points and since the fnlwgt feature is the feature with most unique values in the dataset, it contributed to the reason why it was considered so important for the boosting model.
+These two examples show that one should take care when interpretting models and should use more than one source of information when possible.
 
 ## Hyperparameter Selection \label{sec:hs_tb}
 
