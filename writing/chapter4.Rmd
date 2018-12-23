@@ -480,7 +480,16 @@ That is that the permutation test did not produce sensical results because the f
 Permuting the feature independently created examples that never occurred in real life, and the importance of features in that invalid space misled them. 
 They did find it somewhat useful to identify redundant features.
 
-+ Example of how knowledge distillation can work and compare output with permutation importance.
+We implemented an example of a permutation importance plot for a trained neural network on the Adult dataset.
+We shuffled each feature 5 times to get a more robust estimate and to obtain a standard error and we measured the performance in terms of the log loss.
+The resulting plot is in \autoref{fig:imp}.
+The standard error are too small to show on the figure.
+The horizontal axis measures the average drop in the log loss when the feature is shuffled before prediction.
+The ranking of the features can be justified intuitively.
+It is reassuring to see that sex, race and native-country are some of the less important features when it comes to predicting the income of an indivdual.
+It would be interesting to compare this output with the feature importance that can be obtained from knowledge distillation [@Che2016].
+
+![Permutation importance plot of a neural network trained on the Adult dataset.\label{fig:imp}](figures/perm_importance.png)
 
 ## Hyperparameter Selection \label{sec:hs_tb}
 

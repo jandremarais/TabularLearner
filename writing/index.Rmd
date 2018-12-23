@@ -15,7 +15,7 @@ fontsize: 12pt
 papersize: letter
 classoption: oneside, openany
 margin-ratio: goldenblock
-title: "Deep Learning for Tabular Data"
+title: "Deep Learning for Tabular Data: An Exploratory Study"
 titel: "Diepleer Tegnieke vir Gestruktrueerde Data"
 author: Jan André Marais
 author-short: J.\ A.\ Marais
