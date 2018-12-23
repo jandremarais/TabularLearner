@@ -1,1 +1,26 @@
 # Hyperparameter Search \label{app:B}
+
+## Architectural Search
+- Number of layers (vs with SeLU) (vs other activations) [1-10]
+- Layer size [32-2048]
+- Architecture shape [Constant, increasing, decreasingm diamond]
+- dropout [0-1]
+
+Recently found that the below experiments were already done by [@Guo2017, @Qu2016, @Zhang2016].
+This was however only explored for Click-through rate prediction data.
+Thus the below experiments should be done in the light of these findings and can be compared to the their findings.
+
+Here we investigate the effect of the size of the network on the different datasets.
+We compare the performance of the models at different numbers and sizes of layers.
+Larger networks are more flexible and therefore we expect it to act similarly to any learning model flexibility parameter.
+Increasing the network size will be beneficial up until a certrain point until it becomes too big and be more prone to overfitting.
+We hope to find a rule of thumb that might act as a good starting point and guideline to choose the network size.
+We also want to get a feel for how important these hyperparameters are.
+
+- Constant size
+Layer sizes: 32, 64, 128, 256, 512, 1024, 2048
+Number of layers: 1,2,3,4,5,6
+At a constant dropout.
+
+Suppose we choose three layers, compare the following shape at approximately equal number of parameters.
+Shapes: Constant, decreasing, increasing, diamond, hourglass

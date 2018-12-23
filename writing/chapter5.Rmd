@@ -12,22 +12,31 @@ The speakers urged the deep learning community to be more rigorous in their expe
 
 [^talk2]: How do I cite the talk given at NIPS2017 - https://www.youtube.com/watch?v=Qi1Yry33TQE
 
-In this chapter we aim for good empiricism by evaluating the models on different types of prediction tasks and datasets, exploring many hyperparamters and doing cross-validation for unbiased performance measures along with standard errors.
-Our work is not necessarily about beating the benchmark and consist of simple experiments that aid in the understanding of how the techniques work, as used throughout the thesis.
+In this chapter we aim for good empiricism by exploring many hyperparamters in various data scenarios and doing cross-validation for unbiased performance measures along with standard errors.
+Our work is not necessarily about beating the benchmark and instead consists of simple experiments that aid in the understanding of how the techniques work and what effect they have.
 
 Furthermore, we want all our experiments to be as reproducible as possible.
-Therefore we provide all the code, data and necessary documentation to reproduce the experiments that were done in this thesis (see \autoref{app:C}). 
+Therefore we provide all the code, data and necessary documentation to reproduce the experiments that were done in this thesis (see \autoref{app:code}). 
 This is often an overlooked feature of experiments, but is however crucial for transparent and accountable reporting and making your work useful for others to build upon.
 
 The main aim of this chapter is to better understand the behaviours of certain models and parameters and to cross-check the literature with empirical observations.
-We focus on the same main issues when it comes to DL on tabular as in the previous chapter, which are: 
+We focus on the same main modelling challenges for deep learning on tabular datasets that we discussed in \autoref{chp:td}, which are:
 
 - how to represent the inputs,
 - how to learn from feature interactions, and
-- how to fight overfitting.
+- how to be more sample efficient.
 
-The more general hyperparameters, like learning rate, batch size, layer size and layer depth will not receive attention here since it has already been discussed at relevant parts previously.
-However, since these parameters are tightly linked with each other and other model parameters, we still do a hyperparamter search where we deem appropriate and report the findings in \Cref{app:B}. The rest of the chapter continues as follows: In \Sref{sec:datasets} an overview of the datasets used for these experiments are given and why the were chosen. We discuss our evaluation procedure and metrics in \Sref{sec:eval}. Thereafter we start with the main experiments.
+The model interpretation challenge was covered in \autoref{sec:interp}.
+
+The more general hyperparameters, like learning rate, batch size, layer size and layer depth is not the focus of these experiments and some we have already experimented with in previous chapters.
+However, since these parameters are tightly linked with each other and other model parameters, we still do a hyperparamter search where we deem appropriate and report the findings in \Cref{app:B}.
+The rest of the chapter continues as follows: 
+In \Sref{sec:datasets} we discuss the dataset used for these experiments and why it was chosen.
+Thereafter, in \Sref{sec:eval}, we discuss the general methodology of the experiments and how they are evaluated.
+Then the main experiments follow.
+\Sref{sec:rep_exp} compares the performance of various continuous feature transforms and entity embedding sizes.
+\Sref{sec:exp_int} looks at the proposed approaches to model high-order feature interactions.
+\Sref{sec:exp_samp} evaluates the different approaches to avoid overfitting in constrained data environments.
 
 ## Datasets \label{sec:datasets}
 
@@ -37,38 +46,17 @@ We chose to do our experiments on the Adult dataset for the following reasons:
 + **Minimal preprocessing**: We want to focus our time on training the algorithms and not preprocessing the data. The Adult dataset is relatively clean.
 + **Open access**: Since we want our work to be reproducible, we want the dataset we use to be accessible by all.
 + **Good size**: Neural networks are data hungry and therefore for optimal performance we prefer a medium size dataset. If we want to test the performance of the models on smaller datasets, we can just run the experiment on a subset of the data.
-+ **Strong baselines**: In order to know how well we are doing we need to able to compare our performance with those of others.
++ **Strong baselines**: In order to know how well we are doing we need to be able to compare our performance with those of others.
 
-For more specifics on the dataset, one can refer to \autoref{app:A}
+For more specifics on the dataset, one can refer to \autoref{app:data}
 
-## Evaluation \label{sec:eval}
+## General Methodology \label{sec:eval}
 
-[@Klambauer2017] did a once-off three-way split of the data into training, validation and testing datasets.
-Hyperparemeter decisions were made based on the valdiation dataset performace and then the selected models are compared on the test datasets.
-The models were compared using the pairwise Wilcoxon rank test.
-The problem with doing a once-off split is that it does not account for the variance of the model and the performance of the model can in fact be very sensitive to the subset of data.
-By doing cross-validation, we can have more robust performance metrics, including the benefit of reporting on standard errors.
+### Loss Function and Evaluation Metric
 
-The other problem with [@Klambauer2017] is that they only tested on classification tasks and not regression.
-Models can behave quite differently on the two types of tasks.
-[@Zhang2017] also only tested mixup data augmentation on tabular datasets where the task was classification.
-
-For the regression tasks we will compare the various models using the mean squared error and for classificaion we use cross-entropy.
-These are the metrics directly being optimised during the training process.
-When comparing the results to previous work, we base it on the metrics that are commmon for the specific dataset.
-
-### Metrics
-- loss function
-- task specific
-- dataset specific
-- time and memory
-
-AUC, Logloss for binary classification [@Song2018], [@Wang2017b],  [@Zhang2016], [@Qu2016]
-No cross-validation [@Song2018],  [@Zhang2016]
-Run time per epoch [@Song2018], [@Guo2017]
-Model size [@Song2018]
-Think [@Wang2017b] used CV since the report se's for hyperparameter tunings.
-
+Since this is a binary classification task we train the neural network to optimise the binary cross-entropy loss as defined in \Sref{sec:backprop}, with $K=2$.
+This is the standard loss function to optimise for binary classification [@Song2018, @Wang2017b, @Zhang2016, @Qu2016].
+We also monitor the accuracy of the model during training since this is often more interpretable, but note that the accuracy is not directly being optimised and that the binary cross-entropy only acts as an differentialable proxy of the accuracy.
 
 ### Cross-validation
 
@@ -80,62 +68,45 @@ This process is repeated for every one of the five segmentations of the dataset 
 We can then compute the average over these five measurements to obtain a less biased estimate of the model performance.
 Another advantage of this approach is that we can obtain standard error for the model performance.
 
-Cross-validation is rarely done in Deep Learning, since the models typically take very long to train and any repitition is thus more costly.
-However, Deep Learning is also mostly applied to large datasets and if a large test set is available, the gains from cross-validation diminishes.
-Fortunately, the NNs applied to tabular data are much smaller than ones used for unstructured data and for this work we have access to sufficient computing power.
-And therefore cross-validation makes sense.
-
 ![5-Fold Cross-validation dataset split schematic.\label{fig:cv}](figures/cv.pdf)
 
-## General Approach
-- which numeric normalisation
-- should we embed numerics
+It is common in deep learning research to do a once-off split of the data dividing it into training, validation and (sometimes) testing datasets, for example in [@Klambauer2017, @Song2018, @Zhang2016].
+Cross-validation is rarely done in Deep Learning, since the models typically take very long to train and any repitition is thus more costly.
+The problem with doing a once-off split is that it does not account for the variance of the model and the performance of the model can in fact be very sensitive to the subset of data.
+By doing cross-validation, we can have more robust performance metrics, including the benefit of reporting on standard errors.
+However, Deep Learning is also mostly applied to large datasets and if a large test set is available, the gains from cross-validation diminishes.
+Fortunately, the neural networks applied to tabular data are much smaller than ones used for unstructured data and therefore cross-validation makes sense.
 
+### Preprocessing
+
+For our experiments we aimed to do as little feature engineering and preprocessing as possible, in the spirit of automated analysis.
+We do not create any new feature combinations.
+The only necessary preprocessing steps are to convert the categorical features into integers (necessary for entity embeddings), mean impute the missing values in the continuous features and assign a "null" category to missing values in the categorical features.
+We do not do feature selection since we would want the model to learn by itself which features are relevant.
+
+### General Hyperparameters
+
+Based on our findings in \Sref{sec:hs_tb} we decide to train all models using the 1Cycle policy and the Adam optimiser.
 Unfortunately, we cannot follow the hyperparameter selection process suggested by [@Smith2018] for all the experiments.
 The process is too manual.
-Therefore we follow the approach once on each dataset to find a good selection of learning rate, number of epochs and weight decay and then use these paramters for the rest of the experiments on this dataset.
-If the model significantly changes over experiments, we might need to rerun the parameter selection process.
-Thus we will definitely not find the optimal model for each experiment but it should be sufficient to use as comparisons.
+Therefore we follow the approach once to find a good selection of the learning rate, number of epochs and weight decay and then use these paramters for the rest of the experiments on this dataset.
+Some of this is reported in \autoref{app:B}.
+If the model significantly changes over experiments or we experience instable training, we rerun the parameter selection process.
+Thus we will definitely not find the optimal model for each experiment but it should be sufficient to use for comparison purposes.
 According to [@Smith2018] these parameters are also quite robust and the model is not too sensitive on these choices.
 
-Might follow a bit of a greedy approach when selecting optimal paramters.
+We follow a bit of a greedy approach when selecting optimal parameters.
 All the hyperparameters are very dependent on each other but we cannot run experiments for every possible combination.
 Therefore we find optimal parameters for a certain experiment and then assume that these parameters are also good for other experiments.
 
-**Preprocessing**.
-- Remove infrequent features [@Song2018]
-- numeric transform by $\log^{2}(z)$ if $Z>2$ [@Song2018].
-- numeric features log transform  [@Wang2017b]
+## Input Representation \label{sec:rep_exp}
 
-The idea is to do as little feature engineering as possible.
-So the steps we take here are generic steps that are applicable to any dataset.
-We do no feature selection since we would want the model to learn by itself which features are relevant.
+### Numeric Feature Processing
 
-## Architectural Search
-- Number of layers (vs with SeLU) (vs other activations) [1-10]
-- Layer size [32-2048]
-- Architecture shape [Constant, increasing, decreasingm diamond]
-- Embedding sizes [proportional, fixed]
-- dropout [0-1]
+- zero mean unit variance
+- cumalitve transform
 
-Recently found that the below experiments were already done by [@Guo2017, @Qu2016, @Zhang2016].
-This was however only explored for Click-through rate prediction data.
-Thus the below experiments should be done in the light of these findings and can be compared to the their findings.
-
-Here we investigate the effect of the size of the network on the different datasets.
-We compare the performance of the models at different numbers and sizes of layers.
-Larger networks are more flexible and therefore we expect it to act similarly to any learning model flexibility parameter.
-Increasing the network size will be beneficial up until a certrain point until it becomes too big and be more prone to overfitting.
-We hope to find a rule of thumb that might act as a good starting point and guideline to choose the network size.
-We also want to get a feel for how important these hyperparameters are.
-
-- Constant size
-Layer sizes: 32, 64, 128, 256, 512, 1024, 2048
-Number of layers: 1,2,3,4,5,6
-At a constant dropout.
-
-Suppose we choose three layers, compare the following shape at approximately equal number of parameters.
-Shapes: Constant, decreasing, increasing, diamond, hourglass
+### Embeddings Sizes
 
 The aim of these experiments are to evaluate performance at different embedding sizes.
 We explore embedding sizes at different ratios of the cardinality of categorical variables.
@@ -150,23 +121,21 @@ We expect the ideal embedding size to be as small as possible but still being ab
 Look at wide and deep models from [@Cheng2016].
 They restrics all embeddings to be of size 32.
 
-## Sample Size
-- accuracy vs size of dataset
+## Feature Interactions \label{sec:exp_int}
 
-## Mixup
-- does it help the validation loss
+### Attention
 
-## Pretraining
+### SeLU
+
+### Skip-Connections
+
+## Sample Efficiency \label{sec:exp_samp}
+
+### Data Augmentation
+
+- mixup vs swap noise
+
+### Unsupervised Pretraining
 - does it help the validation loss
 - Are these features useful for tree based methods.
 
-## Attention
-- with residual
-
-## Comparisons To Tree-based Methods
-+ Compare Neural Networks to Gradient Boosted Machines and Random Forests.
-
-## Example Interpretation
-- plot embeddings
-- plot attention matrices
-- SHAP and permutation

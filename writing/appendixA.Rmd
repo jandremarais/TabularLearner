@@ -1,4 +1,4 @@
-# Datasets
+# Datasets \label{app:data}
 
 Details of each of the datasets used in \Cref{chp:exp} and elsewhere.
 
@@ -14,6 +14,8 @@ Thus it is posed as a binary classifcation problem.
 In total there are 14 features and 48,842 observations.
 Two-thirds of the observations were randomly selected to form the training set and the rest allocated to the test set.
 Note, that we will not use any of the observations in the test set during our experiments.
+Hyperparemeter and model selection decisions are made based on the valdiation dataset performace and then if we wish we can evaluate the selected models on the test set for the most accuracte estimation of the generalisation ability of the models.
+
 The details for each of the features are listed below.
 We indicate the continuous features and the classes for the categorical features.
 

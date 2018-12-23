@@ -392,7 +392,7 @@ plot_grid(p, p_loss, labels = c("(a)", "(b)"), nrow = 1, align = "vh", rel_width
 ```
 
 
-### Backpropogation
+### Backpropogation \label{sec:backprop}
 
 In \Cref{sec:optimisation} we discussed how to fit a linear model using the Stochastic Gradient Descent optimisation procedure.
 Currenlty, SGD is the most effective way of training deep networks. 
