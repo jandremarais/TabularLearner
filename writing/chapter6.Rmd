@@ -49,7 +49,7 @@ It also gave sufficient detail to be able to implement these promising approache
 \textbf{\Cref{chp:exp}} contains the empirical experiments.
 The experiments served to assist the exploratory study of deep learning for tabular data.
 The experiments were categorised by three main themes: input representation, feature interaction and sample efficiency.
-In the input representation experiments approaches to transforming continuous features were compared, as well as what effect the entity embedding sizes had.
+In the input representation experiments we evaluated the effect the entity embedding sizes had on the performance of the model.
 The attention mechanism, along with skip-connections and the SeLU activation were experimented with to see how they do in modeling feature interactions.
 Finally, in the sample efficiency section, we investigated how sensitive neural networks are to the number of observations in a dataset and tested unsupervised pretraining as an approach to alleviate this sensitivity.
 We also looked at the mixup and swap noise data augmentation approaches as means to avoid overfitting.

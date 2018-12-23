@@ -82,7 +82,7 @@ The caveat is that the quality of the transformation depends on the batch statis
 The fact is that the only way to know for sure which normalisation to apply to numeric features is by experimations, since it varies between datasets.
 The standard normal scaling is a safe transformation to use if experimentation wants to be avoided.
 
-### Categorical Features
+### Categorical Features \label{sec:cat_inp}
 
 Most of the sparsity in tabular datasets come from categorical features.
 Since neural networks cannot process discrete categories or objects, we need to find a numeric representation for each class.
@@ -132,7 +132,7 @@ The selection complete depends on the data and the network used.
 [@Wang2017b] and [@Brebisson2015] used different embedding sizes for each categorical features and suggested these rules-of-thumb:
 
 - $6\times(\text{cardinality})^{\frac{1}{4}}$ [@Wang2017b]
-- $\max(2, \min(\text{cardinality}/2,50))$
+- $\max(2, \min(\text{cardinality}/2,50))$ [@Brebisson2015]
 
 It makes sense to have different embedding sizes for categorical features with different complexities.
 

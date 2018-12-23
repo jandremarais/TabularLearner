@@ -1,0 +1,7 @@
+,mix_alpha,weight_decay
+model_1,0.0,1e-05
+model_2,0.0,0.001
+model_3,0.2,1e-05
+model_4,0.2,0.001
+model_5,0.4,1e-05
+model_6,0.4,0.001

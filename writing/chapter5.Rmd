@@ -34,7 +34,7 @@ The rest of the chapter continues as follows:
 In \Sref{sec:datasets} we discuss the dataset used for these experiments and why it was chosen.
 Thereafter, in \Sref{sec:eval}, we discuss the general methodology of the experiments and how they are evaluated.
 Then the main experiments follow.
-\Sref{sec:rep_exp} compares the performance of various continuous feature transforms and entity embedding sizes.
+\Sref{sec:rep_exp} compares the performance of various entity embedding sizes.
 \Sref{sec:exp_int} looks at the proposed approaches to model high-order feature interactions.
 \Sref{sec:exp_samp} evaluates the different approaches to avoid overfitting in constrained data environments.
 
@@ -67,6 +67,8 @@ The performance of the model can then be evaluated on the held-out part.
 This process is repeated for every one of the five segmentations of the dataset and thus five measurements of the performance of model is obtained.
 We can then compute the average over these five measurements to obtain a less biased estimate of the model performance.
 Another advantage of this approach is that we can obtain standard error for the model performance.
+These standard errors will be displayed on the figures illustrating the results of the experiments as confidence intervals, *i.e.* $\mu\pm\sigma$.
+This helps us to evaluate the significance of the results.
 
 ![5-Fold Cross-validation dataset split schematic.\label{fig:cv}](figures/cv.pdf)
 
@@ -81,7 +83,7 @@ Fortunately, the neural networks applied to tabular data are much smaller than o
 
 For our experiments we aimed to do as little feature engineering and preprocessing as possible, in the spirit of automated analysis.
 We do not create any new feature combinations.
-The only necessary preprocessing steps are to convert the categorical features into integers (necessary for entity embeddings), mean impute the missing values in the continuous features and assign a "null" category to missing values in the categorical features.
+The only necessary preprocessing steps are to convert the categorical features into integers (necessary for entity embeddings), standard normal scaling for the continuous features (necessary for optimisation algorithms), mean impute the missing values in the continuous features and assign a "null" category to missing values in the categorical features.
 We do not do feature selection since we would want the model to learn by itself which features are relevant.
 
 ### General Hyperparameters
@@ -98,44 +100,126 @@ According to [@Smith2018] these parameters are also quite robust and the model i
 We follow a bit of a greedy approach when selecting optimal parameters.
 All the hyperparameters are very dependent on each other but we cannot run experiments for every possible combination.
 Therefore we find optimal parameters for a certain experiment and then assume that these parameters are also good for other experiments.
+If not specified otherwise, we used a simple MLP as the network mapping the input representation to the output.
+The basice structural hyperparameters we tested can be found in \autoref{app:B}.
+There we experimented with things like the dropout ratio, width and depth of the network, amongst other.
 
 ## Input Representation \label{sec:rep_exp}
 
-### Numeric Feature Processing
-
-- zero mean unit variance
-- cumalitve transform
-
 ### Embeddings Sizes
 
-The aim of these experiments are to evaluate performance at different embedding sizes.
-We explore embedding sizes at different ratios of the cardinality of categorical variables.
-The ratios we look at are: 10%, 20% 30%, 40%, 50%, 60%, 70%, 80% and 90% of the cardinality of each categorical feature.
-Possibly explore certain max embedding sizes.
-
-As we increase the size we will also look at the effect it has by visually inspecting the embedding layers in a 2-dimensional space.
-
+The aim of these experiments is to evaluate performance at different embedding sizes.
+We first explore fixed embedding sizes for all categorical features.
+The sizes we experiment with are [2,4,8].
 Again, we expect there to be optimal embedding size for each variable depedning on the cardinality of the variable and how complex its relationship is with the other variables and the target.
 We expect the ideal embedding size to be as small as possible but still being able to capture all of the information of the variable.
+But the only way to tell is by trial and error.
+We would also like to see if the rules-of-thumb mentioned in \Sref{sec:cat_inp} provide reasonable performance.
+A benefit that these schemes can add is that they depend on the cardinality of the categorical feature.
 
-Look at wide and deep models from [@Cheng2016].
-They restrics all embeddings to be of size 32.
+The results of the one sized embeddings are displayed in \autoref{fig:exp_emb_f}.
+We see that if all embeddings are fixed at size 2, the model showed greater performance than at 4 and 8.
+One reason for this may be that the categorical features are not that important for the prediction of the target and that a smaller representation helps to reduce noise.
+
+![Effect of the embedding size if all categorical features are mapped to the same number of dimensions.\label{fig:exp_emb_f}](../data/adult/results/embeddingsize/all_epochs.png)
+
+We now compare the constant size 2 embeddings with the rules from [@Wang2017b] and [@Brebisson2015] to see how the cardinality dependency effects the performance.
+The results are shown in \autoref{fig:exp_emb_r}.
+There is almost no difference between the approaches.
+Brebisson's methos performs sightly better on the validation loss and the fixed size of 2 performs the best on accuracy.
+On other datasets this result will most likely be different if the categorical features contain more rich information.
+
+![Effect of variable sizes on the performance of the model.\label{fig:exp_emb_r}](../data/adult/results/embeddingsize_rule/all_epochs.png)
 
 ## Feature Interactions \label{sec:exp_int}
 
 ### Attention
 
+
+
 ### SeLU
+
+Deeper networks can help us learn higher-order feature interactions.
+The SeLU activation function is supposed to help us train deeper neural networks.
+Therefore we compare it to the ReLU activation function over two models, one with 2 layers and the other with 8, to investigate its impact on performance.
+The SeLU activation function was implemented with its special weight intitialisation, but no dropout was used.
+In \autoref{fig:selu_all} and \autoref{fig:selu_best} we observe that the model with 8 layers and SeLU activations, perform the best overall in terms of the validation loss, but in terms of accuracy the ReLU model with 2 layers showed the best results.
+The differences observed are minor which leads us to believe that the choice is not that important and that sticking with shallow ReLU networks are sufficient until more experiments are done.
+
+![The average performance of ReLU and SeLU activation functions for shallow and deep networks over every epoch.\label{fig:selu_all}](../data/adult/results/activation_depth/all_epochs2.png)
+
+![The average performance of ReLU and SeLU activation functions for shallow and deep networks.\label{fig:selu_best}](../data/adult/results/activation_depth/best2.png)
 
 ### Skip-Connections
 
+Another mechanism we can use to make deeper networks possible is a skip-connection.
+Skip-connections may also help to combine different orders of feature interactions.
+The skip connection combines the activations before and afer a linear layer through an elementwise addition.
+We tested networks with skip-connections for a shallow and a deep neural network.
+The results are summarised in \autoref{fig:resid_epoch} and \autoref{fig:resid_best}.
+On average did the deeper neural network perform better and in terms of the validation loss did the skip-connections slightly improve the performance.
+Again, there is very little between the two types and thus we cannot say one is better thant the other.
+For simplicity sake, we would suggest not using skip-connections, until more experiments have been done.
+
+![Average performance at each epoch for shallow and deep neural networks, with and without skip connections.\label{fig:resid_epoch}](../data/adult/results/residual_depth/all_epochs.png)
+
+![Overall performance of the skip-connections used in a shallow and deep neural network.\label{fig:resid_best}](../data/adult/results/residual_depth/best.png)
+
 ## Sample Efficiency \label{sec:exp_samp}
+
+We did an experiment to see how the number of samples available to the network for training influences its learning ability.
+We trained the network at training set sizes of 1000, 2000, 4000, 8000, 16000 and 32000.
+The results are reported in \autoref{fig:sampsize}.
+As expected, the network performs better as the training set increases, but the increase diminish as the sample size gets higher.
+We do observe a strange results where the model trained only using 4000 samples exhibit one of the best accuracies.
+
+![Effect of the number of training samples on the performance of neural networks.\label{fig:sampsize}](../data/adult/results/samplesize/all_epochs2.png)
 
 ### Data Augmentation
 
-- mixup vs swap noise
+Mixup was the most promising form of data augmentation from our literature review.
+In this experiment we want to investigate how mixup with different mixup ratios influence the performance of our neural networks on the adult dataset.
+Since data augmentation also acts as a form of regularisation, we want to see the interaction between weight decay and mixup ratios.
+We experimented with mixup $\alpha$-ratios of [0,0.4] and with weight decays of [$10^{-5}$, $10^{-3}$] on a neural network with 3 hidden layers of 200 units each.
+The results of the experiment are captured in \autoref{fig:exp_mix_best} and \autoref{fig:exp_mix_epoch}.
+
+The results indicate that mixup is not improving the validation loss or the accuracy of the models.
+It is also interesting to see the interaction between mixup and weight decay.
+Since both are forms of regualrisation we would expect one to reduce the need of the other, but this is not what the results suggest.
+Although a promising technique from the literature, we think the value of mixup depends on the dataset and whether or not interpolating between samples makes sense.
+
+![Average performance of models with various mixup and weight decay parameters.\label{fig:exp_mix_best}](../data/adult/results/mixup/best.png)
+
+![Performance per epoch for models with different weight decays and mixup ratios.\label{fig:exp_mix_epoch}](../data/adult/results/mixup/all_epochs.png)
 
 ### Unsupervised Pretraining
-- does it help the validation loss
-- Are these features useful for tree based methods.
+
+Here we investigate whether or not DAEs as a method of unsupervised pretraining is beneficial to a supervised learning neural network.
+We trained a DAE with swap noise for 15 epochs on the Adult dataset, with the swap noise proportion set at 15%.
+The DAE had 3 hidden layers of 500 units each.
+Then we transfer the learned weights to a supervised learning network, also with 3 hidden layers of 500 units.
+But the supervised network has a different output layer to the DAE.
+Therefore we first keep the transferred weights fixed and train only the last layer of the supervised learning network, as a way of initialising its weights.
+Otherwise if we would have trained all the weights together from the start, the random weights of the output layer might have interfered with the learned weights in the hidden layers.
+Once the output layer is initialised with this process, we can train all of the network simultaneously.
+This final stage of training is showed in \autoref{fig:exp_pretr} where we compare it to a model without pretraining.
+We see that in terms of both the accuracy and the validation loss that the pretrained model has an advantage over the trained from scratch classifier.
+This makes sense since the pretrained model does not have to start from a random initialisation.
+But as training continues this gaps becomes smaller.
+In terms of the validation loss the two models are equivalent when training completed, but in terms of the accuracy the trained from scratch classifier outperformed the pretrained model.
+We do not believe these results are conclusive since there are still so many avenues to explore for unsupervised pretraining with DAEs.
+We do not know yet how to design the DAE in terms of its network architecture, amount of noise injected, lenght of training cycle, etc, and then what the best way is of transferring this knowledge to a classifier.
+As a test to validate if the DAE learned something useful one can feed the activations from one of the DAE hidden layers to another machine learning algorithm and see whether these representations perform better than with the raw data.
+From the results of this basic implementation, we do still believe that there is value in this approach and that it warrants further exploration.
+
+![The effect of pretraining on the classifier's performance.\label{fig:exp_pretr}](../data/adult/results/pretraining/all_epochs3.png)
+
+## General Thoughts
+
+We ran thorough experiments for the most promising techniques in deep learning for tabular data.
+
+- Not a big difference between various approaches
+- can be because adult dataset is too simple
+- generic hyperparameters are not good choices for these experiments, especially learning rate and weight decay.
+
 

@@ -1,0 +1,10 @@
+,cycle_len,batch_size
+model_1,5,64
+model_2,5,256
+model_3,5,1024
+model_4,10,64
+model_5,10,256
+model_6,10,1024
+model_7,20,64
+model_8,20,256
+model_9,20,1024

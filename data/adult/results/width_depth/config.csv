@@ -1,0 +1,17 @@
+,layer_size,n_layer
+model_1,32,1
+model_2,32,3
+model_3,32,6
+model_4,32,12
+model_5,128,1
+model_6,128,3
+model_7,128,6
+model_8,128,12
+model_9,512,1
+model_10,512,3
+model_11,512,6
+model_12,512,12
+model_13,2048,1
+model_14,2048,3
+model_15,2048,6
+model_16,2048,12

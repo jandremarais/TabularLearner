@@ -1,0 +1,4 @@
+,lr,policy
+model_1,0.01,sgd
+model_2,0.01,1cyc
+model_3,0.1,sgd

@@ -1,26 +1,30 @@
 # Hyperparameter Search \label{app:B}
 
-## Architectural Search
-- Number of layers (vs with SeLU) (vs other activations) [1-10]
-- Layer size [32-2048]
-- Architecture shape [Constant, increasing, decreasingm diamond]
-- dropout [0-1]
+## Width and Depth of Network
 
-Recently found that the below experiments were already done by [@Guo2017, @Qu2016, @Zhang2016].
-This was however only explored for Click-through rate prediction data.
-Thus the below experiments should be done in the light of these findings and can be compared to the their findings.
-
+This is a very common hyperparamter to train, for exmaple, done by [@Guo2017, @Qu2016, @Zhang2016].
 Here we investigate the effect of the size of the network on the different datasets.
 We compare the performance of the models at different numbers and sizes of layers.
 Larger networks are more flexible and therefore we expect it to act similarly to any learning model flexibility parameter.
 Increasing the network size will be beneficial up until a certrain point until it becomes too big and be more prone to overfitting.
-We hope to find a rule of thumb that might act as a good starting point and guideline to choose the network size.
 We also want to get a feel for how important these hyperparameters are.
+On the Adult dataset we experimented with layer depths of 1, 3, 6 and 12, and layer widths of 32, 128, 512, 2048.
+Note give all layers the same width as this is found to work good enough in practice [@Guo2017, @Qu2016, @Zhang2016].
+The results of the experiment are displayed in \autoref{fig:widthdepth}.
+The results are mixed between the accuracy and the validation loss and there is not much separating any of the models.
+Except for the very wide network that had a diverging validation loss.
+For the sake of simplicity we would recommend to use a 3-layer network with 128 units.
 
-- Constant size
-Layer sizes: 32, 64, 128, 256, 512, 1024, 2048
-Number of layers: 1,2,3,4,5,6
-At a constant dropout.
+![Effect of the layer width and network depth on the performance on the Adult dataset.\label{fig:widthdepth}](../data/adult/results/width_depth/best.png)
 
-Suppose we choose three layers, compare the following shape at approximately equal number of parameters.
-Shapes: Constant, decreasing, increasing, diamond, hourglass
+## Dropout
+
+Dropout is almost always used in deep learning and it is a typical parameter to tune before modelling.
+We wanted to find out what the best dropout ratio is for our models and how the performance varies over different values.
+We tested dropout proportions of [0.1,0.2,...,0.8] on a wide and narrow network respectively.
+The results are given in \autoref{fig:exp_drop}.
+From these results we see that any dropout ratio between 0.2 and 0.5 will suffice for both types of networks.
+
+![The effect of dropout on wide and narrow neural networks.\label{fig:exp_drop}](../data/adult/results/size_dropout/best2.png)
+
+
