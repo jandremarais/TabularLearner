@@ -15,7 +15,9 @@ from fastai.layers import embedding
 from fastai.basic_train import Learner
 from matplotlib import pyplot as plt
 from fastai_ext.utils import request_lr
-from fastai_ext.plot_utils import display_embs
+from fastai_ext.hyperparameter import create_experiment, record_experiment, get_config_df, summarise_results, load_results
+from fastai_ext.plot_utils import plot_best, plot_over_epochs, display_embs
+from fastai_ext.model import tabular_learner
 import pdb
 
 

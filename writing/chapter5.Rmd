@@ -135,7 +135,18 @@ On other datasets this result will most likely be different if the categorical f
 
 ### Attention
 
+We believe attention is the most promising approach to modelling high-order interactions between features for tabular data, since it has been so effective in other data domains.
+To test this assuptiom we implemented a multi-head attention module as described in [@Song2018] so that we can compare it to a standard neural network.
+We did not have the computing power to try different configurations for this module and thus we went with the biggest configuration that could be run in reasonable time.
+We chose $H=3$ (Number of heads) and use embedding sizes of 3 all-round.
+We only used on multi-head attention layer and connected its output to a single hidden layer of size 200, which in turn is connected to the output layer.
+We compared it to a simple MLP with a similar number of total parameters.
+The results of this experiment is given in \autoref{fig:exp_att5}.
+The model with the attention mechanism performs worse than the one without and exhibits higher variance.
+In the future we would like to experiment with more of the hyperparameters of the multi-head attention module and try stacked attention layers.
+It will be interesting to see how this results would change if the dataset had more features.
 
+![Comparing the attention mechanism with a simple MLP.\label{fig:exp_att5}](../data/adult/results/attention/all_epochs.png)
 
 ### SeLU
 
@@ -217,9 +228,11 @@ From the results of this basic implementation, we do still believe that there is
 ## General Thoughts
 
 We ran thorough experiments for the most promising techniques in deep learning for tabular data.
-
-- Not a big difference between various approaches
-- can be because adult dataset is too simple
-- generic hyperparameters are not good choices for these experiments, especially learning rate and weight decay.
+In most of the experiments there were not clear differences between the performances of the different techniques.
+Our one hypothesis is that the Adult dataset does not lend itself to more advanced modelling techniques and that the basic neural network is close to the best one can get.
+Our other concern is that the greedy fashion of our hyperparameter selection has limited the various approaches.
+Since it was not feasible to tune the required paramters for all models in all folds, we selected a set of paramters from initial experiments and used them for most of the experiments.
+But since these parameters are so inter-connected, chaning one already means that the others are not optimal anymore.
+We were aware of this limitation from the start, but we still do not know however to what extent it influenced our results.
 
 
