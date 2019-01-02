@@ -167,9 +167,9 @@ In the context of (single label) multiclass classifcation, it is also desirable 
 Note that the softmax activation, *viz.* $\text{softmax}(\boldsymbol{x})_{k}=\frac{e^{x_{k}}}{\sum_{l=1}^{K}x_{l}}$ is simply the logit transformation introduced in \Sref{sec:SLT}.
 In a regression context, we mostly omit the use of an activation function on the output layer.
 
-In our experiments we will show how the different activation functions perform on tabular data and compare it to the *Scaled Exponential Linear Units* (SELUs) [@Klambauer2017] activation, which is supposed to allow us to more effectively train deeper neural networks.
-The neural network depth refers to its number of hidden layers, whereas the width of a layer refers to the number of neurons it consists of.
-The choice in network depth and layer width is the topic of the next section.
+In our empirical work, we will experiment with the use of the different activation functions discussed in this section, and compare their performance to that of *Scaled Exponential Linear Units* (SELUs) [@Klambauer2017], where the latter is supposed to facilitate more effective training of deeper neural networks.
+Note that the depth of a neural network refers to its number of hidden layers, whereas the width of a layer refers to the number of neurons it consists of.
+Selecting network depth and layer width is the topic of the next section.
 
 ### Size of the Network \label{sec:netsize}
 
@@ -191,7 +191,9 @@ It may also be that the number of neurons needed for a single hidden layer netwo
 By choosing deeper networks we are assuming that the function we are trying to learn is composed of several simpler functions.
 Building in this prior proves to useful empirically [@Goodfellow2016, pp.197-198], especially for tasks of a hierarchical nature like in computer vision.
 
-In our experiments we will see what effect the layer width and network depth have on the generalisation performance on different tabular datasets.
+
+
+. see what effect the layer width and network depth have on the generalisation performance on different tabular datasets.
 The networks used for tabular data learning problems are typically much shallower than those used for say computer vision and NLP.
 We investigate why this is the case.
 Later in this chapter we view this problem from a representation learning perspective which will also give us some insight on the matter.
