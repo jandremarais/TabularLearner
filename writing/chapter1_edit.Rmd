@@ -102,26 +102,26 @@ By reviewing the most recent literature on the topic, and through empirical work
 ## Challenges of Deep Learning for Tabular Data \label{sec:tabchal}
 
 Some of the challenges of deep learning for tabular data have been alluded to in earlier sections of this chapter.
-These will form the framework for the literature review which follow later on, therefore they are summarised below, in terms of relevant questions to ask when applying deep learning in the context of tabular data:
+These will form the framework for our literature review later on. Therefore some of the important questions to ask when applying deep learning for tabular data (which relates to these challenges), are summarised below.
 
-- **How should input features be represented numerically?**: We have mentioned that tabular data consist of mixed feature types, *i.e.* a combination of categorical and continuous features. The question here relates to how these features should be processed and presented to the model during training.
-- **How can we exploit feature interactions?**: Once we have found the optimal feature representation for all feature types, we will need a way to effectively learn the interactions between them and also a way to learn how they relate to the target. This a crucial step towards the effective application of deep learning models to tabular data.
-- **How can we be more sample efficient?**:  Tabular datasets are typically smaller than the datasets use in computer vision and in NLP. Moreover, no general large dataset with universal properties exists to be used by a model to learn from (as is the case in for example image classification). Thus a key challenge is to facilitate learning from less data.
-- **How do we interpret model decisions?**: The use of deep learning is often restricted by its perceived lack of interpretability. Therefore we need ways of explaining the model output in order for it to be useful in many applications.
+- **How should input features be represented numerically?** We have mentioned that tabular data consist of mixed feature types, *i.e.* a combination of categorical and continuous features. The question here relates to how these heterogeneous features should be processed and presented to the model during training.
+- **How can we exploit feature interactions?** Once we have found the optimal feature representation for all feature types, we will need a way to effectively learn the interactions between them, and also a way to learn how they relate to the target. This is a crucial step towards the effective application of deep learning models to tabular data.
+- **How can we be more sample efficient?**  Tabular datasets are typically smaller than datasets use in computer vision and in NLP. Moreover, no general large dataset with universal properties exists to be used by a model to learn from (as is the case in for example image classification). Thus a key challenge is to facilitate learning from less data.
+- **How do we interpret model decisions?** The use of deep learning is often restricted by its perceived lack of interpretability. Therefore we need ways of explaining the model output in order for it to be useful in many applications.
 
-Clearly there are plenty of considerations when it comes to using deep learning for tabular data. 
-The main objective of this thesis is to find the best ways of overcoming the above challenges. 
+Clearly there are several considerations when it comes to using deep learning for tabular data. 
+The main objective of this thesis is to find the best ways of answering the above questions. 
 Towards this objective, the study should lead to a thorough understanding of the *status quo* of the field, and of the necessary factors in order to ensure deep learning to be as effective in other data domains as it currently is in computer vision and NLP.
 
 The study is divided into two parts. 
 We start by first providing an overview of the relevant literature.
 Subsequently, we make use of experimental work in order to compare various deep learning algorithms (and possible improvements) on relevant datasets. 
 Here an important aim will be to ensure our experiments to be *rigorous*.
-The importance of rigorous research has relatively recently again been emphasised during an NIPS talk[^talk], during which researchers in the deep learning field have been criticised for the growing gap between the understanding of its techniques and practical successes.
+The importance of rigorous research has relatively recently again been emphasised during an NIPS talk[^talk], during which researchers in the deep learning field have been criticised for the growing gap between the understanding of its techniques, and practical successes.
 Currently much more emphasis is placed on the latter.
 The speakers urged the deep learning community to be more rigorous in their experiments where, for them, the most important part of rigor is better empiricism, not more mathematical theories. 
 Better empiricism in classification may include, for example, practices such as using cross-validation to estimate the generalisation ability of a model, and reporting standard errors. 
-Empirical studies should involve more than simply attempting to beat the benchmark, for example where possible, they should also involve simple experiments that facilitate understanding why some algorithms are successful, while others are not. 
+Empirical studies should involve more than simply attempting to beat the benchmark. For example, where possible, they should also involve simple experiments that facilitate understanding why some algorithms are successful, while others are not. 
 
 [^talk]: Talk given at NIPS2017 - https://www.youtube.com/watch?v=Qi1Yry33TQE
 
@@ -129,7 +129,7 @@ In addition, we want the empirical work in this study to be as reproducible as p
 This aspect is often overlooked. 
 However it is a crucial aspect, ensuring transparent and accountable reporting of results.
 Reproducibility add to the value of research, since without it, researchers are not able to build on each other's work.
-There all code, data and necessary documentation in order to reproduce the experiments that were done in this thesis will be available [^git]. 
+Hence all code, data and necessary documentation in order to reproduce the experiments that were done in this thesis have been made available [^git]. 
 
 [^git]: Shared publicly at https://github.com/jandremarais/tabularLearner
 
@@ -157,7 +157,7 @@ In other variants of the classification task, $f$ may output a probability distr
 *Regression* is another main learning task and requires the algorithm to predict a continuous value given some input. 
 This task requires a function $f:\mathbb{R}^{p}\to\mathbb{R}$, where the only difference between regression and classification is the format of the output.
 
-Learning algorithms learns such tasks by observing a relevant set of data points, *i.e.* a dataset.
+Learning algorithms learns such tasks by observing a relevant set of data points.
 A dataset containing $N$ observations of $p$ features is commonly denoted by a data matrix $X:N\times p$, 
 where each row represents a different observation and where each column corresponds to a different feature of the observations, *i.e.*
 
@@ -170,6 +170,7 @@ x_{21} & x_{22} & \dots & x_{2p}\\
 x_{N1} & x_{N2} & \dots & x_{Np}
 \end{bmatrix}.
 $$
+
 Often the dataset includes annotations for each observation in the form of a label (*i.e.* in classification) or in the form of a target value (*i.e.* in regression). 
 These $N$ annotations are represented by the vector $\boldsymbol{y}$, where the element $y_{i}$ is associated with the $i$-th row of $X$.
 Therefore the response vector may be denoted by
@@ -183,6 +184,7 @@ y_{2}\\
 y_{N}
 \end{bmatrix}.
 $$
+
 Note that in the case of multiple labels or targets, a matrix representation $Y:N\times K$ is required.
 
 Statistical learning algorithms can be divided into two main categories, *viz.* *supervised* and *unsupervised* algorithms.
