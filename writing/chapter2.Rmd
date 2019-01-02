@@ -175,21 +175,18 @@ Selecting network depth and layer width is the topic of the next section.
 
 The network depth and the width of its hidden layers (*i.e.* the size of the network) are hyperparameters of the model.
 They control the ability of a neural network to model complex functions, which is also often referred to as its flexibility.
-More specifically, larger networks generally are more flexible. 
 In statistical learning it is well known that increasing the flexibility of a model is typically only beneficial up to a certain point, whereafter a further increase in flexibility will be detrimental to its prediction performance on new unseen data cases.
 Suboptimal test performance due to a too flexible model is known as *overfitting*.
 Appropriate selection of the flexibility of the model is also important in the case of neural networks.
 The challenge is to find a network size which is large enough to capture all the complexities in the data, but small enough to avoid overfitting. In addition, whereas more layers facilitate a more flexible fit, larger networks require more time and more hardware capacity in order to train them.
 
 Currently the best way of finding the optimal size of a network for a given problem is by means of experimentation.
-Note therefore that for many of the components of neural networks in deep learning, hyperparameter values are selected through a process of trial-and-error. However, in \Sref{sec:basicreg}, we will see why tuning the size of a network is not necessarily the best way to control overfitting.
+Note therefore that for many of the components of neural networks in deep learning, hyperparameter values are selected through a process of trial-and-error. Whereas appropriate specification of the size of a neural network is certainly important, in \Sref{sec:basicreg}, we will see why tuning the size of a network is not necessarily the best way to control overfitting.
 
-Theoretically, according to the universal approximation theorem [@Cybenko1989], a neural network with a single hidden layer and with a finite number of neurons can approximate any continuous function.
-Which begs the question as to why we need more hidden layers.
-Even though a neural network can represent any function, it does not mean that the available learning algorithms can find these optimal weights [@Ba2013].
-It may also be that the number of neurons needed for a single hidden layer network to represent a specific function is infeasibly large.
+Theoretically, according to the universal approximation theorem [@Cybenko1989], a neural network with a single hidden layer and with a finite number of neurons can approximate any continuous function. This begs the question: why are additional hidden layers required?
+As stated in [@Ba2013], although a neural network can represent any function, it does not mean that the available learning algorithm is able to find these optimal weights. Moreover, it may be the case that the number of neurons needed in order for a single hidden layer network to represent a specific function of interest, is infeasibly large.
 By choosing deeper networks we are assuming that the function we are trying to learn is composed of several simpler functions.
-Building in this prior proves to useful empirically [@Goodfellow2016, pp.197-198], especially for tasks of a hierarchical nature like in computer vision.
+Incorporating this prior belief has empirically been shown to be useful [@Goodfellow2016, pp.197-198]. This is especially true in the case of tasks that may be partitioned into smaller subtasks, for example in computer vision.
 
 
 
