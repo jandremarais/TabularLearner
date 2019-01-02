@@ -16,7 +16,7 @@ Examples of the application of deep learning in commercial applications include 
 [^faceid]: https://www.apple.com/business/site/docs/FaceID_Security_Guide.pdf
 
 ![The exponential growth of published papers and Google search terms containing the term *Deep Learning*\label{fig:dlpapers}. 
-Sources: Google Trends[^googletrend], Semantic Scholar[^semschol]](figures/trends.pdf)
+Sources: Google Trends[^googletrend], Semantic Scholar[^semschol]](figures/trends.pdf).
 
 [^jeffdeantalk]: https://www.slideshare.net/AIFrontiers/jeff-dean-trends-and-developments-in-deep-learning-research
 [^googletrend]: https://trends.google.com/trends/explore?date=all&q=deep%20learning
@@ -26,8 +26,8 @@ One of the most attractive attributes of deep learning is its ability to model a
 This has lead to the use of deep learning in a very wide array of applications.  
 For example, deep learning has been used to generate art [@Gatys2015] and music [@Mogren2016], to control various modules in autonomous cars [@Fridman2017], to play video games [@Mnih2013], to recommend movies [@Covington2016], to improve the quality of images [@Shi2016], and to beat the world's best Go player [@Silver2017].
 
-A common characteristic of all of the above deep learning applications, is that the data used to construct them, contain the same type of values or measurements.
-That is, in computer vision the data are pixel values, in NLP the data are words and in audio processing the data represent sound waves.
+A common characteristic of all of the above deep learning applications is that the data used to construct them contain the same type of values or measurements.
+That is, in computer vision the data represent pixel values, whereas in NLP and in audio processing the data represent words and  sound waves.
 This is not a criterion for deep learning algorithms to be successful, but may be viewed as a driver for their sucess in these application domains.
 It is simpler to model data consisting of the same type of measurements, since each input feature can be treated the same.
 Furthermore in the above deep learning applications, it is found that in each of these domains, universal patterns exist.
