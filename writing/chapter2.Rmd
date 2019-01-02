@@ -217,24 +217,24 @@ Note that although the MSE loss is mostly used in regression and not really well
 In order to find the weights $\boldsymbol{w}$ that minimise $L$, we follow a process of iterative refinement. 
 That is, starting with a random initialisation of $\boldsymbol{w}$, one iteratively updates the values such that $L$ decreases. 
 The updating steps are repeated until the loss converges.
-In order to minimise $L$ with respect to $\boldsymbol{w}$, we calculate the gradient of the loss function at the point $L(\boldsymbol{x};\boldsymbol{w})$.
+To minimise $L$ with respect to $\boldsymbol{w}$, we calculate the gradient of the loss function at the point $L(\boldsymbol{x};\boldsymbol{w})$.
 The gradient (or slope) of the loss function indicates the direction in which the function has the steepest rate of increase. 
-Therefore, once we have determined this direction, we can update the weights by a step in the opposite direction - thereby reaching a smaller value of $L$.
+Once we have determined this direction, we can update the weights by a step in the opposite direction - thereby reaching a smaller value of $L$.
 
 The gradient of $L_{i}$ is computed by obtaining the partial derivative of $L_{i}$ with respect to $\boldsymbol{w}_{k}$, *i.e.*:
 $$
 \frac{\partial L_{i}}{\partial\boldsymbol{w_{k}}}=-2(y_{ik}-\boldsymbol{w}_{k}^{T}\boldsymbol{x}_{i})\boldsymbol{x}_{i}.
 $$
-After obtaining the above ${N}$ partial derivatives, an update at the $(r+1)$-th iteration may be obtained as follows:
+
+The above gradient is obtained for the loss at each data point, whereafter an update of the weight vector at the $(r+1)$-th iteration may be obtained as
 $$
 \boldsymbol{w}_{k}^{(r+1)}=\boldsymbol{w}_{k}^{(r)}-\gamma\sum_{i=1}^{n}\frac{\partial L_{i}}{\partial\boldsymbol{w_{k}^{(r)}}},
 $$
-where $\gamma$ is called the *learning rate* and determines the size of the step taken towards the optimal direction. 
-One typically would like to set the learning rate small enough so that one does not overshoot the minimum, but large enough to limit the number of iterations before convergence. 
-The learning rate is a crucial parameter when training neural networks; we will discuss its significance in \Sref{sec:lr}.
 
-The procedure of repeatedly evaluating the gradient of the objective function and then performing a parameter update, is called *gradient descent* (Cauchy, 1847). 
-Gradient descent forms the basis of the optimisation procedure for neural networks.
+where $\gamma$ determines the size of the step taken towards the optimal direction and is called the *learning rate*. Of course $\gamma$ needs to be specified by the user. One typically would like to set the learning rate small enough so that one does not overshoot the minimum, but large enough to limit the number of iterations before convergence. 
+The learning rate is a crucial parameter when training neural networks. Its significance is discussed in \Sref{sec:lr}.
+
+The procedure of repeatedly evaluating the gradient of the objective function, followed by a parameter update, forms the basis of the optimisation procedure for neural networks and is called *gradient descent* (Cauchy, 1847). 
 
 Note that a weight update is made by evaluating the gradient over a set of observations, $\{\boldsymbol{x}_{i},i=1,\dots,n\}$. 
 One of the advantages of gradient descent is that at an iteration, the gradient need not be computed over the complete training dataset, *i.e.* $n\le N$.
