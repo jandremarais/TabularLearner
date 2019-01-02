@@ -257,15 +257,15 @@ $$
 $$
 for $k=1,\dots, K$. Here $\hat{f}_{k}$ is an estimate of the true function, $f_{k}$, which is meant to capture the relationship between the inputs and output of class $k$. 
 As with the linear regression case described above, we may use a linear model $\hat{f}_{k}(\boldsymbol{X})=\hat{\boldsymbol{w}}_{k}^{T}\boldsymbol{X}$ to approximate the true function. 
-The linear model for classification divides the input space into a collection of regions labelled according to the classification, where the division is done by linear *decision boundaries* (see \autoref{fig:lin_bound} for an illustration). 
+The linear model for classification divides the input space into a collection of regions labelled according to the predicted classification, where regions are created by linear *decision boundaries* (see \autoref{fig:lin_bound} for an illustration). 
 The decision boundary between classes $k$ and $l$ is the set of points for which $\hat{f}_{k}(\boldsymbol{x})=\hat{f}_{l}(\boldsymbol{x})$. 
 These set of points form an affine set or hyperplane in the input space.
 
 ![Linear model on simple binary classification dataset.\label{fig:lin_bound}](figures/linear_boundary.pdf)
 
-After the weights are estimated from the data, an observation represented by $\boldsymbol{x}$ (including the unit element) can be classified as follows:
+After the weights are estimated from the data, an observation represented by $\boldsymbol{x}$ (including the unit element) may be classified as follows:
 
-- Compute $\hat{f}_{k}(\boldsymbol{x})=\hat{\boldsymbol{w}}_{k}^{T}\boldsymbol{x}$ for all $k=1,\dots,K$.
+- Compute $\hat{f}_{k}(\boldsymbol{x})=\hat{\boldsymbol{w}}_{k}^{T}\boldsymbol{x}$ for $k=1,\dots,K$.
 - Identify the largest component and classify to the corresponding class, *i.e.* $\hat{G}=\arg\max_{k\in\{1,\dots,K\}}\hat{f}_{k}(\boldsymbol{x})$.
 
 One may view the predicted class scores as estimates of the conditional class probabilities (or posterior probabilities), *i.e.* $P(G=k|\boldsymbol{X}=\boldsymbol{x})\approx \hat{f}_{k}(\boldsymbol{x})$. 
@@ -276,7 +276,7 @@ That is,
 $$
 P(G=k|\boldsymbol{X}=\boldsymbol{x})\approx\frac{e^{\hat{f}_{k}(\boldsymbol{x})}}{\sum_{l=1}e^{\hat{f}_{l}(\boldsymbol{x})}}.
 $$
-Through this transformation, the estimates of the posterior probabilities both sum to 1 and are contained in [0,1]. 
+Through this transformation, the estimates of the posterior probabilities sum to 1 and are contained in [0,1]. 
 The above model is the well-known *logistic regression* model [@Hastie2009, p. 119]. 
 With this formulation there is no closed form solution for the weights. 
 Instead, the weight estimates may be searched for by maximising the log-likelihood function. 
@@ -288,25 +288,25 @@ $$
 Y=f(\boldsymbol{X})+\epsilon,
 $$
 where $\epsilon$ represents the part of $Y$ that is not predictable from $\boldsymbol{X}$, because of, for example, incomplete features or noise present in the labels. 
-Then in function approximation we are estimating $f$ with an estimate $\hat{f}$. 
+Then in function approximation we are estimating $f$ by $\hat{f}$. 
 In parametric function approximation, for example in linear regression, estimation of $f(\boldsymbol{X},\theta)$ is equivalent to estimating the optimal set of weights, $\hat{\theta}$. 
 In the remainder of the thesis, we refer to $\hat{f}$ as the *model*, *classifier* or *learner*.
 
 ## Outline
 
-This chapter provided the context, motivation, objectives and theoretical background of this study.
+This chapter provided the context and some theoretical background for this study.
 An outline of the remainder of the thesis follows below:
 
 In \Cref{chp:nn}, the theory underlying neural networks is described.
 The building blocks of neural networks are discussed, thereby introducing neurons, basic layers and the way in which neural networks are trained.
 The important concept of regularisation is also discussed.
-Using the perspective of representation- and manifold learning, we then attempt to gain insight into what happens inside an neural network.
+Using the perspective of representation- and manifold learning, we then attempt to gain insight into what happens inside a neural network.
 
 \Cref{chp:dl} continues the discussion by focusing on the key advances in neural networks in recent times.
 The idea is that all concepts introduced in this chapter should potentially be able to facilitate the construction of improved deep neural networks on tabular data.
 Improved ways of fighting overfitting, such as data augmentation, the use of dropout and transfer learning, as well as the SotA training policy called *1Cycle* are analysed here.
 New developments in architectural design are also highlighted.
-The chapter concludes with approaches towards interpretting neural networks and their predictions.
+The chapter concludes with approaches towards interpreting neural networks and their predictions.
 
 \Cref{chp:td} may be viewed as a core chapter of this thesis.
 It mainly serves as a literature review of all research with regard to deep learning for tabular data.
@@ -320,7 +320,7 @@ In \Cref{chp:exp} we empirically evaluate several claims made in the literature.
 The aim of the chapter is to evaluate and compare different approaches to tackling the various challenges.
 Hence the main experiments involve evaluating neural networks at various samples sizes, evaluating potential gains from doing unsupervised pretraining and using data augmentation, 
 and comparing attention modules with classic fully-connected layers.
-We also illustrate a way in which resulting neural networks may be interpreted by means of permutation importance and knowledge distillation.
+We also make use of permutation importance and knowledge distillation in order to illustrate a way in which neural networks may be interpreted.
 
 The thesis concludes in \Cref{chp:conc}, where we summarise the work, some highlights and the main take-home points.
 The limitations of this study are discussed, and promising future research directions are identified.
