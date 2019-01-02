@@ -28,15 +28,15 @@ For example, deep learning has been used to generate art [@Gatys2015] and music 
 
 A common characteristic of all of the above deep learning applications is that the data used to construct them contain the same type of values or measurements.
 That is, in computer vision the data represent pixel values, whereas in NLP and in audio processing the data represent words and  sound waves.
-This is not a criterion for deep learning algorithms to be successful, but may be viewed as a driver for their sucess in these application domains.
+This is not a criterion for deep learning algorithms to be successful, but may be viewed as a driver for their success in these application domains.
 It is simpler to model data consisting of the same type of measurements, since each input feature can be treated the same.
 Furthermore in the above deep learning applications, it is found that in each of these domains, universal patterns exist.
 This allows for knowledge to be transferred between tasks belonging to the same domain.
-The knowledge to be transferred is both knowledge aquired by humans, and that learned by a deep learning model.
-For example, in computer vision, advancements in classifying pictures of pets will most likely also be facilitate improved identification of tumors in X-rays.
-That is, patterns learned by a deep learning model when attempting one task, may also be useful in a different, but related task (see *Transfer Learning*).
+The knowledge to be transferred is both knowledge aquired by humans, and by a deep learning model.
+For example, in computer vision, advances in classifying pictures of pets will most likely also facilitate improved identification of tumors in X-rays.
+That is, patterns learned by a deep learning model when attempting one task, may also be useful in a different, but related task. This phenomenon is studied in the field of *Transfer Learning*.
 
-A data domain in which deep learning does not flourish is that of tabular data.
+A data domain in which deep learning have not yet been very successful, is that of tabular data.
 A *tabular dataset* can be represented by a two-dimensional table, where each of the rows of the table corresponds to one observation and where each column denotes an individual meaningful feature.
 We further explain the use of tabular data in \Cref{sec:tabdat} below.
 
@@ -64,7 +64,7 @@ xtable(df, caption = 'Preview of the Adult dataset.\\label{tab:adult}')
 ```
 
 \autoref{tab:adult} represents a typical tabular dataset, where the columns contain measurements on different features.
-Therefore each column may contain different data types. 
+Therefore different columns may contain different data types. 
 Some columns may consist of continuous measurements, whereas other columns contain discrete or categorical measurements. 
 Hence the columns are heterogeneous with respect to data types.
 Furthermore, in tabular data, the rows and columns occur in no particular order.
