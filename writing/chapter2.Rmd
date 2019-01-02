@@ -39,7 +39,7 @@ In basic terms, a neural network processes an input $\boldsymbol{x}$ by sending 
 The neurons in each layer apply some transformation to their inputs, resulting in a set of outputs which are again passed on to the next layer of neurons. 
 Eventually, the final layer produces the neural network output. 
 In this section we provide more detail regarding the neural network structure. 
-We start with a description of the operations inside each neuron, and follow with a discussion of the way in which the neurons may be connected in layers in order to form a complete neural network structure.
+We start with a description of the operations inside each neuron, followed by a discussion of the way in which the neurons may be connected in layers in order to form a complete neural network structure.
 Our discussion is based upon a simple regression example.
 
 Suppose we are in pursuit of a function which is able to estimate some continuous target, $y$, given a $p$-dimensional input $\boldsymbol{x}$, *e.g.* estimating the taxi fare from features such as distance travelled, time elapsed and number of passengers.
@@ -61,7 +61,7 @@ grid.arrange(img1, img2, t1, t2, ncol = 2, heights=9:1)
 
 [^imcred]: Image credit: https://www.jeremyjordan.me/intro-to-neural-networks/
 
-In equation form, this function can be written as:
+In equation form, this function may be written as
 $$
 w_{1}\cdot x_{1} + w_{2}\cdot x_{2}+ \dots + w_{p}\cdot x_{p}+b=y,
 $$
