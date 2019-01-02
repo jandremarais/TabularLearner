@@ -11,7 +11,7 @@ If two neurons are connected, it means that the output from the one neuron serve
 In a very simple model of the brain, one may argue that a neuron receives several signals, which it weighs and combines, and if the combined value of the inputs is higher than a certain threshold, the neuron sends an output signal to the next neuron.
 \autoref{fig:neurons} (a) provides a schematic of a biological neuron.
 
-An artifical neural network tries to mimic this model of the human brain - it is set up to consist of several layers of connected units (or neurons).
+An artifical neural network tries to mimic this model of the human brain: it is set up to consist of several layers of connected units (or neurons).
 With exception of units in the first and final layers, each unit outputs a weighted combination of its inputs, combined with a simple non-linear transformation.
 In each layer of the neural network, the input is passed through each of the neurons. 
 In turn, their output is passed to the next layer.
@@ -188,20 +188,15 @@ As stated in [@Ba2013], although a neural network can represent any function, it
 By choosing deeper networks we are assuming that the function we are trying to learn is composed of several simpler functions.
 Incorporating this prior belief has empirically been shown to be useful [@Goodfellow2016, pp.197-198]. This is especially true in the case of tasks that may be partitioned into smaller subtasks, for example in computer vision.
 
-
-
-In our experiments we will see what effect the layer width and network depth have on the generalisation performance on different tabular datasets.
-The networks used for tabular data learning problems are typically much shallower than those used for say computer vision and NLP.
-We investigate why this is the case.
-Later in this chapter we view this problem from a representation learning perspective which will also give us some insight on the matter.
-But first, in the next section, we discuss the process of training a neural network.
+In our empirical work we investigate the effect of network depth and layer width on the generalisation performance of neural networks.
+We also analyse why networks used in the case of tabular data are typically much shallower than in the case of computer vision or NLP applications. For some additional insight in the matter, later on in this chapter we view the problem of the specification of the network size from a representation learning perspective. 
 
 ## Training a Neural Network \label{sec:training}
 
 ### Optimisation \label{sec:optimisation}
 
-Statistical learning and optimisation are closely related. 
-Optimisation refers to the task of either minimising or maximising some function $J(x)$ by altering $x$. 
+We have briefly seen in Chapter 1 that there is a connection between statistical learning and optimisation. 
+Optimisation refers to the task of altering $x$ in order to either minimise or maximise some function $J(x)$. 
 The function we want to optimise is called the *objective function*. 
 When we are minimising the objective function, we may also refer to the objective function as the *cost* or *loss function*. 
 These terms will be used interchangeably throughout the thesis.
