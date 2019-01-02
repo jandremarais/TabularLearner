@@ -64,28 +64,26 @@ xtable(df, caption = 'Preview of the Adult dataset.\\label{tab:adult}')
 ```
 
 \autoref{tab:adult} represents a typical tabular dataset, where the columns contain measurements on different features.
-Therefore different columns may contain different data types. 
-Some columns may consist of continuous measurements, whereas other columns contain discrete or categorical measurements. 
-Hence the columns are heterogeneous with respect to data types.
+Therefore different columns may contain different data types: some columns may consist of continuous measurements, whereas other columns may contain discrete or categorical measurements. 
 Furthermore, in tabular data, the rows and columns occur in no particular order.
 This of course stands in contrast to image or text data.
 
 Many important ML applications make use of tabular data. Some of these applications are listed below:
 
-- Various tasks that make use of Electronic Health Records. These include the prediction of in-hopsital mortality rates, and prolonged length of stay [@Rajkomar2018].
-- Recommender systems for items like videos [@Covington2016] or property listings [@haldar2018].
-- Click-through rate (CTR) prediction in web applications, *i.e.* predicting which item a user will click on next [@Song2018]. 
-- Predicting which clients are at risk of defaulting on their accounts[^loandef].
-- Predicting store sales [@Guo2016].
+- Various tasks that make use of Electronic Health Records. These include the prediction of in-hopsital mortality rates, and of prolonged length of stay [@Rajkomar2018];
+- Recommender systems for items like videos [@Covington2016] or property listings [@haldar2018];
+- Click-through rate (CTR) prediction in web applications, *i.e.* predicting which item a user will click on next [@Song2018]; 
+- Predicting which clients are at risk of defaulting on their accounts[^loandef];
+- Predicting store sales [@Guo2016]; and
 - Drug discovery [@Klambauer2017].
 
 [^loandef]: https://www.kaggle.com/c/loan-default-prediction
 
-Tabular datasets come in all shapes and sizes.
-The number of rows can range from hundreds to millions, and the number of columns also has no limits.
-It is not unusual for tabular datasets to be noisy.
-A proportion of the observations may have missing features and/or incorrect values.
-Continuous measurements may be based upon vastly different scales, some containing outliers, whereas categorical features may have high cardinality which leads to sparse data.
+Tabular datasets take on various shapes and sizes: the number of rows may range from hundreds to millions, and the number of columns also has no limits. 
+Other complicating characteristics include:
+- That it is not unusual for tabular datasets to be noisy;
+- That a proportion of the observations may have missing features and/or incorrect values; and
+- That continuous measurements may be based upon vastly different scales, some containing outliers, whereas categorical features may have high cardinality which in turn leads to sparse data.
 
 During the construction of models for tabular datasets, the most important step in terms of leading to improvements in the model performance, is pre-processing and manipulation of the input features [@Rajkomar2018].
 This includes data merging, customising, filtering and cleaning.
