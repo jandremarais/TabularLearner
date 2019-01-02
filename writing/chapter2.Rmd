@@ -65,38 +65,38 @@ In equation form, this function may be written as
 $$
 w_{1}\cdot x_{1} + w_{2}\cdot x_{2}+ \dots + w_{p}\cdot x_{p}+b=y,
 $$
-where $\{w_{k}\}_{k=1}^{p}$, are the weights applied to each of the inputs $\{x_{k}\}_{k=1}^{p}$ and $b$ the constant bias term.
-Clearly, this equation is simply the very common linear model and thus also can be written as:
+where $\{w_{k}\}_{k=1}^{p}$, are the weights applied to each of the inputs $\{x_{k}\}_{k=1}^{p}$ and where $b$ denotes the constant bias term.
+Clearly, this equation is simply the very common linear model and thus also can be written as
 $$
 \boldsymbol{w}^{\intercal}\boldsymbol{x} + b=y,
 $$
-where $\boldsymbol{x}=[x_{1}\quad x_{2}\quad \dots\quad x_{p}]^{\intercal}$ is the input, $\boldsymbol{w}=[w_{1}\quad w_{2}\quad \dots\quad w_{p}]^{\intercal}$ the weights and $y$ the output. 
-We may compress the above equation to $\boldsymbol{w}^{\intercal}\boldsymbol{x}=y$, where $\boldsymbol{x}$ includes the bias term and the weight vector $\boldsymbol{w}$ a unit element, *i.e.* $\boldsymbol{x}=[1\quad x_{1}\quad\dots\quad\ x_{p}]^{\intercal}$ is the input, $\boldsymbol{w}=[b\quad w_{1}\quad \dots\quad w_{p}]^{\intercal}$.
+where $\boldsymbol{x}=[x_{1}\quad x_{2}\quad \dots\quad x_{p}]^{\intercal}$ represents the input, and where resepctively $\boldsymbol{w}=[w_{1}\quad w_{2}\quad \dots\quad w_{p}]^{\intercal}$ and $y$ denote the weights and output.
+We may of course compress the above equation to $\boldsymbol{w}^{\intercal}\boldsymbol{x}=y$, where $\boldsymbol{w}$ is amended to include the bias term, and where $\boldsymbol{x}$ is amended to include a 1, *i.e.* $\boldsymbol{x}=[1\quad x_{1}\quad\dots\quad\ x_{p}]^{\intercal}$ is the input, and $\boldsymbol{w}=[b\quad w_{1}\quad \dots\quad w_{p}]^{\intercal}$ is the weight vector.
 
-The weights convey the importance of each input features in predicting the target.
-The larger $|w_{k}|$ is, the greater is the contribution of $x_{k}$ towards the output.
+The weights convey the importance of each input feature in predicting the target.
+Larger values of $|w_{k}|$ indicate greater contributions of $x_{k}$ toward the output.
 If $w_{k}=0$, $x_{k}$ has no influence on the target.
-However the weights are unknown and therefore we need to estimate them.
+However the weights are unknown and need to be estimated.
 
-In linear regression this is done by means of the method of ordinary least squares.
-Since a neural network consists of many inter-conncected neurons, an alternative estimation procedure is required. 
+As discussed in Chapter 1, in linear regression this is done by means of OLS.
+However, since a neural network consists of many inter-conncected neurons, an alternative estimation procedure is required. 
 This is the topic of the next section.
 
 Often a linear model will be too rigid to model a certain response of interest. 
 In order to fit a more flexible model, we may add more neurons.
-Consider the use of two neurons, where the second neuron accepts the same input as the first neuron, but uses a different set of weights.
-Thus we have two different outputs produced by the two neurons, *i.e.*. $z_{1}=\boldsymbol{w}_{1}^{\intercal}\boldsymbol{x}$ and $z_{2}= \boldsymbol{w}_{2}^{\intercal}\boldsymbol{x}$.
+Consider the use of two neurons, $z{1}$ and $z{2}$, where the second neuron ($z{2}$) accepts the same input as the first neuron ($z{1}$), but uses a different set of weights.
+Thus we have two different outputs produced by the two neurons, *i.e.* $z_{1}=\boldsymbol{w}_{1}^{\intercal}\boldsymbol{x}$ and $z_{2}=\boldsymbol{w}_{2}^{\intercal}\boldsymbol{x}$.
 In order to produce a final estimate from the initial two estimates, *viz.* $z_{1}$ and $z_{2}$, they are passed to a third neuron.
 That is, $y=\boldsymbol{w}_{3}^{\intercal}\boldsymbol{z}$, where $\boldsymbol{z}=[z_{1}\quad z_{2}]^{\intercal}$.
 \autoref{fig:simple_nn} illustrates this pipepline in network form.
 
-```{r, fig.cap="A simple neural network accepting $p$-sized inputs, with one hidden layer which has two neurons.\\label{fig:simple_nn}", out.width="200px", fig.align='center'}
+```{r, fig.cap="A simple neural network accepting $p$-sized inputs, with one hidden layer consisting of two neurons.\\label{fig:simple_nn}", out.width="200px", fig.align='center'}
 knitr::include_graphics('figures/simple_nn.png')
 ```
 
 The first two neurons each received all $p$ inputs and each produced a single output. 
 These two outputs were received by the third neuron, and combined in order to produce the final output, *viz.* $y$. 
-The operations performed by the first two neurons may be expressed as $\boldsymbol{z}=W\boldsymbol{x}^{\intercal}$, where
+The operations performed by $z{1}$ and $z{2}$ may be expressed as $\boldsymbol{z}=W\boldsymbol{x}^{\intercal}$, where
 $$
  W=\begin{bmatrix}
  \boldsymbol{w}_{1}^{\intercal} \\
@@ -108,35 +108,31 @@ $$
  \end{bmatrix} \quad \text{and}\quad \boldsymbol{z}=[z_{1}\quad z_{2}]^{\intercal}.
 $$
 
-The collection of these two neurons is what is called a layer.
+The collection of $z{1}$ and $z{2}$ is called a layer.
 Since our third neuron (which is also a layer but with a single neuron) receives the output of this layer as input, it is possible to express the complete input-output relationship in one equation, *i.e.*
 $$
 y=\boldsymbol{w}_{3}^{\intercal}\boldsymbol{z}=\boldsymbol{w}_{3}^{\intercal}W\boldsymbol{x}.
 $$
-Note here that the weights from the first layer, $W$, and the third neuron, $\boldsymbol{w}_{3}$, can be collapsed into a single vector $\boldsymbol{w}$, effectively reducing all of the neuron operations back into a single neuron representation and thus the fitted model is still linear.
-In order to fit a non-linear model, a non-linear transformation function is applied to the output of each layer. 
+Note here that the weights from the first layer, *viz.* $W$, and the weights from the third neuron, *viz.* $\boldsymbol{w}_{3}$, may be collapsed into a single vector $\boldsymbol{w}$, effectively reducing all of the neuron operations to a single neuron representation. Therefore the fitted model is still linear.
+In order to fit a non-linear model, a non-linear transformation function has to be applied to the output of each layer. 
 This function is called an *activation function*. 
 
-Subsequently the neural network equation can be written as
+Incorporating an activation function, the neural network equation may be written as
 $$
 y=a_{2}\left(\boldsymbol{w}_{3}^{\intercal}a_{1}(W\boldsymbol{x})\right),
 $$
-where $a_{1}$ denotes the activation function applied after the first (linear) layer, and where $a_{2}$ is the the activation function applied after the final layer.
+where $a_{1}$ denotes the activation function applied after the first (linear) layer, and where $a_{2}$ denotes the activation function applied after the final layer.
                            
-The introduction of non-linear activation functions serves to enlarge the class of functions that can be approximated by the network *i.e.* making it possible for the network to learn complex, non-linear relationships between the inputs and the outputs.
-Next, we briefly discuss the various activation functions.
+The introduction of non-linear activation functions serves to enlarge the class of functions that can be approximated by the network. That is, activiation functions enable the network to learn complex non-linear relationships between inputs and outputs.
+Next, we briefly discuss various activation functions.
 
 ### Activation Functions
 
-There are plenty of activation functions to choose from, since any simple non-linear and differentiable function can be used. 
-Originally, the *sigmoid* activation function was a common choice [@Rumelhart1988].
-It can be expressed as $\text{sigmoid}(x)=\frac{1}{1+e^{-x}}$.
-The shape of the sigmoid activation can be seen in \autoref{fig:activation_functions} (a).
-It has an S-shape and its values range between 0 and 1.
-The reason it fell out of favour is because of issues related to the gradient based optimisation procedure of neural networks (which we discuss in more detail in \Cref{sec:training}).
-One of the issues is that the values of sigmoid activations are not centered around zero.
-This may cause the gradient weight updates to veer too far in different directions.
-
+Since any simple non-linear and differentiable function can be used as activation function, there are plenty of activation functions to choose from.  
+Originally, the *sigmoid* activation function, *viz.* $\text{sigmoid}(x)=\frac{1}{1+e^{-x}}$, was a common choice [@Rumelhart1988].
+The S-shape of the sigmoid activation function, and its range between 0 an 1 is illustrated in \autoref{fig:activation_functions} (a).
+Note that the reason why the sigmoid function fell out of favour in terms of its use as activation function in neural networks is because of issues related to the gradient based optimisation procedure of NNs. For example, gradient weight updates that veer to far in different directions, is caused by the values of sigmoid activations that are not centered around zero. 
+Some other issues with the sigmoid activiation function are discussed in more detail in \Cref{sec:training}. 
 
 ```{r, fig.cap="Plots of various activation functions (a) and their local derivatives (b).\\label{fig:activation_functions}", fig.subcap=c('',''), out.width='50%', fig.show='hold'}
 knitr::include_graphics(c('figures/activation_functions.pdf', 'figures/activation_functions_derivative.pdf'))
