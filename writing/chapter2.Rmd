@@ -131,23 +131,21 @@ Next, we briefly discuss various activation functions.
 Since any simple non-linear and differentiable function can be used as activation function, there are plenty of activation functions to choose from.  
 Originally, the *sigmoid* activation function, *viz.* $\text{sigmoid}(x)=\frac{1}{1+e^{-x}}$, was a common choice [@Rumelhart1988].
 The S-shape of the sigmoid activation function, and its range between 0 an 1 is illustrated in \autoref{fig:activation_functions} (a).
-Note that the reason why the sigmoid function fell out of favour in terms of its use as activation function in neural networks is because of issues related to the gradient based optimisation procedure of NNs. For example, gradient weight updates that veer to far in different directions, is caused by the values of sigmoid activations that are not centered around zero. 
+Note that the reason why the sigmoid function fell out of favour in terms of its use as activation function in neural networks is because of issues related to the gradient based optimisation procedure of NNs. For example, gradient weight updates that veer to far in different directions are caused by the values of sigmoid activations that are not centered around zero. 
 Some other issues with the sigmoid activiation function are discussed in more detail in \Cref{sec:training}. 
 
 ```{r, fig.cap="Plots of various activation functions (a) and their local derivatives (b).\\label{fig:activation_functions}", fig.subcap=c('',''), out.width='50%', fig.show='hold'}
 knitr::include_graphics(c('figures/activation_functions.pdf', 'figures/activation_functions_derivative.pdf'))
 ```
 
-
-The hyperbolic tangent or the *tanh* activation function, on the other hand, returns outputs centered around zero.
-It is expressed as $\text{tanh}(x)=\frac{e^{x}-e^{-x}}{e^{x}+e^{-x}}$ and its shape can be seen in \autoref{fig:activation_functions} (a).
-But the problem with both the sigmoid and tanh activation functions is that they can cause the gradients to saturate during training.
-By observing the tails of the sigmoid and tanh functions, it is clear that the gradient tends to zero as $|x|\to\infty$.
-This can cause the weight updates to be very close to zero and thus resulting in the network getting stuck at a certain point in the parameter space.
-Furthermore, the maximum gradient of the sigmoid activation function is 0.25 (at $x=0.5$), and because of the nature of the chain rule this causes the lower layers to train much slower than the higher layers.
-The tanh activation function typically have larger derivatives than the sigmoid and thus it is not as susceptible to this vanishing gradient problem, however, it is still not immune to it.
-The local derivatives of the activation functions discussed here are plotted in \autoref{fig:activation_functions} (b).
-This will become more obvious after \Cref{sec:training}.
+The hyperbolic tangent or *tanh* activation function, on the other hand, does return outputs centered around zero.
+It takes the form $\text{tanh}(x)=\frac{e^{x}-e^{-x}}{e^{x}+e^{-x}}$ and its shape is illustrated in \autoref{fig:activation_functions} (a).
+However, the problem with both the sigmoid and tanh activation functions is that they may lead to saturated gradients during training.
+To see this, consider the tails of the sigmoid and tanh functions, which indicate that the gradients of both these functions tend to zero as $|x|\to\infty$. 
+During training, this may cause weight updates to be nearly zero, resulting in the network getting stuck at a certain point in the parameter space.
+Furthermore, the maximum gradient of the sigmoid activation function is turns out to be only 0.25 (at $x=0.5$). The nature of the chain rule therefore causes lower layers in the network to train much slower than higher layers.
+The tanh activation function typically have larger derivatives than the sigmoid function. Thus it is not as susceptible to this vanishing gradient problem. However, it is still not immune to it.
+The local derivatives of the activation functions discussed in this section are plotted in \autoref{fig:activation_functions} (b). The form of these functions will become more apparent in \Cref{sec:training}.
 
 To date, the most popular choice in activation function is the *Rectified Linear Units* (ReLU) non-linearity.
 It is defined as:
