@@ -196,15 +196,14 @@ We also analyse why networks used in the case of tabular data are typically much
 ### Optimisation \label{sec:optimisation}
 
 We have briefly seen in Chapter 1 that there is a connection between statistical learning and optimisation. 
-Optimisation refers to the task of altering $x$ in order to either minimise or maximise some function $J(x)$. 
-The function we want to optimise is called the *objective function*. 
-When we are minimising the objective function, we may also refer to the objective function as the *cost* or *loss function*. 
-These terms will be used interchangeably throughout the thesis.
+Optimisation refers to the task of altering $x$ in order to either minimise or maximise some *objective function* $J(x)$. 
+When we are minimising the objective function, the latter is often also referred to as the *loss function*, or the *cost*. 
+In the remainder of the thesis, note that these different terms for the loss function will be used interchangeably.
 
-As mentioned in the previous chapter, parameter estimation (or optimisation) of a linear (or logistic regression) model is usually done using OLS or maximum likelihood estimation (MLE). 
-In this section, however, we discuss an alternative parameter estimation method which is also relevant for the optimisation of neural networks.
+As mentioned in Chapter 1, parameter estimation (or optimisation) of a linear (or logistic regression) model is usually done using OLS or maximum likelihood estimation (MLE). 
+In this section, however, we discuss an alternative parameter estimation method which is also relevant in the optimisation of neural networks.
 
-Consider the MSE loss function:
+Therefore consider the MSE loss function:
 $$
 \begin{aligned}
 L&=\sum_{i=1}^{N}L_{i}\\
@@ -212,10 +211,10 @@ L&=\sum_{i=1}^{N}L_{i}\\
 &=\sum_{i=1}^{N}\sum_{k=1}^{K}(y_{ik}-\boldsymbol{w}_{k}^{T}\boldsymbol{x}_{i})^{2},
 \end{aligned}
 $$
-where $f_{k}(\cdot)$ in this case is the linear model used to predict the $k$-th class posterior probability. 
-Although the MSE loss is mostly used in a regression setup and not really well suited for classification, we make use of it here for illustration purposes.
+where in this case $f_{k}(\cdot)$ denotes the linear model used to predict the $k$-th class posterior probability. 
+Note that although the MSE loss is mostly used in regression and not really well suited for classification, we make use of it here for illustration purposes.
 
-To find the weights, $\boldsymbol{w}$, that minimise $L$, we can follow a process of iterative refinement. 
+In order to find the weights $\boldsymbol{w}$ that minimise $L$, we follow a process of iterative refinement. 
 That is, starting with a random initialisation of $\boldsymbol{w}$, one iteratively updates the values such that $L$ decreases. 
 The updating steps are repeated until the loss converges.
 In order to minimise $L$ with respect to $\boldsymbol{w}$, we calculate the gradient of the loss function at the point $L(\boldsymbol{x};\boldsymbol{w})$.
