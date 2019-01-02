@@ -174,17 +174,17 @@ Selecting network depth and layer width is the topic of the next section.
 ### Size of the Network \label{sec:netsize}
 
 The network depth and the width of its hidden layers (*i.e.* the size of the network) are hyperparameters of the model.
-They control the capacity or the flexibility of a neural network; referring to its ability to model complex functions.
-The bigger the network, the more flexible the model is.
-Like with most such parameters, increasing the model size is usually benefical up to a certain point, after which its test performance starts to degrade (overfitting).
-In addition, more layers and more neurons adds to the time taken and hardware required to train the neural network.
+They control the ability of a neural network to model complex functions, which is also often referred to as its flexibility.
+More specifically, larger networks generally are more flexible. 
+In statistical learning it is well known that increasing the flexibility of a model is typically only beneficial up to a certain point, whereafter a further increase in flexibility will be detrimental to its prediction performance on new unseen data cases.
+Suboptimal test performance due to a too flexible model is known as *overfitting*.
+Appropriate selection of the flexibility of the model is also important in the case of neural networks.
+The challenge is to find a network size which is large enough to capture all the complexities in the data, but small enough to avoid overfitting. In addition, whereas more layers facilitate a more flexible fit, larger networks require more time and more hardware capacity in order to train them.
 
-Thus the challenge is to find a network size that is large enough to capture all the complexities in the data, but small enough to avoid overfitting.
-Currently the best way of finding the optimal size of a network for a given problem is by experimentation.
-Note, that this is true for many of the compoments of neural networks and deep learning.
-Later in this chapter, \Sref{sec:basicreg}, we will see why tunining the network size is not necessarily the best way of controlling overfitting.
+Currently the best way of finding the optimal size of a network for a given problem is by means of experimentation.
+Note therefore that for many of the components of neural networks in deep learning, hyperparameter values are selected through a process of trial-and-error. However, in \Sref{sec:basicreg}, we will see why tuning the size of a network is not necessarily the best way to control overfitting.
 
-Theoretically, according to the universal approximation theorem [@Cybenko1989], a neural network with a single hidden layer and a finite number of neurons can approximate any continuous function.
+Theoretically, according to the universal approximation theorem [@Cybenko1989], a neural network with a single hidden layer and with a finite number of neurons can approximate any continuous function.
 Which begs the question as to why we need more hidden layers.
 Even though a neural network can represent any function, it does not mean that the available learning algorithms can find these optimal weights [@Ba2013].
 It may also be that the number of neurons needed for a single hidden layer network to represent a specific function is infeasibly large.
@@ -193,7 +193,7 @@ Building in this prior proves to useful empirically [@Goodfellow2016, pp.197-198
 
 
 
-. see what effect the layer width and network depth have on the generalisation performance on different tabular datasets.
+In our experiments we will see what effect the layer width and network depth have on the generalisation performance on different tabular datasets.
 The networks used for tabular data learning problems are typically much shallower than those used for say computer vision and NLP.
 We investigate why this is the case.
 Later in this chapter we view this problem from a representation learning perspective which will also give us some insight on the matter.
