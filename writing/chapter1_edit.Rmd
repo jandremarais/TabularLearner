@@ -85,13 +85,13 @@ Other complicating characteristics include:
 - That a proportion of the observations may have missing features and/or incorrect values; and
 - That continuous measurements may be based upon vastly different scales, some containing outliers, whereas categorical features may have high cardinality which in turn leads to sparse data.
 
-During the construction of models for tabular datasets, the most important step in terms of leading to improvements in the model performance, is pre-processing and manipulation of the input features [@Rajkomar2018].
+During the construction of models for tabular datasets, the most important step in terms of leading to improvements in model performance, is pre-processing and manipulation of the input features [@Rajkomar2018].
 This includes data merging, customising, filtering and cleaning.
-In a process called feature engineering one strives to create new features from the original features based on some domain knowledge.
+In a process called feature engineering, one strives to create new features from the original features based on some domain knowledge.
 The idea is that such engineered features enables a model to learn interactions between features, thereby facilitating more accurate prediction.
 Feature engineering is an extremely laborious process with no clear recipe to follow and therefore typically cannot succesfully be implemented without some domain expertise.
 
-Ensemble methods based upon trees are currently viewed as the most effective machine learning models in the face of tabular datasets.
+Ensemble methods based upon trees are currently viewed as the most effective machine learning models for tabular datasets.
 As mentioned above, a possible reason for this may be their robustness to different feature scales and data types,  linked with their ability to effectively model interactions among features having different data types.
 
 Indeed, in the context of tabular data, classical neural network approaches are no match for tree ensembles.
