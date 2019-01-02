@@ -143,28 +143,29 @@ It takes the form $\text{tanh}(x)=\frac{e^{x}-e^{-x}}{e^{x}+e^{-x}}$ and its sha
 However, the problem with both the sigmoid and tanh activation functions is that they may lead to saturated gradients during training.
 To see this, consider the tails of the sigmoid and tanh functions, which indicate that the gradients of both these functions tend to zero as $|x|\to\infty$. 
 During training, this may cause weight updates to be nearly zero, resulting in the network getting stuck at a certain point in the parameter space.
-Furthermore, the maximum gradient of the sigmoid activation function is turns out to be only 0.25 (at $x=0.5$). The nature of the chain rule therefore causes lower layers in the network to train much slower than higher layers.
+Furthermore, the maximum gradient of the sigmoid activation function turns out to be only 0.25 (at $x=0.5$). The nature of the chain rule therefore causes lower layers in the network to train much slower than higher layers.
 The tanh activation function typically have larger derivatives than the sigmoid function. Thus it is not as susceptible to this vanishing gradient problem. However, it is still not immune to it.
-The local derivatives of the activation functions discussed in this section are plotted in \autoref{fig:activation_functions} (b). The form of these functions will become more apparent in \Cref{sec:training}.
+The local derivatives of the activation functions discussed in this section are illustrated in \autoref{fig:activation_functions} (b). The form of these functions will become more apparent in \Cref{sec:training}.
 
 To date, the most popular choice in activation function is the *Rectified Linear Units* (ReLU) non-linearity.
 It is defined as:
 $$
 \text{relu}(x)=\begin{cases}x\quad \text{if }x>0\\ 0\quad\text{otherwise}\end{cases}.
 $$ 
-Again, its shape and derivative is plotted in \autoref{fig:activation_functions} (a) and (b), respectively.
-The ReLU limits the gradient vanishing problem as its derivative is always 1 when $x$ is positive.
+
+The shape of the ReLU activiation and of its derivative are illustrated in \autoref{fig:activation_functions} (a) and (b), respectively.
+Use of the ReLU alleviates the gradient vanishing problem as the derivative of this function is always 1 (for positive $x$ values).
 This results in significantly shorter steps to convergence, as found by the authors in [@Krizhevsky2012].
 However, ReLUs may suffer from the "dead ReLU" problem, which is, if a ReLU neuron gets clamped to zero, then its weights will get zero gradient and may remain permanently "dead" during training.
-This sparsity of the activations is what some believe is the reason for the effectivenss of ReLUs [@Sun2014].
-If dead activations wants to be avoided, alternative activations functions are PReLUs [@He2015] and Leaky ReLUs [@Maas2013], but they fall out of the scope of this work.
+This sparsity of the activations is what some believe is the reason for the effectiveness of ReLUs [@Sun2014].
+If dead activations needs to be avoided, alternative activations functions to apply include PReLUs [@He2015] and Leaky ReLUs [@Maas2013]. 
 
-Typically, choosing the right activation function for a specific task comes down to trial and error, however, in most cases it would be sufficient to use ReLUs after each hidden layer.
-When doing classification, it is often useful to produce outputs between 0 and 1 for each category as estimates of the conditional class probabilities.
-Therefore we may use a sigmoid activation function on the output layer.
-When doing (single label) multiclass classifcation it is also desirable for these ouputs to sum to 1, similar to prababilities.
-In that case we may use an activation function called the *softmax*, which is exactly the logit transformation introduced in \Sref{sec:SLT}: $\text{softmax}(\boldsymbol{x})_{k}=\frac{e^{x_{k}}}{\sum_{l=1}^{K}x_{l}}$.
-For regression tasks, we mostly omit an activation function on the output layer.
+Selecting an appropriate activation function for a specific task typically involves a trial-and-error process.
+For general tasks, the use of ReLUs after each hidden layer may suffice and has to some extent become standard practice.
+In the context of classification, for each class, it is often useful to produce outputs between 0 and 1 as estimates of conditional class probabilities. Therefore one often uses a sigmoid activation function on the output layer.
+In the context of (single label) multiclass classifcation, it is also desirable for these ouputs to sum to 1, therefore in this case, an activation function called *softmax* is typically used.
+Note that the softmax activation, *viz.* $\text{softmax}(\boldsymbol{x})_{k}=\frac{e^{x_{k}}}{\sum_{l=1}^{K}x_{l}}$ is simply the logit transformation introduced in \Sref{sec:SLT}.
+In a regression context, we mostly omit the use of an activation function on the output layer.
 
 In our experiments we will show how the different activation functions perform on tabular data and compare it to the *Scaled Exponential Linear Units* (SELUs) [@Klambauer2017] activation, which is supposed to allow us to more effectively train deeper neural networks.
 The neural network depth refers to its number of hidden layers, whereas the width of a layer refers to the number of neurons it consists of.
