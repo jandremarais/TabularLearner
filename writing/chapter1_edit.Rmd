@@ -4,8 +4,8 @@
 
 This thesis is concerned with the study of *deep learning* approaches to solve *machine learning* (ML) tasks.
 More specifically, our interest lies in machine learning tasks that may be solved using tabular data inputs.
-The deep learning field is an extention of the class of machine learning algorithms called *Artifical Neural Networks* (NNs).
-Whereas until relatively recently, the neural network field was not a very active research field, rapid development in computing power and the growing abundance of data lead to advances in neural network optimisation and architecture.
+The deep learning field is an extention of the class of machine learning algorithms called *Artificial Neural Networks* (NNs).
+Whereas until relatively recently, the neural network field was not an over-active research field, rapid development in computing power and the growing abundance of data lead to advances in neural network optimisation and architecture.
 These advances constitutes the deep learning field as we know it today [@Lecun2015].
 
 Currently, deep learning is receiving a remarkable amount of attention, both in research and in practice (see \autoref{fig:dlpapers}).
