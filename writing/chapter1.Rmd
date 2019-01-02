@@ -3,7 +3,7 @@
 ## Deep Learning
 
 This thesis is about using *Deep Learning* (DL) approaches to solve *Machine Learning* (ML) tasks with tabular data inputs.
-The field of DL is an extention of the class of ML algorithms called *Artifical Neural Networks* (NNs).
+The field of DL is an extention of the class of ML algorithms called *Artificial Neural Networks* (NNs).
 The rapid development in computing power and the growing abundance of data available, awoken the slumbering field of NNs and resulted in optimisation and architecture design advancements, creating the DL field as we know it today [@Lecun2015].
 
 DL is receiving a remarkable amount of attention in academia and elsewhere (see \autoref{fig:dlpapers}).
