@@ -269,7 +269,7 @@ Note that the learning rate was set equal to 0.001.
 The decision boundaries defined by the gradient descent parameter estimates at different iterations are represented by the dashed lines in \autoref{fig:sgd}.
 Initially the estimated decision boundary lies far from the OLS solution. However, after convergence (29 iterations later), the gradient descent line matches the OLS line. 
 
-```{r, cache=TRUE,eval=TRUE, fig.cap = "Plots of the gradient descent example. (a) The data points in input space. The shades in the background represent the class division in input space, with the decision boundary determined by linear least squares estimation. The dashed lines represent the decision boundaries learned at different iterations. (b) The loss calculated at each iteration. \\label{fig:sgd}"}
+```{r, cache=TRUE,eval=TRUE, fig.cap = "Plots of the gradient descent example. (a) The training data points in input space. The shades in the background represent the class division in input space, with the decision boundary determined by linear least squares estimation. The dashed lines represent the gradient descent decision boundaries at different iterations. (b) The loss function at each iteration. \\label{fig:sgd}"}
 library(MASS)
 library(cowplot)
 # generate the data
@@ -379,27 +379,27 @@ plot_grid(p, p_loss, labels = c("(a)", "(b)"), nrow = 1, align = "vh", rel_width
 
 ### Backpropogation \label{sec:backprop}
 
-In \Cref{sec:optimisation} we discussed how to fit a linear model using the Stochastic Gradient Descent optimisation procedure.
-Currenlty, SGD is the most effective way of training deep networks. 
-To recap, SGD optimises the parameters $\theta$ of a network to minimise the loss,
+Currently, SGD is the most effective way of training deep neural networks. Recall that in \Cref{sec:optimisation} we described how to fit a linear model using the SGD optimisation procedure. We have seen that SGD optimises the parameters $\theta$ of a network to minimise the loss function. That is,
 $$
 \theta = \arg\min_{\theta}\frac{1}{N}\sum_{i=1}^{N}l(\boldsymbol{x}_{i}, \theta).
 $$
-With SGD the training proceeds in steps and at each step we consider a mini-batch of size $n\le N$ training samples. 
-The mini-batch is used to approximate the gradient of the loss function with respect to the paramaters by computing, 
+
+Using SGD, training a neural network involves several iterations. During each iteration we consider a mini-batch consisting of $n\le N$ training examples. 
+The mini-batch is used to approximate the gradient of the loss function with respect to the parameters via the following derivative: 
 $$
 \frac{1}{n}\frac{\partial l(\boldsymbol{x}_{i},\theta)}{\partial \theta}.
 $$
-Using a mini-batch of samples instead of one at a time produces a better estimate of the gradient over the full training set and it is computationally much more efficient.
 
-This section discusses the same procedure, but applied to a simple single hidden layer neural network for multiclass classification, decomposed as:
+Using a mini-batch of training examples instead of one training example at a time produces a better estimate of the gradient over the full training set, and is computationally much more efficient.
+
+In this section we discuss the same procedure, but applied to a simple single hidden layer NN for multiclass classification, which may be decomposed as follows:
 $$
 \begin{aligned}
 f_{k}(\boldsymbol{x})&=g_{k}(\boldsymbol{\beta}^{\intercal}_{k}\boldsymbol{z}), \quad k=1,\dots,K\\
 z_{m}&=\sigma(\boldsymbol{\alpha}_{m}^{\intercal}\boldsymbol{x}),\quad m=1,\dots, M
 \end{aligned}
 $$
-where $\sigma(\cdot)$ is the sigmoid activation and $g(\cdot)$ the softmax activation.
+where $\sigma(\cdot)$ is the sigmoid activation and where $g(\cdot)$ is the softmax activation.
 The neural network has a set of unknown adjustable weights that defines the input-output function of the network. 
 They are the parameters of the linear function of the inputs, $\boldsymbol{\alpha}_{m}=(\alpha_{0m}, \alpha_{1m},\dots,\alpha_{pm})$, and the paramaters of the linear transformation of the derived features, $\boldsymbol{\beta}_{k}=(\beta_{0k}, \beta_{1k},\dots,\beta_{mk})$.
 Denote the complete set of parameters by $\theta$.
