@@ -418,11 +418,10 @@ Since a neural network for classification takes the form of a linear logistic re
 According to @Hastie2009 [p. 395] however, the global minimiser of $L(\theta)$ is most likely an overfit solution. Therefore we require regularisation techniques when minimising $L(\theta)$.
 Furthermore, as the size of the network increases, MLE soon becomes intractable.
 
-Therefore, one rather uses gradient descent and the *backpropogation* algortihm [@Rumelhart1988] to minimise $L(\theta)$.
-This is possible because of the modular nature of a neural network, allowing the gradients to be derived by iterative application of the chain rule for differentiation. 
-This is done by a forward and backward sweep over the network, keeping track only of quantities local to each unit.
+Therefore, one rather uses gradient descent and the *backpropogation* algorithm [@Rumelhart1988] to minimise $L(\theta)$.
+This is possible because of the modular nature of a neural network, allowing the gradients to be derived through iteration of the chain rule for differentiation. In broad terms, the iterative calculation of derivatives occur during a forward and backward sweep over the network, keeping track only of quantities local to each unit.
 
-In detail, the backpropogation algorithm for the sum-of-squared error objective function,
+In more detail, the backpropogation algorithm for the sum-of-squared error objective function, previously given as
 $$
 \begin{aligned}
 L(\theta)&=\sum_{i=1}^{N}L_{i}\\
@@ -430,7 +429,7 @@ L(\theta)&=\sum_{i=1}^{N}L_{i}\\
 \end{aligned}
 $$
 is as follows. 
-Following the chain-rul, the relevant derivatives for gradient descent are:
+We start by obtaining the derivatives required in order to implement gradient descent. For this example, following the chain rule, the relevant derivatives are
 
 $$
 \begin{aligned}
@@ -439,7 +438,7 @@ $$
 \end{aligned}
 $$
 
-Given these derivatives, a gradient descent update at the $(r+1)$-th iteration has the form,
+Given these derivatives, a gradient descent update at the $(r+1)$-th iteration takes the form
 $$
 \begin{aligned}
 \beta_{km}^{(r+1)}&=\beta_{km}^{(r)}-\gamma_{r}\sum_{i=1}^{N}\frac{\partial L_{i}}{\partial \beta_{km}^{(r)}},\\
@@ -447,23 +446,23 @@ $$
 \end{aligned}
 $$
 
-Now write the gradients as
+We may now rewrite the gradients as follows:
 $$
 \begin{aligned}
 \frac{\partial L_{i}}{\partial \beta_{km}}&=\delta_{ki}z_{mi},\\
 \frac{\partial L_{i}}{\partial \alpha_{ml}}&=s_{mi}x_{il}.
 \end{aligned}
 $$
-The quantities, $\delta_{ki}$ and $s_{mi}$ are errors from the current model at the output and hidden layer units respectively. 
-From their definitions, they satify the following,
+Note that the quantities $\delta_{ki}$ and $s_{mi}$ are errors from the current model at the output and hidden layer units respectively. 
+From their definitions it can be seen that
 $$
 s_{mi}=\sigma'(\boldsymbol{\alpha}_{m}^{T}\boldsymbol{x}_{i})\sum_{k=1}^{K}\beta_{km}\delta_{ki},
 $$
-which is known as the backpropogation equations.
-Using this, the weight updates can be made with an algortihm consisting of a forward and a backward pass over the network. 
+which is known as the so-called *backpropagation equations*.
+Using the above set of equations, weight updates proceed by means of an algortihm consisting of a forward and a backward pass over the network. 
 In the forward pass, the current weights are fixed and the predicted values $\hat{f}_{k}(\boldsymbol{x}_{i})$ are computed. 
-In the backward pass, the errors $\delta_{ki}$ are computed, and then backpropogated via the backpropogation equations to obtain $s_{mi}$. 
-These are then used to update the weights.
+In the backward pass, the errors $\delta_{ki}$ are computed, and then channelled via the backpropogation equations in order to specify $s_{mi}$. 
+These values are then used to update the weights.
 This approach extends naturally to any size network and differentiable layers (functions).
 
 Backpropogation is simple and its local nature (each hidden unit passes only information to and from its connected units) allows it to be implented efficiently in parallel. 
