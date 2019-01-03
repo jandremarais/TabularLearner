@@ -501,28 +501,25 @@ The difference between L1 and L2 regularisation lies in the form of the penalty 
 Specification of the $\lambda$ parameter is important since it determines the severity of the penalty of large NN weight values.
 Note that the "$\frac{1}{2}$" in front of the L2 penalty is added for the sake of convenience since it renders the derivative of the penalty term equal to $\lambda w$. The latter form implies a linear decay of the weights towards zero, *i.e.* $w'=w-\lambda w$, which is also known as *weight decay*. In neural network applications it has been shown that L2 regularisation typically outperforms L1 regularisation and is therefore preferred (Reference?)
 
-Another basic way of preventing the neural network to overfit is to stop the training process "early" and to not train until the training loss converges.
-A converged training loss is not equivalent to an optimal test loss and therefore the test or validation loss should be observerd during training.
-One approach is to stop training when the validation loss stops decreasing.
-As mentioned before, the learning rate also plays a big part in finding the optimal weights.
-Next we discuss how we can tune the learning rate to train faster and to find better local minima.
-More advanced regularisation techniques are discussed in \Cref{chp:dl}.
+An alternative way of preventing a neural network to overfit is so-called *early termination* of the training process. That is, one refrains from training the network until the training loss converges. Since the training loss after convergence is not equivalent to the test loss, the loss function on a validation set should be monitored during training. Early termination involves stopping the training process as soon as the validation loss stops decreasing. 
+
+> As mentioned before, the learning rate also plays a big part in finding the optimal weights.
+> Next we discuss how we can tune the learning rate to train faster and to find better local minima.
+> More advanced regularisation techniques are discussed in \Cref{chp:dl}.
 
 ### Adaptive Learning Rates and Annealing \label{sec:lr}
 
-Although the right learning rate can reduce training time and improve performance, there is no silver bullet when it comes to setting the parameter.
+Although in the neural network literature it is known that a more optimal learning rate may reduce the time to train the network and improve its test performance, optimal specification of this parameter is not such an easy task. 
 A small learning rate slows downs the training time, but is safer against overfitting and overshooting the optimal solution.
 With a large learning rate, convergence may be reached quicker, but the optimal solution may not have been found. 
-One could do a line search of a range of possible values, but this usually takes too long for bigger networks. 
+Toward appropriate specification of the learning rate one may consider doing a line search over a range of possible values. However in the case of large networks such an approach is typically too time consuming. 
 
-However, one does not need to keep the learning rate fixed throughout the training process.
-A popular approach is to decrease the learning rate by a fraction after a certain number of epochs or as the validation loss starts to converge, as done in [@He2015] for example.
-The intuition is that larger steps can be taken when we are still far away from an optimal position on the loss surface, and then gradually take smaller steps once we get closer to not overshoot it.
-Note, that this means that we would also need to tune the rate of decrease and the time steps of each decrease during training.
-Fortunately, it is believed that the learning algorithms are not that sensitive to this choice.
+In contrast to a once off specification of the learning rate, an alternative approach is to allow the learning rate to be adapted during the training process. A popular approach is to decrease the learning rate by a fraction after a fixed number of epochs, or as soon as the validation loss starts to converge (*cf.* for example He *et al.*, 2015a). The intuition is that larger steps may be afforded while the weight estimates are still far away from an optimal position on the loss surface, while smaller steps need to gradually be taken once closer to the optimal weight vector value in order to take care not to overshoot it.
+Note that an adaptive learning rate requires one to also tune the rate of decrease and the time steps of each decrease during training.
+Fortunately it is believed that neural network learning algorithms are not very sensitive to these choices.
 
-In addition, there are ways of manipulating the learning rates at a local level, as opposed the aforementioned global methods.
-Adagrad [@Duchi2011] is an adaptive learning rate method which increases the learning rate at neurons with small gradients and *vice versa*.
+In addition, there are ways of manipulating the learning rates at a local level, as opposed to the aforementioned global methods.
+Adagrad [@Duchi2011] is an adaptive learning rate method which increases the learning rate at neurons with small gradients and *vice versa*. 
 Adam [@Kingma2014] is the most commonly used weight update approach.
 It also uses the magnitude of the gradient to control each weight update, in addition to the previous iteration's gradients and it combines them in a smooth fashion.
 This resembles the physical property of momentum [@Bengio2012].
@@ -532,15 +529,13 @@ For more detail, the reader can refer to the cited publications as it falls out 
 
 We are now familiar with the mathematical operations of basic layers, how they are connected and how their weights are tweaked to minimise a loss function.
 In this section we will discuss why this works and what the neural network is actually doing to model the data.
-The central idea is that of a data *representation* [@Bengio2013] and that at each layer of the network the data is transformed into a higher-level abstraction of itself.
+The central idea is that of a *data representation* [@Bengio2013] and that at each layer of the network the data is transformed into a higher-level abstraction of itself.
 Understanding and interpreting neural networks remains a challenge [@Frosst2017], but the notion of learning an optimal data representation allows us to gain a deeper intuition of the inner mechanics of neural networks.
 
-Machine learning models are very sensitive to the form and the properties of the input given to it.
-Thus a large part of building machine learning models is to find the best way of representing the raw data to make it easier for the models to extract useful information.
-This is typically a laborious manual task of creating, analyzing, evaluating and selecting appropriate features[^feature_engineering] requires practitioner expertise and domain knowledge.
-This *feature engineering* process is more trial-and-error than a systematic recipe.
-Therefore if one can effectively automate this process, it will save a lot of time and raise the performance ceiling of models.
-Automatically learning representations of the data that make it easier to extract useful information for classifiers or other predictors is called representation learning [@Bengio2013].
+Machine learning models are very sensitive to the form and properties of the input it is presented with.
+Thus a large part of constructing machine learning models is to find the best way of representing the raw data in order to simplify the extraction of useful information.
+This *feature engineering* task typically is a laborious manual task which entails creating, analyzing, evaluating and selecting appropriate features[^feature_engineering]. There is therefore unfortunately no systematic recipe for feature engineering. Instead, it is a trial-and-error process which requires practitioner expertise and domain-specific knowledge. 
+In representation learning, the idea is to find a way of effectively automating the feature engineering process. That is, the goal is to automatically learn representations of the data that make it easier to extract useful information for classifiers or other predictors [@Bengio2013]. Such automation seems to have the potential of saving a lot of time and raising the performance ceiling of machine learning models.
 
 [^feature_engineering]: http://blog.kaggle.com/2014/08/01/learning-from-the-best/
 
