@@ -236,41 +236,38 @@ The learning rate is a crucial parameter when training neural networks. Its sign
 
 The procedure of repeatedly evaluating the gradient of the objective function, followed by a parameter update, forms the basis of the optimisation procedure for neural networks and is called *gradient descent* (Cauchy, 1847). 
 
-Note that a weight update is made by evaluating the gradient over a set of observations, $\{\boldsymbol{x}_{i},i=1,\dots,n\}$. 
-One of the advantages of gradient descent is that at an iteration, the gradient need not be computed over the complete training dataset, *i.e.* $n\le N$.
-When updates are iteratively determined by using subsets of the data, the process is called *mini-batch gradient descent*.
-This is extremely helpful in large-scale applications, since it obviates computation of the full loss function over the entire dataset. 
-This leads to faster convergence, because of more frequent parameter updates, and allows processing of data sets that are too large to fit into a computer's memory. 
-The choice regarding batch size depends on the available computation power. 
+Note that a weight update is made by evaluating the gradient over a subset of the training observations, *viz.* 
+$\{\boldsymbol{x}_{i},i=1,\dots,n\}$. 
+One of the advantages of gradient descent is that during each iteration, the gradient need not be computed over the complete training dataset, *i.e.* $n\le N$.
+When updates are iteratively determined using subsets of the training data, the process is called *mini-batch gradient descent*.
+Of course the gradient obtained using mini-batches is only an approximation of the gradient of the full loss but it seems to be sufficient in practice [@Li2014]. 
+The option of using mini-batch gradient descent is extremely helpful in large-scale applications, since it obviates computation of the loss function over the entire training dataset. 
+This leads to faster convergence, because of more frequent parameter updates, and allows processing of data sets that are too large to fit in a computer's memory. 
+A choice regarding batch size depends on the computation power available.
 Typically a batch consists of 64, 128 or 256 data points, since in practice many vectorised operation implementations work faster when their inputs are sized in powers of 2. 
-The gradient obtained using mini-batches is only an approximation of the gradient of the full loss but it seems to be sufficient in practice [@Li2014]. 
-Note at this point that the collection of iterations needed to make one sweep through the training data set is called an *epoch*.
+Note at this point that the collection of iterations needed to make one sweep through the training dataset is called an *epoch*.
 
-The extreme case of mini-batch gradient descent is when the batch size is selected to be 1.
+An extreme case of mini-batch gradient descent is when the batch size is selected to be 1.
 This is called *Stochastic Gradient Descent* (SGD). 
-Recently SGD has been used much less, since it is more efficient to calculate the gradient in larger batches compared to only using one example. 
+Recently SGD has been used much less, since it is more efficient to calculate the gradient in larger batches of training data cases.
 However, note that it remains common to use the term SGD when actually referring to mini-batch gradient descent.
-Gradient descent in general has often been regarded as slow or unreliable but it works well for optimising neural networks.
-SGD will most probably not find even a local minimum of the objective function. 
-It typically however finds a very low value of the cost function quickly enough to be useful.
+The use of gradient descent in general has often been regarded as slow or unreliable. SGD will most probably not even find a local minimum of the objective function, however it typically finds a very low value of the cost function quickly enough to be useful.
+Thus gradient descent has been proven to be efficient for optimising neural networks.
 
 ### Optimisation Example
 
-To illustrate the SGD algorithm, consider the linear model in a classification context. 
-Suppose we are given a training dataset with two-dimensional inputs and only two possible classes.
-Let the data be generated in the same way as described in [@Hastie2009, pp. 16-17]. 
-
-We want to fit a linear regression model to the data such that we can classify an observation to the class with the highest predicted score. 
-In the binary case it is only necessary to model one class probability and then assign an observation to that class if the score exceeds some threshold (usually 0.5), otherwise it is assigned to the other class. 
+In order to illustrate the SGD algorithm, we consider the linear model in a binary classification context, *i.e.* $K=2$.
+Also in our example, suppose the training data are generated in the way described in [@Hastie2009, pp. 16-17], where
+the inputs are two-dimensional, *i.e.* $p=2$. Suppose we want to fit a linear regression model to the training data and classify an observation to the class with the highest predicted score. 
+Of course in the binary classification it is only necessary to model one class probability: an observation is then assigned to the corresponding class if the score exceeds some threshold (usually 0.5).
 Therefore the decision boundary is given by $\{\boldsymbol{x}:\boldsymbol{x}^{T}\hat{\boldsymbol{w}}=0.5\}$.
 
-The example is illustrated in \autoref{fig:sgd}. 
-The colour shaded regions represent the parts of the input space classified to the respective classes, as determined by the decision boundary based upon OLS parameter estimates.
-Gradient descent was applied to the determine the optimal weights using a learning rate of 0.001. 
-Since the total number of training observations are small, it is not necessary to use SGD. 
-In \autoref{fig:sgd}, the dashed lines represent the decision boundary defined by the gradient descent parameter estimates at different iterations.
-We observe that initially the estimated decision boundary is far from the OLS solution, but as the update iterations proceed, the decision boundary is rotated and translated until finally matching the OLS line. 
-It took 29 iterations for the procedure to reach convergence.
+Optimisation of the regression weights by means of gradient descent is illustrated in \autoref{fig:sgd}. 
+The colour-shaded regions represent the regions of the input space classified to the respective classes, as determined by the decision boundary based upon the OLS parameter estimates.
+Since the number of training observations are small, it was not necessary to make use of mini-batch gradient descent.
+Note that the learning rate was set equal to 0.001. 
+The decision boundaries defined by the gradient descent parameter estimates at different iterations are represented by the dashed lines in \autoref{fig:sgd}.
+Initially the estimated decision boundary lies far from the OLS solution. However, after convergence (29 iterations later), the gradient descent line matches the OLS line. 
 
 ```{r, cache=TRUE,eval=TRUE, fig.cap = "Plots of the gradient descent example. (a) The data points in input space. The shades in the background represent the class division in input space, with the decision boundary determined by linear least squares estimation. The dashed lines represent the decision boundaries learned at different iterations. (b) The loss calculated at each iteration. \\label{fig:sgd}"}
 library(MASS)
