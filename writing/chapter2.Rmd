@@ -400,22 +400,23 @@ z_{m}&=\sigma(\boldsymbol{\alpha}_{m}^{\intercal}\boldsymbol{x}),\quad m=1,\dots
 \end{aligned}
 $$
 where $\sigma(\cdot)$ is the sigmoid activation and where $g(\cdot)$ is the softmax activation.
-The neural network has a set of unknown adjustable weights that defines the input-output function of the network. 
-They are the parameters of the linear function of the inputs, $\boldsymbol{\alpha}_{m}=(\alpha_{0m}, \alpha_{1m},\dots,\alpha_{pm})$, and the paramaters of the linear transformation of the derived features, $\boldsymbol{\beta}_{k}=(\beta_{0k}, \beta_{1k},\dots,\beta_{mk})$.
-Denote the complete set of parameters by $\theta$.
-Then the objective function for regression can be chosen as the sum-of-squared-errors:
+Here there are two sets of unknown adjustable weights that defines the input-output function of the network. 
+They are the parameters of the linear function of the inputs, *viz.* $\boldsymbol{\alpha}_{m}=(\alpha_{0m}, \alpha_{1m},\dots,\alpha_{pm})$, and also the parameters of the linear transformation of the derived features, *viz.* $\boldsymbol{\beta}_{k}=(\beta_{0k}, \beta_{1k},\dots,\beta_{mk})$.
+If we denote the complete set of parameters by $\theta$, then recall that the objective function for regression may be chosen to be the sum of squared errors, *i.e.* we have
 $$
-L(\theta) = \sum_{k=1}^{K}\sum_{i=1}^{N}\left(y_{ik}-f_{k}(\boldsymbol{x}_{i})\right)^{2}
+L(\theta) = \sum_{k=1}^{K}\sum_{i=1}^{N}\left(y_{ik}-f_{k}(\boldsymbol{x}_{i})\right)^{2},
 $$
-and for classification, the cross-entropy:
 
+whereas in the context of classification, the loss function may be specified as the so-called *cross-entropy*.
+The latter loss function is defined as follows:
 $$
 L(\theta) = -\sum_{i=1}^{N}\sum_{k=1}^{K}y_{ik}\log f_{k}(\boldsymbol{x}_{i}),
 $$
-with corresponding classifier $G(\boldsymbol{x})=\arg\max_{k}f_{k}(\boldsymbol{x})$.
-Since the neural network for classification is a linear logistic regression model in the hidden units, the paramaters can be estimated by maximum likelihood. 
-According to @Hastie2009 [p. 395], the global minimiser of $L(\theta)$ is most likely an overfit solution and we instead require regularisation techniques when minimising $L(\theta)$.
-Furthermore, as the network becomes larger, MLE becomes intractable.
+
+with the corresponding classifier denoted by $G(\boldsymbol{x})=\arg\max_{k}f_{k}(\boldsymbol{x})$.
+Since a neural network for classification takes the form of a linear logistic regression model in the hidden units, note that the parameters may be estimated using maximum likelihood. 
+According to @Hastie2009 [p. 395] however, the global minimiser of $L(\theta)$ is most likely an overfit solution. Therefore we require regularisation techniques when minimising $L(\theta)$.
+Furthermore, as the size of the network increases, MLE soon becomes intractable.
 
 Therefore, one rather uses gradient descent and the *backpropogation* algortihm [@Rumelhart1988] to minimise $L(\theta)$.
 This is possible because of the modular nature of a neural network, allowing the gradients to be derived by iterative application of the chain rule for differentiation. 
