@@ -193,6 +193,26 @@ We also analyse why networks used in the case of tabular data are typically much
 
 ## Training a Neural Network \label{sec:training}
 
+Briefly, training a neural network entails the following four steps:
+
+1. Initialisation: random numbers are assigned to the network parameters.
+2. Forward propagation: the input is passed through the network layers in order to produce an output.
+3. Error calculation: the predicted output is compared to the true output, and the difference measures by means of an appropriate objective function.
+4. Backward propagation: the gradients of the objective function with respect to the weights are obtained, and the network weights are updated accordingly.
+
+The above steps are typically repeated until the loss function is found to converge. Note however that convergence may require many training epochs.
+
+### Weight Initialisation
+
+Taining a neural network starts with a weight initialisation step.
+In order to think about sensible initialisation, first note that we expect the number of positive and negative weights of a well trained neural network to be equal.
+If we initialise all weights to be zero, each neuron will compute the same output. Consequently, each neuron will produce the same gradient and undergo the same weight update.
+Hence we want to initialise the weights as small as possible, but each weight should be unique.
+Sampling the initial weights from the standard normal distribution seems to be a natural choice. However it turns out that the variance of the outputs from randomly initialised neurons grow as the number of inputs increase.
+Therefore an option is scale the weight vector generated from the standard norm distribution by the square root of its number of inputs. Such a scaling step will normalise the variance of the output, ensuring that all neurons in the network initially have approximately the same output distribution. In addition, it serves to improve the rate of convergence when training the network.
+
+Another option for weight initialisation is the proposal by He *et al.* (2015b), which was made specifically in the context of using ReLU activation functions.
+
 ### Optimisation \label{sec:optimisation}
 
 We have briefly seen in Chapter 1 that there is a connection between statistical learning and optimisation. 
@@ -377,7 +397,7 @@ plot_grid(p, p_loss, labels = c("(a)", "(b)"), nrow = 1, align = "vh", rel_width
 ```
 
 
-### Backpropogation \label{sec:backprop}
+### Backpropagation \label{sec:backprop}
 
 Currently, SGD is the most effective way of training deep neural networks. Recall that in \Cref{sec:optimisation} we described how to fit a linear model using the SGD optimisation procedure. We have seen that SGD optimises the parameters $\theta$ of a network to minimise the loss function. That is,
 $$
@@ -462,48 +482,24 @@ which is known as the so-called *backpropagation equations*.
 Using the above set of equations, weight updates proceed by means of an algortihm consisting of a forward and a backward pass over the network. 
 In the forward pass, the current weights are fixed and the predicted values $\hat{f}_{k}(\boldsymbol{x}_{i})$ are computed. 
 In the backward pass, the errors $\delta_{ki}$ are computed, and then channelled via the backpropogation equations in order to specify $s_{mi}$. 
-These values are then used to update the weights.
-This approach extends naturally to any size network and differentiable layers (functions).
+These values are then used to update the weights. 
 
-Backpropogation is simple and its local nature (each hidden unit passes only information to and from its connected units) allows it to be implented efficiently in parallel. 
-The other advantage is that the computation of the gradient can be done on a batch (subset of the training set) of observations. 
+We have seen that backpropagation is a simple algorithm.
+It can easily be implemented on any size network and differentiable layers.
+Its local nature (each hidden unit only passes information to and from its connected units) allows it to be implented efficiently in parallel. Another advantage is that the computation of the gradient can be done on a batch of training observations. 
 This allows the network to be trained on very large datasets. 
-
-In summary, training a neural network consists of these four steps:
-
-1. Initialise the network weights: give random set of numbers to the network parameters.
-2. Forward propogation: pass the input through the network layers to produce an output.
-3. Calculate the error: compare the predicted output with the true output and measure the difference using an objective function.
-4. Backward propogation: calculate the gradients of the objective function with respect to the weights and update the weights accordingly.
-
-These four steps are typically repeated until convergence of the loss function.
-It can take many training epochs for the objective function to converge.
-
-### Weight initialisation
-
-Before one begins training a neural network, one needs to initialise its weights.
-We expect a well trained neural network to have an equal number of weights smaller than zero and greater than zero.
-If we initialise all weights to be zero, every neuron will compute the same output and therefore prodcue the same gradient and undergo the same weight update.
-We still want to initialise the weights as small as possible but each one unique.
-Sampling from zero mean and unit variance Gaussian distribution is a natural fit, however, the variance of the outputs from a randomly initialised neuron grows with increasing number of inputs.
-Therefore we may scale the weight vector by the square root of its number of inputs to normalise the variance to 1.
-This ensures that all neurons in the network initially have approximately the same output distribution and empirically improves the rate of convergence.
-[@He2015a] derived a weight initialisation specifically for ReLU neurons.
 
 ### Basic Regularisation \label{sec:basicreg}
 
-From \Sref{sec:netsize} it seems that smaller neural networks can be preferred if the data is not complex enough to prevent overfitting.
-However, this is untrue and there are much better ways of regularising neural networks, which we discuss shortly and in the next chapter.
-Smaller networks are harder to train with local methods such as gradient descent because their loss functions have poor local minima that are easy to converge to.
-Whereas the local minima of larger networks are much better in terms of their actual loss [@Choromanska2014].
+In \Sref{sec:netsize} the importance of selecting an appropriate size for a neural network was emphasised. It may seem that smaller networks should generally be preferred in order to prevent an overfit.
+However smaller networks are harder to train with local methods such as gradient descent because their loss functions have poor local minima that are easy to converge to. In contrast, local minima of larger networks are typically smaller [@Choromanska2014].
 
-One of the preferred ways of fighting overfitting in neural networks is by using L1 or L2 regularisation, *i.e.* adding a penalty term proportional to the magnitude of the weights to the objective function.
-This is exactly what is done in Ridge Regression and the Lasso [@Hastie2009, Ch. 4].
-In L2 regularisation we add the term $\frac{1}{2}\lambda w^{2}$ to the objective and in L1 regularisation the penalty term $\lambda |w|$.
-These penalties forces the weights to be small and the $\lambda$ parameter controls the strength of the regularisation.
-The "$\frac{1}{2}$" in front of the L2 penalty is added for convenience to make the derivative equal to $\lambda w$.
-This makes it then equivalent to decaying each of the weights linearly towards zero: $w'=w-\lambda w$, which is also known as *weight decay*.
-In practice, L2 regularisation outperforms L1 regularisaion.
+There are indeed more effective ways of regularising neural networks. We briefly discuss these methods in the remainder of this section, and in Chapter 3. One of the preferred ways of preventing overfitting in neural networks is by using L1 or L2 regularisation, *i.e.* by adding a penalty term to the objective function, where the penalty term is proportional to the magnitude of the NN weights.
+The role of the penalty term is to encourage the weight estimates to be small.
+This is of course the same strategy as the one followed when regularising the least squares linear model by means of Ridge Regression or the Lasso [@Hastie2009, Ch. 4].
+The difference between L1 and L2 regularisation lies in the form of the penalty term, which is $\lambda |w|$ in L1 regularisation, and $\frac{1}{2}\lambda w^{2}$ in the case of L2 regularisation.
+Specification of the $\lambda$ parameter is important since it determines the severity of the penalty of large NN weight values.
+Note that the "$\frac{1}{2}$" in front of the L2 penalty is added for the sake of convenience since it renders the derivative of the penalty term equal to $\lambda w$. The latter form implies a linear decay of the weights towards zero, *i.e.* $w'=w-\lambda w$, which is also known as *weight decay*. In neural network applications it has been shown that L2 regularisation typically outperforms L1 regularisation and is therefore preferred (Reference?)
 
 Another basic way of preventing the neural network to overfit is to stop the training process "early" and to not train until the training loss converges.
 A converged training loss is not equivalent to an optimal test loss and therefore the test or validation loss should be observerd during training.
