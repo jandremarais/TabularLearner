@@ -534,45 +534,40 @@ Understanding and interpreting neural networks remains a challenge [@Frosst2017]
 
 Machine learning models are very sensitive to the form and properties of the input it is presented with.
 Thus a large part of constructing machine learning models is to find the best way of representing the raw data in order to simplify the extraction of useful information.
-This *feature engineering* task typically is a laborious manual task which entails creating, analyzing, evaluating and selecting appropriate features[^feature_engineering]. There is therefore unfortunately no systematic recipe for feature engineering. Instead, it is a trial-and-error process which requires practitioner expertise and domain-specific knowledge. 
+This *feature engineering* process typically is a laborious manual task which entails creating, analyzing, evaluating and selecting appropriate features[^feature_engineering]. There is therefore unfortunately no systematic recipe for feature engineering. Instead, it is a trial-and-error process which requires practitioner expertise and domain-specific knowledge. 
 In representation learning, the idea is to find a way of effectively automating the feature engineering process. That is, the goal is to automatically learn representations of the data that make it easier to extract useful information for classifiers or other predictors [@Bengio2013]. Such automation seems to have the potential of saving a lot of time and raising the performance ceiling of machine learning models.
 
 [^feature_engineering]: http://blog.kaggle.com/2014/08/01/learning-from-the-best/
 
-A neural network can be viewed from the perspective of representation learning.
-Consider a classification task.
+Importantly, a neural network may be viewed from the perspective of representation learning.
+To see this, consider a classification task.
 Since the final layer of a neural network is a linear model, in order for the network to produce accuracte predictions, the previous layers should be able to project the data into a space where the classes are linearly separable.
-Thus the network learns a representation of the data that is optimal for classification.
+Thus the network needs to learn a representation of the data that is optimal for classification.
 
-Each of the simple but non-linear modules of a neural network transforms the representation at one level (starting with the raw input) into a representation at a higher, slightly more abstract level.
-With the composition of enough such transformations, very complex functions can be learned [@Lecun2015].
-These transformations can emphasise (and create) features that are important for discrimination and drop those which are redundant.
+Starting with the raw input, each of the simple (but non-linear) modules of a neural network transforms the data representation at one level into a representation at a higher, slightly more abstract level. Each transformation may create and/or emphasise features that are important for discrimination, and drop those which are redundant. When a sufficient number of such transformations are combined, very complex functions may be learned by a neural network [@Lecun2015].
 
-Let us work through a simple example to illustrate the representations learned by a neural network.
-Consider a dataset with two classes; the two curves on a plane shown in \autoref{fig:simple_dataset}.
-Clearly, the observations from the two classes are not linearly separable in their raw form.
-Thus if we fit a single layer neural network (*i.e.* only an output layer) to this data, we will get an unsatisfactory decision boundary, since the decision boundary can only be linear, as shown in \autoref{fig:simple_dataset_simpleNN}.
-However, if we fit a two-layer neural network, where the hidden layer has two neurons and a sigmoid acitvation to the same dataset, the decision boundary perfectly separates the two classes.
-This is shown in \autoref{fig:simple_dataset_complexNN}.
+In order to illustrate the data representations learned by a neural network, consider the following simple example. 
+Suppose we have available a dataset with two classes, *viz.* the two curves on a plane as displayed in \autoref{fig:simple_dataset}.
+In their original form, clearly the observations from the two classes are not linearly separable.
+If we fit a single layer neural network to these data (*i.e.* a network with only an output layer), the resulting decision boundary can only be linear (as shown in \autoref{fig:simple_dataset_simpleNN}) and will thus be unsatisfactory. 
+However, if we fit a two-layer neural network to the same dataset (where the hidden layer has two neurons and a sigmoid activation), the resulting decision boundary perfectly separates the two classes (as shown in \autoref{fig:simple_dataset_complexNN}).
 
 ![Simple dataset with two linearly inseparable classes.\label{fig:simple_dataset}](figures/simple_dataset.pdf)
 
-![Decision boundary of 1-layer neural network.\label{fig:simple_dataset_simpleNN}](figures/simple_dataset_simpleNN.pdf)
+![Decision boundary of a single-layer neural network.\label{fig:simple_dataset_simpleNN}](figures/simple_dataset_simpleNN.pdf)
 
-![Decision boundary of 2-layer neural network.\label{fig:simple_dataset_complexNN}](figures/simple_dataset_complexNN.pdf)
+![Decision boundary of a two-layer neural network.\label{fig:simple_dataset_complexNN}](figures/simple_dataset_complexNN.pdf)
 
-Since the hidden layer consists of only two neurons, we are able to plot the output from the hidden layer after the raw data has passed through it.
-This is depicted in \autoref{fig:simple_dataset_complexNN_rep}.
-This shows how the hidden layer projected the input data into a space where the observations from the two classes are linearly separable.
-Which leaves it to the final layer to find the best hyperplane between them.
+Since the hidden layer consists of only two neurons, we are able to plot the output from the hidden layer after the raw data has passed through it. This is depicted in \autoref{fig:simple_dataset_complexNN_rep}.
+From \autoref{fig:simple_dataset_complexNN_rep it can be seen how the hidden layer projects the input data into a space where the observations from the two classes are linearly separable, which then leaves it to the final layer to find the best hyperplane between the two classes.
 
-![Hidden representation of 2-layer neural network.\label{fig:simple_dataset_complexNN_rep}](figures/simple_dataset_complexNN_rep.pdf)
+![Hidden representation of a two-layer neural network.\label{fig:simple_dataset_complexNN_rep}](figures/simple_dataset_complexNN_rep.pdf)
 
-Of course this is a very simple example, but the same concepts apply to more complicated datasets and models.
-However, even though it is technically possible to separate any arrangement of points with a sufficiently large network[^colah], in reality it can become quite challenging to find such representations.
-This is where the need for more data, regularisation, smarter optimsation procedures and architecture design arises.
-Without the aforementioned, it is likely that the network will get stuck in a sub-optimal local minima, not being able to find the optimal representation of the data.
-In the following chapters we explore the approaches available to find optimal represenations of tabular data for classification and regression tasks.
+Although the above example represents a very simple data setup and neural network architechture, the same concepts apply to more complicated datasets and models.
+It should however be noted that although it is technically possible to separate any arrangement of points with a sufficiently large network[^colah], in reality it can become quite challenging to find such representations.
+This is where the need for more data, regularisation, smarter optimisation procedures and architecture design arises.
+Without the aforementioned, it is likely that the network will get stuck in a sub-optimal local minimum, unable to find the optimal representation of the data.
+In the chapters to follow we explore the approaches available to find optimal representations for tabular data in regression and classification contexts.
 
 [^colah]: http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/
 
