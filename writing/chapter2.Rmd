@@ -156,7 +156,7 @@ $$
 The shape of the ReLU activiation and of its derivative are illustrated in \autoref{fig:activation_functions} (a) and (b), respectively.
 Use of the ReLU alleviates the gradient vanishing problem as the derivative of this function is always 1 (for positive $x$ values).
 This results in significantly shorter steps to convergence, as found by the authors in [@Krizhevsky2012].
-However, ReLUs may suffer from the "dead ReLU" problem, which is, if a ReLU neuron gets clamped to zero, then its weights will get zero gradient and may remain permanently "dead" during training.
+However, ReLUs may suffer from the "dead ReLU" problem, which is, if a ReLU neuron is assigned a zero weight, its weights receive zero gradients. In this way, neurons may be "clamped to zero" and may remain permanently "dead" during training.
 This sparsity of the activations is what some believe is the reason for the effectiveness of ReLUs [@Sun2014].
 If dead activations needs to be avoided, alternative activations functions to apply include PReLUs [@He2015] and Leaky ReLUs [@Maas2013]. 
 
@@ -211,7 +211,7 @@ Hence we want to initialise the weights as small as possible, but each weight sh
 Sampling the initial weights from the standard normal distribution seems to be a natural choice. However it turns out that the variance of the outputs from randomly initialised neurons grow as the number of inputs increase.
 Therefore an option is scale the weight vector generated from the standard norm distribution by the square root of its number of inputs. Such a scaling step will normalise the variance of the output, ensuring that all neurons in the network initially have approximately the same output distribution. In addition, it serves to improve the rate of convergence when training the network.
 
-Another option for weight initialisation is the proposal by He *et al.* (2015b), which was made specifically in the context of using ReLU activation functions.
+Another option for weight initialisation is the proposal by [@He2015b], which was made specifically in the context of using ReLU activation functions.
 
 ### Optimisation \label{sec:optimisation}
 
