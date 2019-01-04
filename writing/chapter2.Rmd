@@ -501,7 +501,9 @@ The role of the penalty term is to encourage the weight estimates to be small.
 This is of course the same strategy as the one followed when regularising the least squares linear model by means of Ridge Regression or the Lasso [@Hastie2009, Ch. 4].
 The difference between L1 and L2 regularisation lies in the form of the penalty term, which is $\lambda |w|$ in L1 regularisation, and $\frac{1}{2}\lambda w^{2}$ in the case of L2 regularisation.
 Specification of the $\lambda$ parameter is important since it determines the severity of the penalty of large NN weight values.
-Note that the "$\frac{1}{2}$" in front of the L2 penalty is added for the sake of convenience since it renders the derivative of the penalty term equal to $\lambda w$. The latter form implies a linear decay of the weights towards zero, *i.e.* $w'=w-\lambda w$, which is also known as *weight decay*. In neural network applications it has been shown that L2 regularisation typically outperforms L1 regularisation and is therefore preferred (Reference?)
+Note that the "$\frac{1}{2}$" in front of the L2 penalty is added for the sake of convenience since it renders the derivative of the penalty term equal to $\lambda w$. 
+The latter form implies a linear decay of the weights towards zero, *i.e.* $w'=w-\lambda w$, which is also known as *weight decay*. 
+In neural network applications it has been shown that L2 regularisation typically outperforms L1 regularisation and is therefore preferred (Reference?)
 
 An alternative way of preventing a neural network to overfit is so-called *early termination* of the training process. That is, one refrains from training the network until the training loss converges. Since the training loss after convergence is not equivalent to the test loss, the loss function on a validation set should be monitored during training. Early termination involves stopping the training process as soon as the validation loss stops decreasing. 
 
