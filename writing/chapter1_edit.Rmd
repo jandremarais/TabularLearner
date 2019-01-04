@@ -27,14 +27,14 @@ This has lead to the use of deep learning in a very wide array of applications.
 For example, deep learning has been used to generate art [@Gatys2015] and music [@Mogren2016], to control various modules in autonomous cars [@Fridman2017], to play video games [@Mnih2013], to recommend movies [@Covington2016], to improve the quality of images [@Shi2016], and to beat the world's best Go player [@Silver2017].
 
 A common characteristic of all of the above deep learning applications is that the data used to construct them contain the same type of values or measurements.
-That is, in computer vision the data represent pixel values, whereas in NLP and in audio processing the data represent words and  sound waves.
+That is, in computer vision the data represent pixel values, whereas in NLP and in audio processing the data represent words and sound waves.
 This is not a criterion for deep learning algorithms to be successful, but may be viewed as a driver for their success in these application domains.
-It is simpler to model data consisting of the same type of measurements, since each input feature can be treated the same.
+It is simpler to model data consisting of the same type of measurements, since each input feature may be treated the same.
 Furthermore in the above deep learning applications, it is found that in each of these domains, universal patterns exist.
 This allows for knowledge to be transferred between tasks belonging to the same domain.
-The knowledge to be transferred is both knowledge aquired by humans, and by a deep learning model.
+The knowledge to be transferred is both the knowledge aquired by humans, and the knowledge acquired by a deep learning model.
 For example, in computer vision, advances in classifying pictures of pets will most likely also facilitate improved identification of tumors in X-rays.
-That is, patterns learned by a deep learning model when attempting one task, may also be useful in a different, but related task. This phenomenon is studied in the field of *Transfer Learning*.
+That is, patterns learned by a deep learning model when attempting one task, may also be useful in a different, but related task. This phenomenon constitutes a second reason for the successful application of deep learning methods, and is studied in the field of *transfer learning*.
 
 A data domain in which deep learning have not yet been very successful, is that of tabular data.
 A *tabular dataset* can be represented by a two-dimensional table, where each of the rows of the table corresponds to one observation and where each column denotes an individual meaningful feature.
@@ -52,9 +52,9 @@ A possible explanation for the superior performance of tree-based metods, is the
 
 ## Tabular Data \label{sec:tabdat}
 
-In this section, we make use of the so-called Adult[^adult1] dataset in order to discuss the use of tabular data.
-The reader may refer to \autoref{tab:adult} for an extract of this dataset.
-The data were collected during an American census with the aim of predicting whether or not an indivdual earns more than $50,000 a year.
+In this section we make use of the so-called Adult[^adult1] dataset in order to discuss the use of tabular data.
+The reader may refer to \autoref{tab:adult} for an excerpt of this dataset.
+Note that the data were collected during an American census where the aim was to predict whether or not an indivdual earns more than $50,000 a year.
 
 [^adult1]: http://archive.ics.uci.edu/ml/datasets/Adult
 
@@ -70,7 +70,7 @@ This of course stands in contrast to image or text data.
 
 Many important ML applications make use of tabular data. Some of these applications are listed below:
 
-- Various tasks that make use of Electronic Health Records. These include the prediction of in-hopsital mortality rates, and of prolonged length of stay [@Rajkomar2018];
+- Various tasks that make use of Electronic Health Records. These include the prediction of in-hospital mortality rates, and of prolonged length of stay [@Rajkomar2018];
 - Recommender systems for items like videos [@Covington2016] or property listings [@haldar2018];
 - Click-through rate (CTR) prediction in web applications, *i.e.* predicting which item a user will click on next [@Song2018]; 
 - Predicting which clients are at risk of defaulting on their accounts[^loandef];
@@ -80,19 +80,19 @@ Many important ML applications make use of tabular data. Some of these applicati
 [^loandef]: https://www.kaggle.com/c/loan-default-prediction
 
 Tabular datasets take on various shapes and sizes: the number of rows may range from hundreds to millions, and the number of columns also has no limits. 
-Other complicating characteristics include:
+Other complicating characteristics of tabular datasets include:
 - That it is not unusual for tabular datasets to be noisy;
 - That a proportion of the observations may have missing features and/or incorrect values; and
-- That continuous measurements may be based upon vastly different scales, some containing outliers, whereas categorical features may have high cardinality which in turn leads to sparse data.
+- That continuous measurements may be based upon vastly different scales, some even containing outliers, whereas categorical features may have high cardinality which in turn leads to sparse data.
 
-During the construction of models for tabular datasets, the most important step in terms of leading to improvements in model performance, is pre-processing and manipulation of the input features [@Rajkomar2018].
+During the construction of models for tabular datasets, the most important step in terms seeking improvements in model performance, is pre-processing and manipulation of the input features [@Rajkomar2018].
 This includes data merging, customising, filtering and cleaning.
 In a process called feature engineering, one strives to create new features from the original features based on some domain knowledge.
 The idea is that such engineered features enables a model to learn interactions between features, thereby facilitating more accurate prediction.
 Feature engineering is an extremely laborious process with no clear recipe to follow and therefore typically cannot succesfully be implemented without some domain expertise.
 
 Ensemble methods based upon trees are currently viewed as the most effective machine learning models for tabular datasets.
-As mentioned above, a possible reason for this may be their robustness to different feature scales and data types,  linked with their ability to effectively model interactions among features having different data types.
+As mentioned above, a possible reason for this may be their robustness to different feature scales and data types, linked with their ability to effectively model interactions among features with different data types.
 
 Indeed, in the context of tabular data, classical neural network approaches are no match for tree ensembles.
 Although the deep learning field has advanced and matured a lot in recent years, it is not yet clear how to leverage these modern techniques to effectively build and train deep neural networks on tabular datasets.
@@ -104,16 +104,16 @@ By reviewing the most recent literature on the topic, and through empirical work
 Some of the challenges of deep learning for tabular data have been alluded to in earlier sections of this chapter.
 These will form the framework for our literature review later on. Therefore some of the important questions to ask when applying deep learning for tabular data (which relates to these challenges), are summarised below.
 
-- **How should input features be represented numerically?** We have mentioned that tabular data consist of mixed feature types, *i.e.* a combination of categorical and continuous features. The question here relates to how these heterogeneous features should be processed and presented to the model during training.
-- **How can we exploit feature interactions?** Once we have found the optimal feature representation for all feature types, we will need a way to effectively learn the interactions between them, and also a way to learn how they relate to the target. This is a crucial step towards the effective application of deep learning models to tabular data.
-- **How can we be more sample efficient?**  Tabular datasets are typically smaller than datasets use in computer vision and in NLP. Moreover, no general large dataset with universal properties exists to be used by a model to learn from (as is the case in for example image classification). Thus a key challenge is to facilitate learning from less data.
-- **How do we interpret model decisions?** The use of deep learning is often restricted by its perceived lack of interpretability. Therefore we need ways of explaining the model output in order for it to be useful in many applications.
+- **How should input features be represented numerically?** We have mentioned that tabular data consist of mixed feature data types, *i.e.* a combination of categorical and continuous features. The question here relates to how these heterogeneous features should be processed and presented to the model during training.
+- **How can we exploit feature interactions?** Once we have found the optimal feature representation for all feature data types, we will need a way to effectively learn the interactions among them, and also a way to learn how they relate to the target. This is a crucial step towards the effective application of deep learning models to tabular data.
+- **How can we be more sample efficient?**  Tabular datasets are typically smaller than datasets used in computer vision and in NLP. Moreover, no general large dataset with universal properties exists to be used by a model to learn from (as is the case in for example in transfer learning for image classification). Thus a key challenge is to facilitate learning from less data.
+- **How do we interpret model decisions?** The use of deep learning is often restricted by its perceived lack of interpretability. Therefore we need ways of explaining the model output in order for it to be useful in a wider array of applications.
 
 Clearly there are several considerations when it comes to using deep learning for tabular data. 
 The main objective of this thesis is to find the best ways of answering the above questions. 
-Towards this objective, the study should lead to a thorough understanding of the *status quo* of the field, and of the necessary factors in order to ensure deep learning to be as effective in other data domains as it currently is in computer vision and NLP.
+Towards this objective, the study should lead to a thorough understanding of the *status quo* of the field, and of the necessary factors in order to ensure deep learning to be as effective in other data domains as it currently is in fields such as computer vision and NLP.
 
-The study is divided into two parts. 
+The study is divided in two parts. 
 We start by first providing an overview of the relevant literature.
 Subsequently, we make use of experimental work in order to compare various deep learning algorithms (and possible improvements) on relevant datasets. 
 Here an important aim will be to ensure our experiments to be *rigorous*.
@@ -129,16 +129,16 @@ In addition, we want the empirical work in this study to be as reproducible as p
 This aspect is often overlooked. 
 However it is a crucial aspect, ensuring transparent and accountable reporting of results.
 Reproducibility add to the value of research, since without it, researchers are not able to build on each other's work.
-Hence all code, data and necessary documentation in order to reproduce the experiments that were done in this thesis have been made available [^git]. 
+Hence all code, data and necessary documentation in order to reproduce the experiments done in this study are available [^git]. 
 
 [^git]: Shared publicly at https://github.com/jandremarais/tabularLearner
 
 Having stated the objectives of this study, we now turn to a discussion of the fundamental concepts of Statistical Learning Theory.
-This is followed by a more detailed summary of the thesis.
+This is followed by a more detailed overview of the thesis.
 
 ## Overview of Statistical Learning Theory \label{sec:SLT}
 
-Machine- or statistical learning algorithms (used interchangeably) are used to perform certain tasks that are too difficult to solve with fixed rule-based programs. 
+Machine- or statistical learning algorithms (here used interchangeably) are used to perform certain tasks that are too difficult to solve with fixed rule-based programs. 
 Hence statistical learning algorithms are able to use data in order to learn how to perform difficult tasks. 
 For an algorithm to learn from data means that it can improve its ability to perform an assigned *task* with respect to some *performance measure*, by processing *data*.
 In this section we discuss some of the important types of tasks, data and performance measures in the statistical learning field.
