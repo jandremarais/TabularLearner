@@ -190,7 +190,7 @@ Note that in the case of multiple labels or targets, a matrix representation $Y:
 Statistical learning algorithms can be divided into two main categories, *viz.* *supervised* and *unsupervised* algorithms.
 This categorisation is determined by the presence (or absence) of annotations in the dataset to be analysed. 
 Unsupervised learning algorithms learn from data consisting only of features, $X$, and are used to find useful properties and structure in the dataset [see @Hastie2009, Ch. 14]. 
-On the other hand, superivised learning algorithms learn from datasets which consist of both features and annotations, $(X,Y)$, with the aim to model the relationship between them.
+On the other hand, supervised learning algorithms learn from datasets which consist of both features and annotations, $(X,Y)$, with the aim to model the relationship between them.
 Therefore, both classification and regression are considered to be supervised learning tasks.
 
 In order to evaluate the ability of a learning algorithm to perform its assigned task, we have to construct a quantitative performance measure. 
@@ -220,7 +220,7 @@ $$
 MSE = \frac{1}{N}\sum_{i=1}^{N}(y_{i}-\hat{y}_{i})^{2}.
 $$
 
-The process of learning from the data (or fitting a model to the data) can be reduced to the following optimisation problem: find the set of weights, $\hat{\boldsymbol{w}}$, which produces a $\hat{\boldsymbol{y}}$ that minimises the MSE. 
+The process of learning from data (or fitting a model to a dataset) can be reduced to the following optimisation problem: find the set of weights, $\hat{\boldsymbol{w}}$, which produces a $\hat{\boldsymbol{y}}$ that minimises the MSE. 
 Of course this problem has a closed form solution and can quite trivially be found by means of *ordinary least squares* (OLS) [see @Hastie2009, p. 12]. 
 However, we have mentioned that we are more interested in the algorithm's performance evaluated on a test set. 
 Unfortunately the least squares solution does not guarantee the solution to be optimal in terms of the MSE on a test set, rendering statistical learning to be much more than a pure optimisation problem.
@@ -237,7 +237,7 @@ The parameter $\lambda$ is non-negative and needs to be specified ahead of time.
 It controls the strength of the preference by determining how much influence the penalty term, $\boldsymbol{w}^{T}\boldsymbol{w}$, has on the optimisation criterion. 
 If $\lambda=0$, no preference is imposed, and the solution is equivalent to the OLS solution. Larger values of $\lambda$ force the weights to decrease, and thus referred to as a so-called *shrinkage* method ([*cf*. for example @Hastie2009, pp. 61-79] and [@Goodfellow2016]. 
 
-We can further generalise linear regression to the classification scenario. 
+We may further generalise linear regression to the classification scenario. 
 First, it is important to note the different types of classification schemes. 
 Consider $\mathcal{G}$, the discrete set of values which may be assumed by $G$, where $G$ is used to denote a categorical output variable (instead of $Y$). 
 Let $|\mathcal{G}|=K$ denote the number of discrete categories in the set $\mathcal{G}$. 
@@ -257,7 +257,7 @@ $$
 $$
 for $k=1,\dots, K$. Here $\hat{f}_{k}$ is an estimate of the true function, $f_{k}$, which is meant to capture the relationship between the inputs and output of class $k$. 
 As with the linear regression case described above, we may use a linear model $\hat{f}_{k}(\boldsymbol{X})=\hat{\boldsymbol{w}}_{k}^{T}\boldsymbol{X}$ to approximate the true function. 
-The linear model for classification divides the input space into a collection of regions labelled according to the predicted classification, where regions are created by linear *decision boundaries* (see \autoref{fig:lin_bound} for an illustration). 
+The linear model for classification partitions the input space into a collection of regions labelled according to the predicted classification, where regions are created by linear *decision boundaries* (see \autoref{fig:lin_bound} for an illustration). 
 The decision boundary between classes $k$ and $l$ is the set of points for which $\hat{f}_{k}(\boldsymbol{x})=\hat{f}_{l}(\boldsymbol{x})$. 
 These set of points form an affine set or hyperplane in the input space.
 
@@ -277,7 +277,7 @@ $$
 P(G=k|\boldsymbol{X}=\boldsymbol{x})\approx\frac{e^{\hat{f}_{k}(\boldsymbol{x})}}{\sum_{l=1}e^{\hat{f}_{l}(\boldsymbol{x})}}.
 $$
 Through this transformation, the estimates of the posterior probabilities sum to 1 and are contained in [0,1]. 
-The above model is the well-known *logistic regression* model [@Hastie2009, p. 119]. 
+The above model is the wellknown *logistic regression* model [@Hastie2009, p. 119]. 
 With this formulation there is no closed form solution for the weights. 
 Instead, the weight estimates may be searched for by maximising the log-likelihood function. 
 One way of doing this is by minimising the negative log-likelihood using gradient descent, which will be discussed in the next chapter.
@@ -300,15 +300,15 @@ An outline of the remainder of the thesis follows below:
 In \Cref{chp:nn}, the theory underlying neural networks is described.
 The building blocks of neural networks are discussed, thereby introducing neurons, basic layers and the way in which neural networks are trained.
 The important concept of regularisation is also discussed.
-Using the perspective of representation- and manifold learning, we then attempt to gain insight into what happens inside a neural network.
+Using the perspective of representation learning, we then attempt to gain insight into what happens inside a neural network.
 
 \Cref{chp:dl} continues the discussion by focusing on the key advances in neural networks in recent times.
 The idea is that all concepts introduced in this chapter should potentially be able to facilitate the construction of improved deep neural networks on tabular data.
-Improved ways of fighting overfitting, such as data augmentation, the use of dropout and transfer learning, as well as the SotA training policy called *1Cycle* are analysed here.
+Improved ways of preventing overfitting, such as data augmentation, the use of dropout and transfer learning, as well as the SotA training policy called *1Cycle* are analysed here.
 New developments in architectural design are also highlighted.
 The chapter concludes with approaches towards interpreting neural networks and their predictions.
 
-\Cref{chp:td} may be viewed as a core chapter of this thesis.
+\Cref{chp:td} may be viewed as a core chapter of the thesis.
 It mainly serves as a literature review of all research with regard to deep learning for tabular data.
 The chapter is organised according to the modelling challenges faced when using deep learning for tabular data, 
 investigating and comparing what other researchers have done in order to overcome these challenges.
@@ -316,13 +316,12 @@ It will be seen that the key concept involves finding the right representation f
 This may be done through embeddings, and by means of designing architectures that can efficiently learn feature interactions.
 This is for example done with attention models, possibly with the help of unsupervised pretraining.
 
-In \Cref{chp:exp} we empirically evaluate several claims made in the literature.
-The aim of the chapter is to evaluate and compare different approaches to tackling the various challenges.
-Hence the main experiments involve evaluating neural networks at various samples sizes, evaluating potential gains from doing unsupervised pretraining and using data augmentation, 
-and comparing attention modules with classic fully-connected layers.
+In \Cref{chp:exp} we empirically investigate several claims made in the literature.
+The aim of the chapter is to evaluate and compare different approaches towards tackling the various challenges.
+Hence the main experiments involve evaluating neural networks at various samples sizes, evaluating potential gains from doing unsupervised pretraining and using data augmentation, and comparing attention modules with classic fully-connected layers.
 We also make use of permutation importance and knowledge distillation in order to illustrate a way in which neural networks may be interpreted.
 
-The thesis concludes in \Cref{chp:conc}, where we summarise the work, some highlights and the main take-home points.
-The limitations of this study are discussed, and promising future research directions are identified.
+The thesis concludes in \Cref{chp:conc}, where we summarise our work, some highlights and the main take-home points.
+The limitations of this study are discussed, and promising future research directions identified.
 
 
