@@ -4,27 +4,32 @@
 
 Deep learning is a broadly used term.
 The difference between a classical neural network and a deep neural network, is merely its number of layers.
-Even a network with two hidden layers is sometimes referred to as deep.
+Even a network with two hidden layers is sometimes referred to as 'deep'.
 
-In this work, we use the term deep learning to refer to modern developments in the space of neural networks.
-In the last decade, tons of contributions have been made to the field: new types of layers, different ways of training and novel approaches to fight overfitting.
-Reviewing these developments requires much more space than a chapter, therefore, for the purpose of this work, we only highlight the developments we feel are important for our next chapter on deep learning for tabular data.
+In this thesis we use the term *deep learning* to refer to modern developments in the neural network space.
+In the last decade, tons of contributions have been made to the field: new types of layers, different ways of training and novel approaches to guard against overfitting have been proposed.
+This chapter is devoted to a discussion of the developments that form a basis for a study on deep learning for tabular data.
 
-Practically all deep learning developments are aimed at combatting overfitting, either explicitly or implicitly.
-Since neural networks can already approximate any function, but our learning algorithms cannot necassrily find these solutions, we need ways of learning more efficiently from the data.
-This chapter starts by introducing a different class of neural networks called *autoencoders* (\Sref{sec:ae}).
-Autoencoders are mostly used as an unsupervised learning technique to help us learn more robust representations from data without labelled data, which we may then transfer to supervised learning algorithms.
-This process of transferring knowledge from one network to another is called transfer learning, which we discuss in \Sref{sec:tl}.
+As mentioned before, neural networks are able to approximate any function.
+However, learning algorithms are not necessarily able to find these solutions, therefore we need more efficient ways to learn from the available data. 
+Many deep learning developments focus on this aspect.
+An example is the class of neural networks called *autoencoders* (\Sref{sec:ae}).
+These neural networks are mostly used as an unsupervised learning method with the aim of aiding us to learn more robust data representations, which may subsequently be transferred to be used by supervised learning algorithms.
+The process of transferring knowledge from one network to another is called transfer learning, and is discussed in \Sref{sec:tl}.
+The use of different types of layers provides an alternative way of making deeper neural networks more effective, facilitating a focus on the more important set of features, and to enable NNs to process discrete input. 
+Hence note that the use of *skip-connections* , *attention modules*  and *embedding layers* are discussed in (\Sref{sec:resnet}), (\Sref{sec:attention}) and (\Sref{sec:embeds}).
 
-Thereafter, we look at layers that help with regularisation: *dropout* (\Sref{sec:dropout}) and *batch normalisation* (\Sref{sec:bnorm}).
-Data augmentation is a technique used to artificially enlarge the training dataset and thus also helps fighting overfitting.
-We discuss this in \Sref{sec:daug}.
-The other types of layers we look at in this chapter are, *skip-connections* (\Sref{sec:resnet}), *attention* modules (\Sref{sec:attention}) and *embedding* layers (\Sref{sec:embeds}).
-They are designed to make deeper neural networks more effective, let them focus more on the important features and to process discrete input, respectively.
+Since practically all deep learning developments are (either explicitly or implicitly) geared toward preventing an overfit, much of the remainder of this chapter is devoted to proposals that fall in this category.
+In (\Sref{sec:dropout}) and (\Sref{sec:bnorm}) we consider the use of layers to facilitate regularisation.
+More specifically, in (\Sref{sec:dropout}) we discuss the so-called *dropout* method, whereas (\Sref{sec:bnorm}) is devoted to the process of *batch normalisation* .
 
-Then we devote a section to a training policy called the *1cycle* policy (\Sref{sec:onecyc}).
-This method provides a way of automatically finding a good learning rate and drastically reduces the number of training iterations needed.
-We conclude this chapter with a discussion on the interpretability of neural networks (\Sref{sec:interp}).
+Turning our attention to the training data at hand, note that one may consider artificially enlarging the training dataset in order to avoid an overfit. 
+This approach, called *data augmentation* is described in \Sref{sec:daug}.
+With regard to optimisation of the neural network, a method has been proposed which provides a way of automatically finding a good learning rate.
+This leads to a drastic reduction in the number of training iterations needed.
+The aforementioned training method (referred to as the *one-cycle policy*) is discussed in (\Sref{sec:onecyc}).
+
+We conclude the chapter with a discussion on the interpretability of neural networks in (\Sref{sec:interp}).
 
 ## Denoising Autoeoncoders \label{sec:ae}
 
