@@ -7,19 +7,19 @@ The difference between a classical neural network and a deep neural network, is 
 Even a network with two hidden layers is sometimes referred to as 'deep'.
 
 In this thesis we use the term *deep learning* to refer to modern developments in the neural network space.
-In the last decade, tons of contributions have been made to the field: new types of layers, different ways of training and novel approaches to guard against overfitting have been proposed.
-This chapter is devoted to a discussion of the developments that form a basis for a study on deep learning for tabular data.
+In the last decade, tons of contributions have been made to the field: new types of layers, different ways of training, and novel approaches to guard against overfitting have been proposed.
+This chapter is devoted to a discussion of the developments that form a basis for this study on deep learning for tabular data.
 
 As mentioned before, neural networks are able to approximate any function.
 However, learning algorithms are not necessarily able to find these solutions, therefore we need more efficient ways to learn from the available data. 
 Many deep learning developments focus on this aspect.
 An example is the class of neural networks called *autoencoders* (\Sref{sec:ae}).
-These neural networks are mostly used as an unsupervised learning method with the aim of aiding us to learn more robust data representations, which may subsequently be transferred to be used by supervised learning algorithms.
+These neural networks are mostly used as unsupervised learning methods with the aim of aiding us to learn more robust data representations, which may subsequently be transferred to supervised learning algorithms.
 The process of transferring knowledge from one network to another is called transfer learning, and is discussed in \Sref{sec:tl}.
 The use of different types of layers provides an alternative way of making deeper neural networks more effective, facilitating a focus on the more important set of features, and to enable NNs to process discrete input. 
 Hence note that the use of *skip-connections* , *attention modules*  and *embedding layers* are discussed in (\Sref{sec:resnet}), (\Sref{sec:attention}) and (\Sref{sec:embeds}).
 
-Since practically all deep learning developments are (either explicitly or implicitly) geared toward preventing an overfit, much of the remainder of this chapter is devoted to proposals that fall in this category.
+Since practically all deep learning developments are (either explicitly or implicitly) geared toward preventing an overfit, much of the remainder of the chapter following  is devoted to proposals that fall in this category.
 In (\Sref{sec:dropout}) and (\Sref{sec:bnorm}) we consider the use of layers to facilitate regularisation.
 More specifically, in (\Sref{sec:dropout}) we discuss the so-called *dropout* method, whereas (\Sref{sec:bnorm}) is devoted to the process of *batch normalisation* .
 
@@ -31,44 +31,45 @@ The aforementioned training method (referred to as the *one-cycle policy*) is di
 
 We conclude the chapter with a discussion on the interpretability of neural networks in (\Sref{sec:interp}).
 
-## Denoising Autoeoncoders \label{sec:ae}
+## Autoencoders \label{sec:ae}
 
-The basic autoencoder is a neural network that is trained to attempt to reconstruct its inputs.
-The simplest form of an autoencoder is a neural network with with one hidden layer and an output layer the same size of the input layer (illustrated in \autoref{fig:ae}).
-The linear layer transforming the input to the hidden layer is referred to as the encoder, $\boldsymbol{z}=f(\boldsymbol{x})$, and the layer producing the output from the hidden layer is called the decoder, $\boldsymbol{x}'=g(\boldsymbol{z})$.
-The autoencoder can be trained in the same way as any other neural network, but by minimising a reconstruction loss.
-A reconstruction loss measures the distance between the reconstruction of the input and the actual input and thus the MSE loss function is common choice for continuous data.
+The basic autoencoder is a neural network which is trained to attempt to reconstruct its inputs.
+The simplest form of an autoencoder is a neural network with one hidden layer and with an output layer having the same size as the input layer. 
+This architecture is illustrated in \autoref{fig:ae}).
+The linear layer transforming the input to the hidden layer is referred to as the encoder, *viz.* $\boldsymbol{z}=f(\boldsymbol{x})$, and the layer producing the output from the hidden layer is called the decoder, *viz.* $\boldsymbol{x}'=g(\boldsymbol{z})$.
+The autoencoder can be trained in the same way as any other neural network, however the loss function to be minimised is called a  *reconstruction loss*. 
+Importantly, note that a reconstruction loss function measures the difference between the reconstructed and actual input, hence the MSE loss function is a common choice in the case of continuous data.
 
-```{r, fig.cap="A simple single hidden layer autoencoder with 4-dimensional inputs and 2 neurons in the hidden layer.\\label{fig:ae}", out.height="30%", fig.align='center'}
+```{r, fig.cap="A simple single hidden layer autoencoder with four-dimensional inputs and with two neurons in the hidden layer.\\label{fig:ae}", out.height="30%", fig.align='center'}
 knitr::include_graphics('figures/ae.png')
 ```
+Technically, autoencoders belong to the self- (or semi-) supervised class of methods, although many still think of it as unsupervised.
+It is unsupervised in the sense that it does not require labelling, but it is supervised in the sense that it predicts an ouput.
 
-Autoencoders technically belong to the self- (or semi-) supervised class of methods, although many still think of it as unsupervised.
-It is unsupervised in the sense that it does not require labelling, but it is stll supervised in the sense that it predicts an ouput.
-
-In this setting, if the number of neurons in the hidden layer is greater than or equal to the number of input features, the autoencoder will be able to perfectly reconstruct $\boldsymbol{x}$ from $\boldsymbol{z}$, *i.e.* $\boldsymbol{x}'=\boldsymbol{x}$.
-However this is not a very useful model and instead autoencoders are usually built with some type of constraint imposed.
+If the number of neurons in the hidden layer of an autoencoder is greater than or equal to the number of input features, it is possible  to perfectly reconstruct $\boldsymbol{x}$ from $\boldsymbol{z}$, *i.e.* $\boldsymbol{x}'=\boldsymbol{x}$.
+This is however not a very useful model.
+Instead, autoencoders are typically built with some type of constraint imposed.
 A common option is to restrict the number of neurons in the hidden layer to be smaller than the number of input features.
 This forces the autoencoder to capture only the most useful properties of the data in the hidden representation and can thus effectively be used as a way of dimensionality reduction [@Hinton2006a].
-When there are no non-linear activation functions after the linear layers, one can show that this autoencoder is equivalent to a *Principal Component Analysis* (PCA) of the inputs.
+When there are no non-linear activation functions after the linear layers, one can show that this autoencoder is equivalent to application of *Principal Component Analysis* (PCA) to the inputs.
 
-There is no restriction in the number or the size of the layers used for the encoder and decoder, and if activation functions are used, one can potentially learn a more powerful non-linear generalisation of PCA.
-However, if the encoder and decoder networks are allowed too much capacity, the autoencoder can learn to reconstuct the inputs without learning useful properties of the data.
-It is hard to tell if an autoencoder has learned a useful latent representation of the data.
-One way to evaluate it is to use the features extracted by the encoder for a supervised learning task and compare its performance with a model using the raw data as inputs.
-Autoencoders have also been used to initialise the weights of a supervised learning network, *i.e.* using the learned weight of the autoencoder as the initial weights for the supervised learning network of the same size [@Larochelle2009].
+There is no restriction to the number or the size of the layers used in the encoder and decoder, and if activation functions are used, one can potentially learn a more powerful non-linear generalisation of PCA.
+However, if the encoder and decoder networks are allowed too much capacity, the autoencoder may reconstruct the inputs without learning any useful properties of the data.
+It is difficult to verify whether or not an autoencoder has learned a useful latent representation of the data.
+One way to evaluate the representation is to use the features extracted by the encoder in a supervised learning task and to then compare its performance to that of a model using only the raw data as inputs.
+Autoencoders have also been used to initialise the weights of a supervised learning network.
+That is, the learned weight of the autoencoder are use to initialise the weights of the supervised learning network (of the same size) [@Larochelle2009].
 
 An autoencoder can learn to perfectly copy the input if the encoder and decoder have enough capacity, even though the latent representation is of a smaller diemsion than the inputs, and thus will not learn useful features of the data.
-Therefore we may want to consider other types of contraints to impose on the autoencoder.
+Therefore we may want to consider other types of contraints to impose.
 
 A *denoising autoencoder* (DAE) [@Vincent2008] first adds noise to its inputs before it is passed to the encoder.
 Thus in order to minimise the reconstruction loss, the DAE should learn how to reconstruct the original input from a corrupted version of itself.
-[@Alain2014] shows that DAEs do learn useful structures of the data.
-
+[@Alain2014] shows that DAEs are able to learn useful structures of the data.
 The choice of the type of noise added to the inputs depends on the data types.
-One can block out inputs with zeros if zeros have no other meaning in the data or one might want to add gaussian noise to continuous outputs as long as it falls within the true range of the features.
-If there is too much noise in the corruption step, the DAE might not learn anything useful.
-The type and amount of noise to be use are things that should be experimented with.
+One may block out inputs with zeros if zeros have no other meaning in the data, or one might want to add Gaussian noise to continuous outputs as long as it falls within the true range of the features.
+If  too much noise is added in the corruption step, the DAE might not learn anything useful.
+The type and amount of noise to be used are factors that practitioners typically experiment with.
 
 Another type of autoencoder is a *Variational Autoencoder* (VAE) [@Kingma2013].
 Instead of encoding the data into a latent vector representation, a VAE encodes the data as a Gaussian distribution.
