@@ -28,8 +28,8 @@ It is also interesting to compare modern neural networks with the Projection Pur
 Only recently a series of breakthroughs caused neural networks to become more effective, leading to the renewed interest in the field.
 
 The aim of this chapter is to provide an overview of neural networks, emphasising their basic structure (\Sref{sec:structure}) and the way in which they are trained (\Sref{sec:training}).
-This is done with a view to discuss modern neural network structures and training policies in \Cref{chp:dl}, which in turn will help us shed light on Deep Learning for tabular data.
-The chapter concludes with a section on representation and manifold learning (\Sref{sec:rep}), which are important topics toward understanding the inner workings of neural networks.
+This is done with a view to discuss modern neural network structures and training policies in \Cref{chp:dl}, which in turn will help us shed light on Deep Learning for tabular data. In (\Sref{sec:basicreg}) and (\Sref{sec:lr}), regularisation for neural networks and the use of adaptive learning rates are discussed. These are necessary components for regulating the generalisation performance of NNs, as well as for keeping the required training time at bay.
+The chapter concludes with a section on representation learning (\Sref{sec:rep}), which is an important topic toward understanding the inner workings of neural networks.
 
 ## The Structure of a Neural Network \label{sec:structure}
 
@@ -193,14 +193,14 @@ We also analyse why networks used in the case of tabular data are typically much
 
 ## Training a Neural Network \label{sec:training}
 
-Briefly, training a neural network entails the following four steps:
+Briefly, basic training of a neural network entails the following four steps:
 
 1. Initialisation: random numbers are assigned to the network parameters.
 2. Forward propagation: the input is passed through the network layers in order to produce an output.
 3. Error calculation: the predicted output is compared to the true output, and the difference measures by means of an appropriate objective function.
 4. Backward propagation: the gradients of the objective function with respect to the weights are obtained, and the network weights are updated accordingly.
 
-The above steps are typically repeated until the loss function is found to converge. Note however that convergence may require many training epochs.
+The above steps are typically repeated until the loss function is found to converge. Note however that convergence may require many training epochs. The following four subsections are each devoted to a discussion of one of the aforementioned steps.
 
 ### Weight Initialisation
 
@@ -489,7 +489,9 @@ It can easily be implemented on any size network and differentiable layers.
 Its local nature (each hidden unit only passes information to and from its connected units) allows it to be implented efficiently in parallel. Another advantage is that the computation of the gradient can be done on a batch of training observations. 
 This allows the network to be trained on very large datasets. 
 
-### Basic Regularisation \label{sec:basicreg}
+Having discussed basic NN training, we now turn to a discussion of two components that are very important in ensuring neural networks to be useful. Basic ways to regularise a neural network, and the use of adaptive learning rates are discussed in the following two sections.
+
+## Basic Regularisation \label{sec:basicreg}
 
 In \Sref{sec:netsize} the importance of selecting an appropriate size for a neural network was emphasised. It may seem that smaller networks should generally be preferred in order to prevent an overfit.
 However smaller networks are harder to train with local methods such as gradient descent because their loss functions have poor local minima that are easy to converge to. In contrast, local minima of larger networks are typically smaller [@Choromanska2014].
@@ -507,7 +509,7 @@ An alternative way of preventing a neural network to overfit is so-called *early
 > Next we discuss how we can tune the learning rate to train faster and to find better local minima.
 > More advanced regularisation techniques are discussed in \Cref{chp:dl}.
 
-### Adaptive Learning Rates and Annealing \label{sec:lr}
+## Adaptive Learning Rates \label{sec:lr}
 
 Although in the neural network literature it is known that a more optimal learning rate may reduce the time to train the network and improve its test performance, optimal specification of this parameter is not such an easy task. 
 A small learning rate slows downs the training time, but is safer against overfitting and overshooting the optimal solution.
@@ -528,7 +530,7 @@ For more detail, the reader can refer to the cited publications as it falls out 
 ## Representation Learning \label{sec:rep}
 
 We are now familiar with the mathematical operations of basic layers, how they are connected and how their weights are tweaked to minimise a loss function.
-In this section we will discuss why this works and what the neural network is actually doing to model the data.
+In this section we discuss why this works and what the neural network is actually doing to model the data.
 The central idea is that of a *data representation* [@Bengio2013] and that at each layer of the network the data is transformed into a higher-level abstraction of itself.
 Understanding and interpreting neural networks remains a challenge [@Frosst2017], but the notion of learning an optimal data representation allows us to gain a deeper intuition of the inner mechanics of neural networks.
 
