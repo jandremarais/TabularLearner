@@ -438,7 +438,7 @@ Since a neural network for classification takes the form of a linear logistic re
 According to @Hastie2009 [p. 395] however, the global minimiser of $L(\theta)$ is most likely an overfit solution. Therefore we require regularisation techniques when minimising $L(\theta)$.
 Furthermore, as the size of the network increases, MLE soon becomes intractable.
 
-Therefore, one rather uses gradient descent and the *backpropogation* algorithm [@Rumelhart1988] to minimise $L(\theta)$.
+Therefore, one rather uses gradient descent and the *backpropagation* algorithm [@Rumelhart1988] to minimise $L(\theta)$.
 This is possible because of the modular nature of a neural network, allowing the gradients to be derived through iteration of the chain rule for differentiation. In broad terms, the iterative calculation of derivatives occur during a forward and backward sweep over the network, keeping track only of quantities local to each unit.
 
 In more detail, the backpropogation algorithm for the sum-of-squared error objective function, previously given as
