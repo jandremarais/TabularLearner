@@ -3,25 +3,34 @@
 ## Introduction
 
 Deep learning is a broadly used term.
-The difference between a classical neural network and a deep neural network, is merely its number of layers.
+To many, the difference between a classical neural network and a deep neural network lies merely in the number of network layers.
 Even a network with two hidden layers is sometimes referred to as 'deep'.
+From this perspective, deep (multilayer) neural networks were already proposed by Alexey Ivakhnenko in 1965 (reference needed here).
+Still the boom in deep learning research may be said to have started only a bit more than a decode ago, since effective training of a multi-layer network was only made possible after a breakthrough presented in the paper by Hinton *et al.* (2006) (edit the reference).
 
-In this thesis we use the term *deep learning* to refer to modern developments in the neural network space.
-In the last decade, tons of contributions have been made to the field: new types of layers, different ways of training, and novel approaches to guard against overfitting have been proposed.
-This chapter is devoted to a discussion of the developments that form a basis for this study on deep learning for tabular data.
+From that time, tons of contributions have been made to the neural network field: new types of layers, more effective training strategies, and novel approaches to guard against overfitting have been proposed.
+A more general definition of *deep learning* encompasses all modern developments in the neural network space.
+Because of the large amount of deep learning contribution during the past decade, note that in this chapter we restrict attention to developments that form a basis for deep learning in the context of tabular data.
 
+Conceptual categorisation of modern contributions to the deep learning field is a difficult task.
+Perhaps one way to order some of the more important developments, is to use the aim or effect of their implementation as criterion.
+Since representation learning is such an important characteristic of NNs, one group of deep learning developments focus on this aspect. 
 As mentioned before, neural networks are able to approximate any function.
 However, learning algorithms are not necessarily able to find these solutions, therefore we need more efficient ways to learn from the available data. 
-Many deep learning developments focus on this aspect.
 An example is the class of neural networks called *autoencoders* (\Sref{sec:ae}).
 These neural networks are mostly used as unsupervised learning methods with the aim of aiding us to learn more robust data representations, which may subsequently be transferred to supervised learning algorithms.
-The process of transferring knowledge from one network to another is called transfer learning, and is discussed in \Sref{sec:tl}.
-The use of different types of layers provides an alternative way of making deeper neural networks more effective, facilitating a focus on the more important set of features, and to enable NNs to process discrete input. 
-Hence note that the use of *skip-connections* , *attention modules*  and *embedding layers* are discussed in (\Sref{sec:resnet}), (\Sref{sec:attention}) and (\Sref{sec:embeds}).
+We have mentioned in Chapter 1 that the process of transferring knowledge from one network to another is called transfer learning. Note that more detail regarding transfer learning is provided in \Sref{sec:tl}.
+
+Transfer learning and pretraining?
+
+More regularisation:
 
 Since practically all deep learning developments are (either explicitly or implicitly) geared toward preventing an overfit, much of the remainder of the chapter following  is devoted to proposals that fall in this category.
 In (\Sref{sec:dropout}) and (\Sref{sec:bnorm}) we consider the use of layers to facilitate regularisation.
 More specifically, in (\Sref{sec:dropout}) we discuss the so-called *dropout* method, whereas (\Sref{sec:bnorm}) is devoted to the process of *batch normalisation* .
+
+The use of different types of layers provides an alternative way of making deeper neural networks more effective, facilitating a focus on the more important set of features, and to enable NNs to process discrete input. 
+Hence note that the use of *skip-connections* , *attention modules*  and *embedding layers* are discussed in (\Sref{sec:resnet}), (\Sref{sec:attention}) and (\Sref{sec:embeds}).
 
 Turning our attention to the training data at hand, note that one may consider artificially enlarging the training dataset in order to avoid an overfit. 
 This approach, called *data augmentation* is described in \Sref{sec:daug}.
