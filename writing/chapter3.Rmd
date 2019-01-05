@@ -5,7 +5,7 @@
 Deep learning is a broadly used term.
 To many, the difference between a classical neural network and a deep neural network lies merely in the number of network layers.
 Even a network with two hidden layers is sometimes referred to as 'deep'.
-From this perspective, deep (multilayer) neural networks were already proposed by Alexey Ivakhnenko in 1965 (reference needed here).
+From this perspective, deep (multilayer) neural networks were already proposed by Alexey Ivakhnenko in 1965 [@Alexey1965].
 In the paper by Vincent *et al.* (2008) it is stated that "the belief that additional levels of functional decomposition will yield increased representational and modeling power is not new". 
 The authors then cite McCleland 
 
