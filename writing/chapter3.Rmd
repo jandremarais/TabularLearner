@@ -7,7 +7,7 @@ To many, the difference between a classical neural network and a deep neural net
 Even a network with two hidden layers is sometimes referred to as 'deep'.
 From this perspective, deep (multilayer) neural networks were already proposed by Alexei Ivakhnenko and colleagues more than half a century ago [@Alexei1965].
 In the paper by @Vincent2008 it is stated that "the belief that additional levels of functional decomposition will yield increased representational and modeling power is not new". 
-The authors then cite @McCleland1986, @Hinton1989, and Utgoff and Stracuzzi @Utgoff2002.
+The authors then cite @McCleland1986, @Hinton1989, and @Utgoff2002.
 
 Still the boom in deep learning research may be said to have started only a bit more than a decade ago, since effective training of a multi-layer network was only made possible after a breakthrough presented in the paper by @Hinton2006.
 From that time, tons of contributions have been made to the neural network field. 
@@ -89,7 +89,6 @@ The choice of the type of noise added to the inputs depends on the data types.
 One may block out inputs with zeros if zeros have no other meaning in the data, or one might want to add Gaussian noise to continuous outputs as long as it falls within the true range of the features.
 The type and amount of noise to be used are factors that practitioners typically experiment with.
 If  too much noise is added in the corruption step, the DAE might not learn anything useful.
-The type and amount of noise to be used are factors that practitioners typically experiment with.
 The interested reader is referred to the paper by @Alain2014, where it is shown how DAEs are able to learn useful data structures.
 
 Instead of limiting the number of neurons in the hidden layer, one may instead use a hidden layer with more neurons than the number of input.
@@ -104,30 +103,31 @@ In the decoding step, observations are then sampled from the learned distributio
 
 Finally in this section, in a *contractive autoencoder* (CAE) [...] one encourages learning useful features by means of the use of a regularised reconstruction loss function.
 
-## Pretraining and Transfer Learning \label{sec:tl}
+## Transfer Learning \label{sec:tl}
 
-Unsupervised learning played a key part in the rise of deep learning (debatedly starting with [@Hinton2006]).
-It made it easier to train deeper neural networks with a process called *pretraining*.
-Pretraining is based on the assumption that representations learned from one task can sometimes be useful for accomplishing other tasks in the same input domain.
-For example, we can use a DAE to learn the structure of the data from unlabelled data and then use what it has learned as features or initialisation for a supervised learning task with the same type of inputs.
-We can also do supervised pretraining by first training the network to estimate one target variable and then use those weights or features when training to estimate a different target variable, for example.
+The semi-supervised (or 'unsupervised) learning exploited for example in autoencoders played a key part in the rise of deep learning (debatedly starting with [@Hinton2006]).
+This is so eloquently stated in the paper by @Vincent2010:
+"Training a deep network to directly optimise only the supervised objective function of interest by gradient descent, starting from random initialised parameters, does not work very well. 
+What works *much* better is to use a local unsupervised criterion to (pre)train each layer in turn, with the goal of learning to produce a useful higher-level representation from the lower-level presentation output by the previous layer. 
+From this starting point on, gradient descent on the supervised objective leads to much better solutions in terms of  generalisation performance."
+Indeed, autoencoders and related methods facilitated successful deep neural networks using transfer learning or *pretraining*.
+For example, it is possible to use a DAE to learn the latent features from unlabelled data, and then to use these features to initialise a deep neural net for a related supervised learning task based on the same type of inputs.
 
-Unsupervised pretraining for supervised learning is very common in NLP [@Devlin2018, @Howard2018] and supervised pretraining for supserivsed learning is very common in computer vision [@Yosinski2015, @He2015].
-It is not yet clear theoretically why pretraining works.
-It may be that using the pretrained weights as initialisation to the supervised model provides a better starting position on the loss surface and thus have regulartory effects [@Goodfellow2016, Ch. 14].
-Pretraining is most effective when there is little data available for the supervised task but a lot of data available for the pretraining task.
+Note that instead of using autoencoders in pretraining, one may also do supervised pretraining.
+This is for example done by first training the network to estimate a certain target variable (say $A$), and by then using those weights or features when trying to predict a different target variable (say $B$).
 
-The process of transferring what is learned doing one task (for example in pretraining) to another task (supervised learning for examples) is called *transfer learning*. When done effectively, pretraining and transfer learning can together dramatically reduce the number of training samples and computational power need to train a model.
+Unsupervised pretraining for supervised learning is very common in NLP [@Devlin2018, @Howard2018] , whereas supervised pretraining for supervised learning is widely used in computer vision [@Yosinski2015, @He2015].
+To our knowledge, theoretical proofs towards understanding why pretraining works, cannot yet be found in the literature.
+It is postulated that using the pretrained weights as initialisation to the supervised model provides a better starting position on the loss surface, thereby inducing regulatory effects [@Goodfellow2016, Ch. 14].
+Pretraining is most effective in scenarios where a relatively small dataset is available for the supervised task, but where a lot of data are available for the pretraining task.
 
-[@Zeiler2014] provides an insigtful investigation of the what a CNN learns when trained on image data. 
-From observing the types of features extracted for a trained image model (\autoref{fig:zeil}) it becomes clear why they are also effective on other image datasets. 
-The learned filters seemed to look for generic image features like edges and color gradients which are useful for most computer vision tasks.
-[@Howard2018] describes a good practice when doing transfer learning via gradual unfreezing and discriminative fine-tuning.
+We conclude this section with the following illustration of pretraining and transfer learning, taken from @Zeiler2014.
+By observing the types of features extracted from a trained image model (\autoref{fig:zeil}), one gains insight into why they are also effective in other image analysis tasks.
+The learned filters seem to identify generic image features such as edges and color gradients which should prove useful in most computer vision tasks.
 
 ```{r, fig.cap="Visualising the first layer convolutional filters leared by a neural network in a large image dataset. \\label{fig:zeil}", out.height="50%", fig.align = "center"}
 knitr::include_graphics("figures/zeiler_filters.jpeg")
 ```
-
 ## More Regularisation
 
 In \Sref{sec:basicreg} we discussed basic regularisation methods for neural networks.
