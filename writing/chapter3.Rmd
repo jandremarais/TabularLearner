@@ -6,22 +6,23 @@ Deep learning is a broadly used term.
 To many, the difference between a classical neural network and a deep neural network lies merely in the number of network layers.
 Even a network with two hidden layers is sometimes referred to as 'deep'.
 From this perspective, deep (multilayer) neural networks were already proposed by Alexey Ivakhnenko in 1965 (reference needed here).
-Still the boom in deep learning research may be said to have started only a bit more than a decode ago, since effective training of a multi-layer network was only made possible after a breakthrough presented in the paper by Hinton *et al.* (2006) (edit the reference).
+Still the boom in deep learning research may be said to have started only a bit more than a decade ago, since effective training of a multi-layer network was only made possible after a breakthrough presented in the paper by Hinton *et al.* (2006) (edit the reference).
 
-From that time, tons of contributions have been made to the neural network field: new types of layers, more effective training strategies, and novel approaches to guard against overfitting have been proposed.
-A more general definition of *deep learning* encompasses all modern developments in the neural network space.
-Because of the large amount of deep learning contribution during the past decade, note that in this chapter we restrict attention to developments that form a basis for deep learning in the context of tabular data.
+From that time, tons of contributions have been made to the neural network field. 
+New types of layers, more effective training strategies, and novel approaches to guard against overfitting have been proposed.
+A more general definition of *deep learning* therefore encompasses all modern developments in the neural network space.
+Because of the large amount of deep learning contributions during the past decade, note that in this chapter we restrict attention to developments that form a basis for deep learning in the context of tabular data.
 
 Conceptual categorisation of modern contributions to the deep learning field is a difficult task.
 Perhaps one way to order some of the more important developments, is to use the aim or effect of their implementation as criterion.
-Since representation learning is such an important characteristic of NNs, one group of deep learning developments focus on this aspect. 
+Since representation learning is such an important characteristic of NNs, many deep learning developments focus on this aspect. 
 As mentioned before, neural networks are able to approximate any function.
 However, learning algorithms are not necessarily able to find these solutions, therefore we need more efficient ways to learn from the available data. 
 An example is the class of neural networks called *autoencoders* (\Sref{sec:ae}).
 These neural networks are mostly used as unsupervised learning methods with the aim of aiding us to learn more robust data representations, which may subsequently be transferred to supervised learning algorithms.
 We have mentioned in Chapter 1 that the process of transferring knowledge from one network to another is called transfer learning. Note that more detail regarding transfer learning is provided in \Sref{sec:tl}.
 
-Transfer learning and pretraining?
+
 
 More regularisation:
 
@@ -46,21 +47,21 @@ The basic autoencoder is a neural network which is trained to attempt to reconst
 The simplest form of an autoencoder is a neural network with one hidden layer and with an output layer having the same size as the input layer. 
 This architecture is illustrated in \autoref{fig:ae}).
 The linear layer transforming the input to the hidden layer is referred to as the encoder, *viz.* $\boldsymbol{z}=f(\boldsymbol{x})$, and the layer producing the output from the hidden layer is called the decoder, *viz.* $\boldsymbol{x}'=g(\boldsymbol{z})$.
-The autoencoder can be trained in the same way as any other neural network, however the loss function to be minimised is called a  *reconstruction loss*. 
-Importantly, note that a reconstruction loss function measures the difference between the reconstructed and actual input, hence the MSE loss function is a common choice in the case of continuous data.
+The autoencoder can be trained in the same way as any other neural network, however the loss function to be minimised is called *reconstruction loss*. 
+The reconstruction loss function measures the difference between the reconstructed and actual input, hence the MSE loss function is a common choice in the case of continuous data.
 
 ```{r, fig.cap="A simple single hidden layer autoencoder with four-dimensional inputs and with two neurons in the hidden layer.\\label{fig:ae}", out.height="30%", fig.align='center'}
 knitr::include_graphics('figures/ae.png')
 ```
 Technically, autoencoders belong to the self- (or semi-) supervised class of methods, although many still think of it as unsupervised.
-It is unsupervised in the sense that it does not require labelling, but it is supervised in the sense that it predicts an ouput.
+It is unsupervised in the sense that it does not require labelling, but it is supervised in the sense that it does predict an ouput.
 
 If the number of neurons in the hidden layer of an autoencoder is greater than or equal to the number of input features, it is possible  to perfectly reconstruct $\boldsymbol{x}$ from $\boldsymbol{z}$, *i.e.* $\boldsymbol{x}'=\boldsymbol{x}$.
 This is however not a very useful model.
 Instead, autoencoders are typically built with some type of constraint imposed.
 A common option is to restrict the number of neurons in the hidden layer to be smaller than the number of input features.
 This forces the autoencoder to capture only the most useful properties of the data in the hidden representation and can thus effectively be used as a way of dimensionality reduction [@Hinton2006a].
-When there are no non-linear activation functions after the linear layers, one can show that this autoencoder is equivalent to application of *Principal Component Analysis* (PCA) to the inputs.
+Indeed, if there are no non-linear activation functions after the linear layers, one can show that this autoencoder is equivalent to application of *Principal Component Analysis* (PCA) to the inputs.
 
 There is no restriction to the number or the size of the layers used in the encoder and decoder, and if activation functions are used, one can potentially learn a more powerful non-linear generalisation of PCA.
 However, if the encoder and decoder networks are allowed too much capacity, the autoencoder may reconstruct the inputs without learning any useful properties of the data.
