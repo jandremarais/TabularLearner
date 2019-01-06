@@ -194,46 +194,49 @@ knitr::include_graphics('figures/dropout.png')
 
 Recall that our aim with predictive models is to generalise well to an unseen test set.
 In an ideal world we would train a model on all possible variations of the data to capture all interactions and relationships.
-This is not possible in the real world.
+This is of course not possible in the real world.
 Such a dataset is not available and would be infinitely large.
-And even if it were, machine learning will then be unecessary since all the possible observations are observable and one could simply use a lookup or a search when predicting outcomes.
+of course if it were available, machine learning would be unecessary, since all possible observations would be available and one could simply use a lookup or a search in order to predict outcomes.
 
 In reality we have a finite subset of the full data distribution to train on.
 Any new samples with unique feature combinations will likely improve the models generalisablity.
-If the collection of new samples is not available, we can try to artificially create more through *data augmentation*.
+If the collection of new samples is not available, we can try to artificially create these through *data augmentation*.
 
-This is a standard approach especially in computer vision applications. For example, from a single image, we can rotate it, flip it horizontally, shift it in any direction, crop it, and many other transformations without destroying the semantic content of the image.
-But by doing so we are artificially increasing the size of the training set to help with overfitting.
-In \autoref{fig:aug} we see how a single image of a cat is turned into eight images by doing random transformations of the original image.
-In all of these images it is still possible to tell that it is an image of a cat.
-Of course this is not as effective as genuine new data samples, but it is a very effective and efficient substitute [@Perez2017]. 
-Data augmentation consistently leads to improved generalisation.
+This is a standard approach followed especially in computer vision applications. 
+For example, a single image can be rotated, flipped horizontally or vertically, shifted in any direction, and cropped.
+Many other transformations are also possible without destroying the semantic content of the image.
+By means of such transformations we are able to artificially increase the size of the training set in order to avoid overfitting.
 
-```{r, fig.cap="Example data augmentations for images.\\label{fig:aug}", out.width="80%", fig.align = "center"}
+Consider for example \autoref{fig:aug}, used to illustrate the way in which a single image of a cat may be converted into eight images through random transformations of the original image.
+In all of these images, a cat is still recognisable.
+Of course data augmentation cannot be as effective as observing genuine new data samples, still it is a very effective and efficient substitute [@Perez2017]. 
+In fact, it is well known that data augmentation consistently leads to improved generalisation.
+
+```{r, fig.cap="An example of data augmentation for images.\\label{fig:aug}", out.width="80%", fig.align = "center"}
 knitr::include_graphics('figures/augmentations.png')
 ```
+At this stage, note that data augmentation may be formalised by means of the *Vicinal Risk Minimisation* principle [@Chapelle2001].
+According to this principle, human knowledge is required to describe a vicinity around each observation in the training data so that artificial examples can be drawn from the vicinity distribution of the training sample in order to enlarge it.
+In image classification one may define the vicinity of an image as, for example, the set of its horizontal reflections and minor rotations.
 
-Data augmentation can be formalised by the *Vicinal Risk Minimisation* principle [@Chapelle2001] where human knowledge is required to describe a vicinity around each observation in the training data so that artificial examples can be drawn from the vicinity distribution of the training sample to enlarge it.
-In image classification one can define the vicinity of an image as the set of its horizontal reflections and minor rotations, for example.
-
-Note that data augmentation is dataset and domain dependent and that the augmentations should preserve the semantic content or the signal in the observation.
-For example, taking too small crops of an image will ignore the context and may make it impossible to tell what is inside.
-And augmentations that are suitable for image data does not necessarily make sense for text data.
+Note that types of data augmentation that may be applied, depend on the dataset and domain, since all augmentations should preserve the semantic content or the signal in the original observations.
+For example, making too small crops of an image will ignore the context and may make it impossible to recognise its objects.
+Moreover, augmentations that are suitable for image data are not necessarily sensible for text data.
 
 ## Modern Architectures
 
 In the following sections we highlight some of the recently developed neural network layers and modules. 
-These operations were designed to make training more robust and efficient, to help learn more robust representations and be able to model more useful features, among others.
+Among others, these operations were designed to make training more robust and efficient, to help learn more robust representations, and to be able to model more useful features.
 
 ### Normalisation \label{sec:bnorm}
 
-One of the things that complicate the training of neural networks is the fact that hidden layers have to adapt to the continuously changing distribution of its inputs. 
-The inputs to each layer are affected by the paramaters of all its preceding layers and a small change in a preceding layer can lead to a much bigger difference in output as the network becomes deeper. 
+A factor which complicates the training of neural networks is the fact that hidden layers have to adapt to the continuously changing distribution of its inputs. 
+The inputs to each layer are affected by the parameters of all preceding layers, and a small change in a preceding layer can lead to a much bigger difference in output as the depth of the network increases. 
 When the input distribution to a learning system changes, it is said to experience covariate shift [@Shimodaira2000].
 
-Using ReLUs, carefull weight initialisation and small learning rates can help a network to deal with the internal covariate shift. 
-However, a more effective way would be to ensure that the distribution of non-linearity inputs remains more stable while training the network.
-[@Ioffe2015] proposed *batch normalisation* to do just that.
+Using ReLUs, careful weight initialisation, and small learning rates should all help a network to deal with internal covariate shifts. 
+However, a more effective approach is to ensure that the distribution of inputs remains more stable while training the network.
+For this purpose @Ioffe2015 proposed *batch normalisation*.
 
 A batch normalisation layer normalises its inputs to a fixed mean and variance (similar to how the inputs of the network is normalised) and therefore it can be applied before any hidden layer in a network to prevent internal covariate shift. 
 The addition of this layer dramatically accelerates the training of deep neural networks, also because it can be used with higher learning rates. 
