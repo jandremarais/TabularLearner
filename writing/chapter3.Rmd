@@ -24,19 +24,12 @@ An example is the class of neural networks called *autoencoders* (\Sref{sec:ae})
 These neural networks are mostly used as unsupervised learning methods with the aim of aiding us to learn more robust data representations, which may subsequently be transferred to supervised learning algorithms.
 We have mentioned in Chapter 1 that the process of transferring knowledge from one network to another is called transfer learning. Note that more detail regarding transfer learning is provided in \Sref{sec:tl}.
 
+A large number of deep learning developments are explicitly geared toward preventing an overfit.
+We discuss two important modern proposals that fall into this category, *viz.* the use of the so-called *dropout* method in (\Sref{sec:dropout}) and the use of *data augmentation* in (\Sref{sec:daug}).
 
+A miscellaneous group of modern deep learning proposals that succeed in hitting several targets, are discussed in (\Sref{sec:bnorm}), (\Sref{sec:resnet}), (\Sref{sec:embeds}) and (\Sref{sec:attention}).
+The use of these modern architecture have become standard practice in deep learning applications.
 
-More regularisation:
-
-Since practically all deep learning developments are (either explicitly or implicitly) geared toward preventing an overfit, much of the remainder of the chapter following  is devoted to proposals that fall in this category.
-In (\Sref{sec:dropout}) and (\Sref{sec:bnorm}) we consider the use of layers to facilitate regularisation.
-More specifically, in (\Sref{sec:dropout}) we discuss the so-called *dropout* method, whereas (\Sref{sec:bnorm}) is devoted to the process of *batch normalisation* .
-
-The use of different types of layers provides an alternative way of making deeper neural networks more effective, facilitating a focus on the more important set of features, and to enable NNs to process discrete input. 
-Hence note that the use of *skip-connections* , *attention modules*  and *embedding layers* are discussed in (\Sref{sec:resnet}), (\Sref{sec:attention}) and (\Sref{sec:embeds}).
-
-Turning our attention to the training data at hand, note that one may consider artificially enlarging the training dataset in order to avoid an overfit. 
-This approach, called *data augmentation* is described in \Sref{sec:daug}.
 With regard to optimisation of the neural network, a method has been proposed which provides a way of automatically finding a good learning rate.
 This leads to a drastic reduction in the number of training iterations needed.
 The aforementioned training method (referred to as the *one-cycle policy*) is discussed in (\Sref{sec:onecyc}).
@@ -328,16 +321,19 @@ An embedding layer may be re-used by all input features having the same input ty
 
 ### Attention \label{sec:attention}
 
-Attention is one of the standout breakthroughs made in deep learning in recent times; especially playing an integral part to NLP's success and other sequence related tasks [@Vaswani2017, @Devlin2018].
-It was first popularised in neural machine translation [@Bahdanau2014] and now almost used ubiquitously in natural language processing applications.
-It was also found useful in computer vision applications, like image captioning [@Xu2015], and in audio processing [@Duong2016].
+The incorporation of *attention* modules in networks is one of the standout breakthroughs made in deep learning in recent times.
+They especially played an integral part in advances in NLP and other sequence related tasks [@Vaswani2017, @Devlin2018].
+Attention was first popularised in the neural machine translation field [@Bahdanau2014].
+Currently it is almost used ubiquitously in NLP applications.
+Also in computer vision applications, the use of attention modules have been found useful.
+Examples include image captioning [@Xu2015] audio processing tasks [@Duong2016].
 
 The main idea of an attention module is to force a layer to only focus on a certain subset of its inputs at different stages of computation.
-For example, in image captioning, one may use a RNN to sequentially output words describing the image.
-With the use of an attention model, the network is restricted to only look at certain parts of an image at every step, avoiding having to look at the full image everytime.
+For example, in image captioning, one may use a recurrent neural network (RNN) to sequentially output words describing the image.
+With the use of an attention model, the network is at each step restricted to only consider certain parts of an image, thereby avoiding to have to consider the full image everytime.
 This is illustrated in \autoref{fig:imattn}.
-Notice how the network focusses on the bird part of the image when predicting the word "bird" and "flying" and then focussing on the water part of the image when predicting words like "body" and "water".
-Similarly, when used in machine translation, we can visualise the attention weights to see how the network focusses on a different subset of words for predicting each word in the target language (\autoref{fig:nlpattn}).
+Notice how the network focuses on the bird part of the image when predicting the word "bird" and "flying", whereas it focuses on the water part of the image when predicting the words "body" and "water".
+Similarly, when used in machine translation, we may visualise attention weights to capture the way in which a network focuses on a different subset of words when predicting each word in the target language (\autoref{fig:nlpattn}).
 
 ```{r, fig.cap="Attention applied to image captioning.\\label{fig:imattn}", out.width="90%", fig.align='center'}
 knitr::include_graphics('figures/img_attention.jpeg')
@@ -347,22 +343,24 @@ knitr::include_graphics('figures/img_attention.jpeg')
 knitr::include_graphics('figures/word_attn.png')
 ```
 
-In an ideal world, an attention module should not be necessary and we would want the network to learn if certain parts of images are not required to look at.
-However, currently this built-in prior proves to be extremely helpful with current learning algorithms.
+In an ideal world, an attention module should not be necessary.
+Instead it is preferred that a network learns which sections of images to pay more attention to.
+Nevertheless, currently this built-in prior proves to be extremely beneficial in current learning algorithms.
 
-The core of an attention module can be summarised with these equations:
+An insightful discussion of attention modules may be found in @Xu2015.
+In this section, a summary of the core of an attention module through the following three equations suffice:
 $$
 \begin{aligned}
 \boldsymbol{z}&=f(\boldsymbol{x})\\
 \boldsymbol{\alpha} &=\text{softmax}(f_{att}(\boldsymbol{x}))\\
-\boldsymbol{y}&=\boldsymbol{z}\otimes\boldsymbol{\alpha}
+\boldsymbol{y}&=\boldsymbol{z}\otimes\boldsymbol{\alpha},
 \end{aligned}
 $$
-$\boldsymbol{z}$ it the ordinary activations produced by a layer $f$ given input $\boldsymbol{x}$.
-$\boldsymbol{\alpha}$ are the weights produced by the attention layer, $f_{att}$ after a logit transform so that the weights sum to one.
-The output of the attention module, $\boldsymbol{y}$, is then an elementwise multiplication, $\otimes$, of $\boldsymbol{z}$ and $\boldsymbol{\alpha}$, however other combinatorial operations can also be used.
-More detail can be found in [@Xu2015].
-We will elaborate on the concepts of *Self-Attention* [@Cheng2016a] and *Multi-Head Attention* [@Vaswani2017] in \Cref{sec:tab_att}.
+where $\boldsymbol{z}$ denote the ordinary activations produced by a layer $f$ given input $\boldsymbol{x}$.
+The symbol $\boldsymbol{\alpha}$ represent the weights produced by the attention layer, $f_{att}$, after a logit transform to ensure the weights to sum to 1.
+The output of the attention module, $\boldsymbol{y}$, is then obtained through an elementwise multiplication $\otimes$ of $\boldsymbol{z}$ and $\boldsymbol{\alpha}$, although it should be noted that alternative combinatorial operations may also be used.
+
+Finally in this section, note that we elaborate on the concepts of *self-attention* [@Cheng2016a] and *multi-head attention* [@Vaswani2017] in \Cref{sec:tab_att}.
 
 ## Super-Convergence \label{sec:onecyc}
 
