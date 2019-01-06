@@ -269,9 +269,9 @@ The motivation for Step 3 is to allow the layer to represent the identity transf
 That is, the scale-and-shift step will reverse the normalisation step if $\gamma=\sqrt{\sigma^{2}+\epsilon}$ and $\beta=\mu$. 
 Note that the application of batch normalisation has become standard practice when training deep convolutional NNs.
 
-### Skip-connections \label{sec:resnet}
+### Skip Connections \label{sec:resnet}
 
-Residual Networks became very popular after it was used to win one of the ImageNet competiions [@He2015].
+Residual Networks became very popular after they were used in the winning model of one of the ImageNet competitions [@He2015].
 The residual connection layer can simply be formalised as
 $$
 y=F(x)+x,
@@ -280,7 +280,7 @@ $$
 Here, the combination is by addition, but other ways can also be used, like multiplication or concatenation.
 The idea is also illustrated in \autoref{fig:skip_conn}.
 
-```{r, fig.align="center", fig.cap="Diagram conceptualising a skip-connection.\\label{fig:skip_conn}", out.width="80%"}
+```{r, fig.align="center", fig.cap="Diagram conceptualising a skip connection.\\label{fig:skip_conn}", out.width="80%"}
 knitr::include_graphics('figures/skip_conn.png')
 ```
 
