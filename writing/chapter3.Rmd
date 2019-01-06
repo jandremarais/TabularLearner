@@ -271,49 +271,60 @@ Note that the application of batch normalisation has become standard practice wh
 
 ### Skip Connections \label{sec:resnet}
 
-A further modern architecture which speeds up training of deep neural networks considerably, is the use of so-called *skip connections*.
-The invention of skip connections is attributed to 
-Residual Networks became very popular after they were used in the winning model of one of the ImageNet competitions [@He2015].
-The residual connection layer can simply be formalised as
-$$
-y=F(x)+x,
-$$
-*i.e.* combining the input to the layer(s) with the output of the layer(s).
-Here, the combination is by addition, but other ways can also be used, like multiplication or concatenation.
-The idea is also illustrated in \autoref{fig:skip_conn}.
+A further modern architecture which speeds up training of deep neural networks considerably, is the use of so-called *skip connections* or *shortcut connections*.
+The invention of skip connections is attributed to @He2015a, @He2016, @Huang2016 and @Sriva2015.
+Note that our discussion is largely based on the exposition given in @He2015a.
+The inspiration for skip connections was the occurrence of the *degradation problem*, whereby from a certain point, the addition of hidden layers in deep neural networks leads to a decrease in their training accuracy.
+Since any deep neural network can be made shallower by means of setting the transformations in some hidden layers equal to the identity, intuitively deeper neural networks should always be able to achieve higher training accuracy than shallower networks.
+This phenomenon indicates that multiple non-linear transformations in deep neural networks are unable to learn identity mappings.
+In @He2016, the degradation problem is addressed by rephrasing the learning objective of a deep neural network.
+Instead of requiring a group of layers to learn some undefined non-linear mapping, say $H{\boldsymbol{\x}}$, the objective is to learn a *residual function*, *viz.* $F{\boldsymbol{\x}}==H{\boldsymbol{\x}}-\boldsymbol{\x}$.   
+in their paper @He2016 postulates that it is more tractable to find $F{\boldsymbol{\x}}$ than $H{\boldsymbol{\x}}$.
+For example, in the problematic scenario where $H{\boldsymbol{\x}}$ should be $H{\boldsymbol{\x}}==$\boldsymbol{\x}$, it is easier to truncate $F{\boldsymbol{\x}} to zero than for multiple non-linear layers to learn the identity mapping.
+This is indeed supported by the results of empirical work in their paper.
+The original sought after function H{\boldsymbol{\x}} may subsequently be found via the mapping $H{\boldsymbol{\x}}==F{\boldsymbol{\x}}+\boldsymbol{\x}$.
+
+The above framework is referred to as *deep residual learning*.
+Residual Networks (ResNets) became very popular after they were used in the winning model of one of the ImageNet competitions [@He2015].
+It is in these models that skip connections come into play.
+Very simply, skip connections are additional connections between different layers in NNs that bypass one or more layers of non-linear transformations [@Orhan2018].
+This idea is illustrated in \autoref{fig:skip_conn}.
 
 ```{r, fig.align="center", fig.cap="Diagram conceptualising a skip connection.\\label{fig:skip_conn}", out.width="80%"}
 knitr::include_graphics('figures/skip_conn.png')
 ```
+In feedforward neural networks, if skip connections output identity mappings, they can efficiently be used to obtain $H{\boldsymbol{\x}}$ via $F{\boldsymbol{\x}}+\boldsymbol{\x}$: the skip connection output $\boldsymbol{\x}$ is just added to the $F{\boldsymbol{\x}}$ output obtained from a set of stacked layers.
+Note that although here, the skip connection and stacked layer output are combined using addition, other ways such as multiplication or concatenation may also be used.
 
-The DenseNet [@Huang2016] is another well-known network making use of skip connections.
-In a DenseNet each layer is connected to every other layer in the network.
-There are multiple benefits to using skip-connections: they alleviate the vanishing-gradient problem, strengthen feature propagation, encourage feature reuse, and may reduce the number of parameters required [@Huang2016].
-These benefits show in the empirical evaluations.
-It is interesting to note that one can draw a parallel between ResNets and boosting methods since both are approaches to fitting a model to the residual [@Huang2017].
+Multiple benefits to using skip connections have been reported in the literature.
+They have been shown to alleviate the vanishing-gradient problem, strengthen feature propagation, encourage feature reuse, and may also reduce the number of parameters required [@Huang2016].
+Furthermore, it is interesting to note that one can draw a parallel between ResNets and boosting methods since both are approaches for fitting models to residuals [@Huang2017].
+
+For a final word on skip connections in this chapter, we refer to the remark of in @Orhan2018, *viz.* that a completely satisfactory explanation for the success of skip connections remains elusive.
+The authors then proceed by proposing a novel explanation for being able to substantially improve the performance of deep neural networks.
 
 ### Embeddings \label{sec:embeds}
 
 An embedding is a layer that maps a discrete input to a numeric vector representation.
-It was first used in NLP in order to represent words as numbers so that it can be processed by a numeric model.
-For instance the word "woman" may be represented by the vector $[1,3,5]$ and the word "man" by $[2,4,6]$.
-The goal is to map discrete inputs to a meaningful vector space where items with similar meaning exist close to each other.
-In contrast to using a one-hot encoded representation of words, where all words equally far apart.
-See \autoref{fig:emb} for an illustration of a such space[^emb_src].
+It was first used in NLP in order to represent words as numbers so that they may be processed by numeric models.
+For instance the word 'woman' may be represented by the vector $[1,3,5]$, and the word 'man' by $[2,4,6]$.
+In finding appropriate embeddings, the objective is to map discrete inputs to a meaningful vector space wherein items with similar meanings are found in close proximity to each other.
+This is in contrast to using a so-called *one-hot encoded* representation of words, where all words lie equally far apart.
+The reader may refer to \autoref{fig:emb} for an illustration of such a space[^emb_src].
 
-```{r, fig.cap='Learned word embeddings in a 2-dimensional space.\\label{fig:emb}', fig.align="center", out.width="90%"}
+```{r, fig.cap='Learned word embeddings in a two-dimensional space.\\label{fig:emb}', fig.align="center", out.width="90%"}
 knitr::include_graphics('figures/embeds.png')
 ```
-
 [^emb_src]: https://www.shanelynn.ie/get-busy-with-word-embeddings-introduction/
 
-Initially the mappings were configured independenty of the neural network with approaches based on co-occurences [@Mikolov2013].
-The real breakthrough came when the mappings were defined as learnable layers in the network (as done in all of the latest NLP research [@Howard2018, @Devlin2018]).
-Thus they can be tuned just like any other parameter in the network.
-The parameters of the embedding function (or layer) are first randomly initialised and then gets tuned along with the rest of the neural network during training.
+Initially mappings were configured independenty of neural networks using approaches based upon co-occurences [@Mikolov2013].
+The real breakthrough came when mappings were defined as learnable layers in the network [@Howard2018, @Devlin2018].
+Thus embeddings may now be tuned just like any other parameter in the network.
+Of course the parameters of the embedding function (or layer) first needs to be (randomly) initialised.
+Thereafter during training, they are tuned along with the rest of the neural network weights.
 
-An embedding operation can either be viewed as a table lookup or a matrix multiplication of the discrete input in a one-hot encoded form, *i.e.* $\boldsymbol{e}=W\boldsymbol{x}$ where $\boldsymbol{x}$ is a discrete input in one-hot encoded form and $W:k\times p$ is the matrix containing the embedding where $p$ is the number discrete categories and $k$ is the embedding size.
-The embedding layer can be reused by all input features with the same input type, making it more efficient and reducing the memory footprint of the model.
+An embedding operation can either be viewed as a table lookup or a matrix multiplication of the discrete input in a one-hot encoded form, *i.e.* $\boldsymbol{e}=W\boldsymbol{x}$, where $\boldsymbol{x}$ is a discrete input in one-hot encoded form, and where $W:k\times p$ is the matrix containing the embedding, with $p$ the number of discrete categories and $k$ the embedding size.
+An embedding layer may be re-used by all input features having the same input type, thereby improving efficiency and reducing the memory footprint of the model.
 
 ### Attention \label{sec:attention}
 
