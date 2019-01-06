@@ -271,6 +271,8 @@ Note that the application of batch normalisation has become standard practice wh
 
 ### Skip Connections \label{sec:resnet}
 
+A further modern architecture which speeds up training of deep neural networks considerably, is the use of so-called *skip connections*.
+The invention of skip connections is attributed to 
 Residual Networks became very popular after they were used in the winning model of one of the ImageNet competitions [@He2015].
 The residual connection layer can simply be formalised as
 $$
