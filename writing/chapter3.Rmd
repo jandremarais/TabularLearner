@@ -91,7 +91,7 @@ The type and amount of noise to be used are factors that practitioners typically
 If  too much noise is added in the corruption step, the DAE might not learn anything useful.
 The interested reader is referred to the paper by @Alain2014, where it is shown how DAEs are able to learn useful data structures.
 
-Instead of limiting the number of neurons in the hidden layer, one may instead use a hidden layer with more neurons than the number of input.
+Instead of limiting the number of neurons in the hidden layer, one may instead use a hidden layer with more neurons than the number of inputs.
 However, the number of hidden neurons that may be active at the same time, is restricted.
 The restriction is enforced by means of the addition of a regularisation term in the reconstruction loss, or one may manually set all but $k$ of the weights with largest absolute value equal to zero.
 In this way we may fit a so-called *sparse autoencoder*.
@@ -215,11 +215,11 @@ In fact, it is well known that data augmentation consistently leads to improved 
 ```{r, fig.cap="An example of data augmentation for images.\\label{fig:aug}", out.width="80%", fig.align = "center"}
 knitr::include_graphics('figures/augmentations.png')
 ```
-At this stage, note that data augmentation may be formalised by means of the *Vicinal Risk Minimisation* principle [@Chapelle2001].
+Data augmentation may be formalised by means of the *Vicinal Risk Minimisation* principle [@Chapelle2001].
 According to this principle, human knowledge is required to describe a vicinity around each observation in the training data so that artificial examples can be drawn from the vicinity distribution of the training sample in order to enlarge it.
 In image classification one may define the vicinity of an image as, for example, the set of its horizontal reflections and minor rotations.
 
-Note that types of data augmentation that may be applied, depend on the dataset and domain, since all augmentations should preserve the semantic content or the signal in the original observations.
+With respect to the types of data augmentations that may be applied, one is typically guided by the dataset and application domain, since all augmentations should preserve the semantic content or the signal in the original observations.
 For example, making too small crops of an image will ignore the context and may make it impossible to recognise its objects.
 Moreover, augmentations that are suitable for image data are not necessarily sensible for text data.
 
@@ -230,22 +230,22 @@ Among others, these operations were designed to make training more robust and ef
 
 ### Normalisation \label{sec:bnorm}
 
-A factor which complicates the training of neural networks is the fact that hidden layers have to adapt to the continuously changing distribution of its inputs. 
+A factor which complicates the training of neural networks is the fact that hidden layers have to adapt to the continuously changing distribution of their inputs. 
 The inputs to each layer are affected by the parameters of all preceding layers, and a small change in a preceding layer can lead to a much bigger difference in output as the depth of the network increases. 
 When the input distribution to a learning system changes, it is said to experience covariate shift [@Shimodaira2000].
 
-Using ReLUs, careful weight initialisation, and small learning rates should all help a network to deal with internal covariate shifts. 
+The use of ReLUs, careful weight initialisation, and small learning rates should all help a network to deal with internal covariate shifts. 
 However, a more effective approach is to ensure that the distribution of inputs remains more stable while training the network.
-For this purpose @Ioffe2015 proposed *batch normalisation*.
+For this purpose @Ioffe2015 proposed *batch normalisation* (BN).
 
-A batch normalisation layer normalises its inputs to a fixed mean and variance (similar to how the inputs of the network is normalised) and therefore it can be applied before any hidden layer in a network to prevent internal covariate shift. 
-The addition of this layer dramatically accelerates the training of deep neural networks, also because it can be used with higher learning rates. 
-It also helps with regularisation [@Ioffe2015], therefore in some cases dropout is not necessary.
+A batch normalisation layer normalises its inputs to a fixed mean and variance (similar to the way in which the inputs of the network are normalised).
+Therefore BN can be applied before any hidden layer in a network in order to prevent internal covariate shift. 
+The addition of BN layers facilitates the use of higher learning rates, thereby dramatically accelerating the training process of deep neural networks. 
+Moreover, implementing batch normalisation assists with regularisation [@Ioffe2015], so much so that in some cases its use obviates the need for dropout to be used.
 
-The batch normalising transform over a batch of univariate inputs, $x_{1}, \dots,x_{n}$ is done by the following steps:
+In more detail, the batch normalising transform over a batch of univariate inputs, $x_{1}, \dots,x_{n}$, where $n<N$ is performed as follows:
 
-1. Calculate the mini-batch mean, $\mu$, and variance, $\sigma^{2}$:
-
+1. The mini-batch mean, $\mu$, and variance, $\sigma^{2}$ are obtained:
     $$
     \begin{aligned}
     \mu &= \frac{1}{n}\sum_{i=1}^{n}x_{i}\\
@@ -253,21 +253,21 @@ The batch normalising transform over a batch of univariate inputs, $x_{1}, \dots
     \end{aligned}
     $$
 
-2. Normalise the inputs, 
-
+2. The inputs are normalised, *i.e.*
     $$
     \hat{x}_{i} = \frac{x_{i}-\mu}{\sqrt{\sigma^{2}+\epsilon}},
     $$
     where $\epsilon$ is a constant to ensure numerical stability.
 
-3. Scale and shift the values,
-
+3. The output values are scaled and shifted, *i.e.*
     $$
     y_{i}=\gamma\hat{x}_{i}+\beta,
     $$
-    where $\gamma$ and $\beta$ are the only two learnable paramaters of a batch normalisation layer.
+    where $\gamma$ and $\beta$ are the only two learnable parameters in a batch normalisation layer.
 
-The reason for the scale and shift step is to allow the layer to represent the identity transform if the normalised inputs are not suitable for the following layer, *i.e.* the scale and shift step will reverse the normalisation step if $\gamma=\sqrt{\sigma^{2}+\epsilon}$ and $\beta=\mu$. Batch normalisation has now become a standard when training deep CNNs.
+The motivation for Step 3 is to allow the layer to represent the identity transform in cases where the normalised inputs are not suitable for the following layer.
+That is, the scale-and-shift step will reverse the normalisation step if $\gamma=\sqrt{\sigma^{2}+\epsilon}$ and $\beta=\mu$. 
+Note that the application of batch normalisation has become standard practice when training deep convolutional NNs.
 
 ### Skip-connections \label{sec:resnet}
 
