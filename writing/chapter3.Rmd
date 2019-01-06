@@ -105,7 +105,7 @@ Finally in this section, in a *contractive autoencoder* (CAE) [...] one encourag
 
 ## Transfer Learning \label{sec:tl}
 
-The semi-supervised (or 'unsupervised) learning exploited for example in autoencoders played a key part in the rise of deep learning (debatedly starting with [@Hinton2006]).
+Semi-supervised (or 'unsupervised) learning exploited for example in autoencoders played a key part in the rise of deep learning (debatedly starting with [@Hinton2006]).
 This is so eloquently stated in the paper by @Vincent2010:
 "Training a deep network to directly optimise only the supervised objective function of interest by gradient descent, starting from random initialised parameters, does not work very well. 
 What works *much* better is to use a local unsupervised criterion to (pre)train each layer in turn, with the goal of learning to produce a useful higher-level representation from the lower-level presentation output by the previous layer. 
@@ -131,12 +131,29 @@ knitr::include_graphics("figures/zeiler_filters.jpeg")
 ## More Regularisation
 
 In \Sref{sec:basicreg} we discussed basic regularisation methods for neural networks.
-There are many other ways of combatting overfitting.
-The following section discusses two regularisation techniques proven to be extremely powerful in almost every application of deep learning.
+There are however many alternative ways of combatting overfitting.
+Here we discuss two regularisation techniques proven to be extremely powerful in almost every application of deep learning.
 
 ### Dropout \label{sec:dropout}
 
-*Dropout* consists of randomly setting the output of a hidden neuron to zero with probability $p$.
+*Dropout* was proposed in a paper by Srivastava and co-authors [@Sriva2014].
+The term refers to the process of temporarily removing a set of neurons and their connections during NN training.
+In @Sriva2014, the authors explain that the dropout invention started with the challenge of attempting to optimise neural networks by means of averaging multiple neural networks.
+This pursuit was motivated by the following two notions.
+First, it may be viewed as a gold standard for 'regularising' the network across all possible parameter values.
+Here the idea is to fit a train a huge number of fixed size neural networks, where each network is optimised using a different parameter value. 
+This is done for all possible settings of the parameter values.
+Conceptually, one would then obtain the final NN by averaging the weights of all these neural networks, where the output corresponding to each parameter setting should be weighted by its poster probability given the training data.
+Of course obtaining this golden standard is impracticable, but in dropout @Sriva found a way to approximate it.
+Second, it is well known in statistical learning and in machine learning that model averaging typically leads to an improvement in generalisation performance. 
+Construction of an ensemble neural network using the classical ensemble framework is however infeasible.
+For ensemble models to be successful, predictions resturned by base learners should be as uncorrelated as possible.
+In order to obtain uncorrelated output, neural networks should either be trained using different training datasets, or different architectures. 
+The former idea requires huge amounts of data during training, which may not be available, whereas the latter idea implies the daunting task of experimenting with and finding the optimal set of parameters for each network. 
+Dropout solves these problems.
+ 
+
+consists of randomly setting the output of a hidden neuron to zero with probability $p$.
 See \autoref{fig:dropout} for an illustration of how dropout effects the connections between neurons.
 The neurons which are set to zero do not contribute to the forward pass and do not participate in backpropogation. 
 Every time an input is presented, the neural network samples a different set of neurons to be dropped out. 
