@@ -137,7 +137,7 @@ Here we discuss two regularisation techniques proven to be extremely powerful in
 ### Dropout \label{sec:dropout}
 
 *Dropout* was proposed in a paper by Srivastava and co-authors [@Sriva2014].
-The term refers to the process of temporarily removing a set of neurons and their connections during NN training.
+The term refers to the process of temporarily removing sets of neurons and their connections during NN training.
 In @Sriva2014, the authors explain that the dropout invention started with the challenge of attempting to optimise neural networks by means of averaging multiple neural networks.
 This pursuit was motivated by the following two notions.
 First, it may be viewed as a gold standard for 'regularising' the network across all possible parameter values.
@@ -152,27 +152,43 @@ In order to obtain uncorrelated output, neural networks should either be trained
 The former idea requires huge amounts of data during training, which may not be available, whereas the latter idea implies the daunting task of experimenting with and finding the optimal set of parameters for each network. 
 Dropout solves these problems.
  
+The following explanation of dropout follows the description in @Sriva2014.
+Consider a neural network with $r$ nodes.
+Note that this network can be seen to consist of $2^{r}$ *thinned neural networks*, where each thinned network consists of the neurons that survived dropout.
+Importantly, the weights in each thinned network are shared by the other thinned networks, therefore the number of weights remain in the order of $r^{2} at the most.
+During training, with each input presented to the network, dropout reoccurs.
+That is, each neuron is temporarily omitted from the network with probability $p$.
+This implies that with each input presented, a new thinned network is trained.
+At test time, a single neural network is fitted.
+The weights of this neural network are obtained by reducing the weights from the thinned models by a factor $p$, thereby obtaining an approximate estimate of the average weights of the thinned models.
+The reader may refer to \autoref{fig:dropout} for an illustration of how dropout effects the connections between neurons.
 
-consists of randomly setting the output of a hidden neuron to zero with probability $p$.
-See \autoref{fig:dropout} for an illustration of how dropout effects the connections between neurons.
-The neurons which are set to zero do not contribute to the forward pass and do not participate in backpropogation. 
+In @Sriva2014, note that $p=0.5$ is suggested to work well for hidden nodes, whereas a $p$ value closer to 1 is recommended for visible nodes. 
+The optimal value of $p$ depends on the use case and is typically found via experimentation.
+Also note that during test time, no units are dropped and the output of each node is multiplied by $1-p$ in order to compensate for all units now being active.
+
+
+In mathematical notation, the dropout model may be described as follows.
+
+...
+
+In summary of this section, dropout basically involves setting the output of a hidden neuron equal to zero with probability $p$.
+The neurons that are omitted in this way do not contribute to the forward pass and do not participate in backpropogation. 
 Every time an input is presented, the neural network samples a different set of neurons to be dropped out. 
+This ensures that a neuron does not rely on the signals of a particular set of other neurons, and discourages neurons to co-adapt.
+Thereby the neural network is forced to learn more robust features that are useful in conjunction with many different random subsets of the other neurons [@Krizhevsky2012]. 
 
-This technique ensures that a neuron does not rely on the signals of a particular set of other neurons,
-It is therefore forced to learn more robust features that are useful in conjunction with many different random subsets of the other units [@Krizhevsky2012].
+Furthermore, we have seen that there are parallels to be drawn between dropout and ensembling approaches [@Hinton2012].
+In each training iteration a unique set of neurons are active, and a unique network is fitted.
+During testing these different models are combined.
+This is of course the same paradigm as in ensemble learning.
 
-In the original paper they used $p=0.5$ but the optimal selection will depend on the use case and is typically found by experimentation.
-At test time, no units are dropped out and their output is multiplied by $1-p$ to compensate for the fact that all of the units are now active. 
-Dropout does tremendously well to combat overfitting, but it slows down the covergence time of training.
+It has been shown that dropout does tremendously well in guarding against overfitting.
+Unfortunately however, it slows down the covergence time of training.
 
-There are also parallels to be drawn between dropout and ensembling approaches [@Hinton2012].
-Since, at each training iteration a unique set of neurons are active which may then each be viewed as unique models.
-During training these models are combined - similar to the process of ensembling models.
-
-```{r, fig.align="center", fig.cap="The effect dropout has on connections between neurons.\\label{fig:dropout}", out.width="80%"}
+```{r, fig.align="center", fig.cap="The effect that dropout has on connections between neurons.\\label{fig:dropout}", out.width="80%"}
 knitr::include_graphics('figures/dropout.png')
 ```
-
 
 ### Data Augmentation \label{sec:daug}
 
