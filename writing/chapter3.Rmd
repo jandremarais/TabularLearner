@@ -24,10 +24,11 @@ An example is the class of neural networks called *autoencoders* (\Sref{sec:ae})
 These neural networks are mostly used as unsupervised learning methods with the aim of aiding us to learn more robust data representations, which may subsequently be transferred to supervised learning algorithms.
 We have mentioned in Chapter 1 that the process of transferring knowledge from one network to another is called transfer learning. Note that more detail regarding transfer learning is provided in \Sref{sec:tl}.
 
-A large number of deep learning developments are explicitly geared toward preventing an overfit.
+A large number of deep learning developments are explicitly geared toward regularisation in order to prevent overfitting.
 We discuss two important modern proposals that fall into this category, *viz.* the use of the so-called *dropout* method in (\Sref{sec:dropout}) and the use of *data augmentation* in (\Sref{sec:daug}).
 
 A miscellaneous group of modern deep learning proposals that succeed in hitting several targets, are discussed in (\Sref{sec:bnorm}), (\Sref{sec:resnet}), (\Sref{sec:embeds}) and (\Sref{sec:attention}).
+Among others, the successes of this group of developments include regularisation, increasing speed, reducing sensitivity to starting weights (batch normalisation); improving accuracy (skip connections); representing and visualising categorical variables and representation learning (embeddings); and visualising and interpreting NNs (attention).
 The use of these modern architecture have become standard practice in deep learning applications.
 
 With regard to optimisation of the neural network, a method has been proposed which provides a way of automatically finding a good learning rate.
@@ -364,45 +365,70 @@ Finally in this section, note that we elaborate on the concepts of *self-attenti
 
 ## Super-Convergence \label{sec:onecyc}
 
-The process of setting the hyperparameters for learning algorithms are hard.
-It requires expertise, extensive trial and error and is more of an art form than a science.
-There are many hyperparameters to consider: learning rate, batch size, momentum, and weight decay, to name a few.
-Although the right parameters make a huge difference in training time and performance, there are no simple and easy ways to find them.
-Doing a grid search or a random search in the parameter space is computationally very expensive.
+Specifying the hyperparameters for learning algorithms is a difficult process.
+It requires expertise, typically involves extensive trial-and-error and is often described as more of an art form than a science.
+Moreover, there are many hyperparameters that need to be considered: thus far in the thesis we have encountered learning rate, batch size, momentum and weight decay.
+Although there are no easy ways to find them, appropriate parameter values do have a huge effect on training time and on the performance of neural networks.
+A grid search or random search in the parameter space seems not to be an option because of its computational expense. 
 
-In this section we summarise the work done in [@Smith2018] to give guidance on finding and setting the learning rate, batch size and weight decay.
-The approach suggested is based on finding the right balance between overfitting and underfitting by using the right hyperparameters.
-By looking at the validation loss at early stages of training, one will find clues to which parameters are optimal.
-This eliminates the necessity of running complete grid or random searches.
+In this section we summarise the work on structuring specification of NN hyperparameters presented in the papers by Smith in 2015 and 2018, and by Smith and Topin in 2017.
+Through his proposed approaches, the necessity of running complete grid or random searches is eliminated, rendering tremendous improvements in training time and accuracy.
 
-By following the hyperparameter selection approach discussed next, one can achieve tremendous improvements in training time and accuracy.
-If done correctly one may exploit a property called *super-convergence* [@Smith2017], where neural networks can be trained an order of magnitude faster than with standard training methods.
-\autoref{fig:supercon} plots the test loss over each training iteration of the proposed hyperparameter strategy compared to a fixed learning rate policy.
-We see that with the proposed method, the model achieves a better accuracy than the standard approach and in eigthth of the training iterations.
-Next we discuss how to select hyperparameters to achieve super-convergence.
+In his 2015 paper Smith considers specification of the learning rate parameter.
+This is a worthwhile enterprise: in \Cref{chp:nn} the importance of the appropriately specifying the learning rate became evident.
+To re-emphasise, the learning rate is viewed as the hyperparameter whose appropriate specification is most important compared to all other neural network hyperparameter values.
+We saw that one may choose to keep its value fixed throughout training, or to allow it to decrease from a certain point in training onwards.
+The latter was the preferred approach until *cyclical learning rates* (CLR) were proposed in Smith (2015). 
 
-![Reduced training iterations and improved performance with super-convergence principle.\label{fig:supercon}](figures/supercon.png)
+In CLR, the learning rate is varied cyclically between two boundary values.
+Hence a CLR cycle consists of two stages.
+In the first stage the learning rate linearly increases to a certain maximum, and in the second stage the learning rate linearly decreases to a chosen minimum.
 
-Firstly note that the effects of the learning rate, batch size and other regularisation techinques, like weight decay, are tightly coupled and should be tuned together.
-We start with setting the learning rate.
-In \Cref{chp:nn} we showed that the learning rate is an important parameter and that one can either keep it fixed during training or decrease it by some factor when it looks necessary.
-[@Smith15] suggests using *cyclical learning rates* (CLR).
-A CLR cycle consists of two stages, one where the learning rate linearly increases during training up until a certain maximum and one where the learning rate decreases linearly back to a chosen minimum.
-One needs to specify the number of epochs in each stage, also known as the step size and the minimum and maximum learning rate.
-One reason why CLR is believed to work is that variable learning rate allows the model to better dodge saddle points on the loss surface.
+In order to implement cyclical learning rates, one needs to specify the number of epochs during each stage (also known as the step size), as well as the minimum and maximum learning rates to be attained.
+In Smith (2015), a simple method for finding reasonable learning rate boundaries.
+In this learning rate range test, training starts with a small learning rate which is then slowly increased in a linearly fashion throughout a pre-training run.
+Typically with an increase in the learning rate, the training loss decreases until a point where the network converges.
+After this point the learning rate becomes too large, causing the loss to start increasing.
+Hence this is the largest learning rate one should consider using during training.
+In CLR it is suggested that the lower bound of the learning rate be set to a factor of 3 or 4 times less than the maximum learning rate.
+For an update of the CLR proposal, the reader is referred to Smith (2017).
 
-In his most reason work, [@Smith2018], the author suggest using only a single cycle of CLR, called the *1cycle* policy.
-The learning rate setting of the 1cycle policy is illustrated in \autoref{fig:onecyc}.
+In his most recent work, Smith (2018) considers a more comprehensive methodology which recognises the interdependence
+of specification of the learning rate, batch size and other regularisation techniques such as weight decay.
+As may be expected, the proposed framework focuses on finding the right balance between overfitting and underfitting.
+Through consideration of the obtained validation loss during early stages of training, clues are found with respect to more desired values of the hyperparameters.
+
+
+See \autoref{fig:range_test} for example output of the range test and how to deterimine the learning rate bounds for the 1Cycle policy.
+One should be careful of too small a stepsize since that increases the rate of the learning rate increase which might make the training process unstable.
+
+
+
+
+
+In his most reason work, *viz.* Smith (2018), the author proposes using only a single cycle of CLR, called the *1Cycle* policy.
+
+The learning rate setting of the 1Cycle policy is illustrated in \autoref{fig:onecyc}.
 
 ![The learning rate schedule of the 1Cycle policy.\label{fig:onecyc}](figures/onecyc.png)
 
 Clearly one also needs to set the bounds of the learning rate, however luckily, the author designed a learning rate range test to help one do just that.
-In the learning rate range test, training starts with a small learning rate which is slowly increased linearly throughout a pre-training run.
-Typically the training loss will slowly start to decrease as the learning rate increases, up until a certain point at which the learning rate becomes to large and the loss starts to increase.
-The learning rate at this point is the largest learning rate one can use during training.
-The lower bound of the learning rate can be set to a factor of 10 times less than the max.
-See \autoref{fig:range_test} for example output of the range test and how to deterimin the learning rate bounds for the 1Cycle policy.
-One should be careful of too small a stepsize since that increases the rate of the learning rate increase which might make the training process unstable.
+
+
+
+
+In fact, correct implementation leads to the exploitation of a property called *super-convergence* [@Smith2017], where neural networks can be trained an order of magnitude faster than with standard training methods.
+\autoref{fig:supercon} plots the test loss over each training iteration of the proposed hyperparameter strategy compared to a fixed learning rate policy.
+It is clear that using the proposed method, the model achieves improved accuracy compared to the standard approach. This is done in an eigth of the number of training iterations required in the original framework.
+
+We now turn to a discussion of how to select hyperparameters in order to achieve super-convergence.
+
+![Reduced training iterations and improved performance facilitated by the super-convergence principle.\label{fig:supercon}](figures/supercon.png)
+
+
+
+
+One reason why CLR is believed to work is that variable learning rate allows the model to better dodge saddle points on the loss surface.
 
 ![An example output of a learning rate range test.\label{fig:range_test}](figures/range_test.png)
 
