@@ -7,7 +7,7 @@ To many, the difference between a classical neural network and a deep neural net
 Even a network with two hidden layers is sometimes referred to as 'deep'.
 From this perspective, deep (multilayer) neural networks were already proposed by Alexei Ivakhnenko and colleagues more than half a century ago [@Alexei1965].
 In the paper by @Vincent2008 it is stated that "the belief that additional levels of functional decomposition will yield increased representational and modeling power is not new". 
-The authors then cite @McCleland1986, @Hinton1989, and @Utgoff2002.
+The authors then cite @McClelland1986, @Hinton1989, and @Utgoff2002.
 
 Still the boom in deep learning research may be said to have started only a bit more than a decade ago, since effective training of a multi-layer network was only made possible after a breakthrough presented in the paper by @Hinton2006.
 From that time, tons of contributions have been made to the neural network field. 
