@@ -9,9 +9,9 @@ From this perspective, deep (multilayer) neural networks were already proposed b
 In the paper by @Vincent2008 it is stated that "the belief that additional levels of functional decomposition will yield increased representational and modeling power is not new". 
 The authors then cite @Rumelhart1986, @Hinton1989, and @Utgoff2002.
 
-Still the boom in deep learning research may be said to have started only a bit more than a decade ago, since effective training of a multi-layer network was only made possible after a breakthrough presented in the paper by @Hinton2006.
-From that time, tons of contributions have been made to the neural network field. 
-New types of layers, more effective training strategies, and novel approaches to guard against overfitting have been proposed.
+Still the boom in deep learning research may be said to have started only a bit more than a decade ago, since effective training of a multi-layer network was only made possible after a breakthrough presented in the papers by @Hinton2006, @HintonSalak2006, @Ranzata2006,  @Bengio2007, and @Lee2008.
+From around 2006 onwards, tons of contributions have been made to the neural network field. 
+New types of layers, more effective training strategies, and novel approaches to guard against overfitting have since been proposed.
 A more general definition of *deep learning* therefore encompasses all modern developments in the neural network space.
 Because of the large number of deep learning contributions during the past decade, note that in this chapter we restrict attention to developments that form a basis for deep learning in the context of tabular data.
 
@@ -22,18 +22,19 @@ As mentioned before, neural networks are able to approximate any function.
 However, learning algorithms are not necessarily able to find these solutions, therefore we need more efficient ways to learn from the available data. 
 An example is the class of neural networks called *autoencoders* (\Sref{sec:ae}).
 These neural networks are mostly used as unsupervised learning methods with the aim of aiding us to learn more robust data representations, which may subsequently be transferred to supervised learning algorithms.
-We have mentioned in Chapter 1 that the process of transferring knowledge from one network to another is called transfer learning. Note that more detail regarding transfer learning is provided in \Sref{sec:tl}.
+We have mentioned in Chapter 1 that the process of transferring knowledge from one network to another is called transfer learning. 
+Note that more detail regarding transfer learning is provided in \Sref{sec:tl}.
 
 A large number of deep learning developments are explicitly geared toward regularisation in order to prevent overfitting.
-We discuss two important modern proposals that fall into this category, *viz.* the use of the so-called *dropout* method in (\Sref{sec:dropout}) and the use of *data augmentation* in (\Sref{sec:daug}).
+We discuss two important modern proposals that fall in this category, *viz.* the use of the so-called *dropout* method in (\Sref{sec:dropout}) and the use of *data augmentation* in (\Sref{sec:daug}).
 
 A miscellaneous group of modern deep learning proposals that succeed in hitting several targets, are discussed in (\Sref{sec:bnorm}), (\Sref{sec:resnet}), (\Sref{sec:embeds}) and (\Sref{sec:attention}).
-Among others, the successes of this group of developments include regularisation, increasing speed, reducing sensitivity to starting weights (batch normalisation); improving accuracy (skip connections); representing and visualising categorical variables and representation learning (embeddings); and visualising and interpreting NNs (attention).
+Amongst others, the successes of this group of developments include regularisation, increasing speed, and reducing sensitivity to starting weights (batch normalisation); improving accuracy (skip connections); representing and visualising categorical variables, and representation learning (embeddings); and visualising and interpreting NNs (attention).
 The use of these modern architecture have become standard practice in deep learning applications.
 
-With regard to optimisation of the neural network, a method has been proposed which provides a way of automatically finding a good learning rate.
+With regard to optimisation of neural networks, a method has been proposed which provides a way of almost automatically finding a good learning rate.
 This leads to a drastic reduction in the number of training iterations needed.
-The aforementioned training method (referred to as the *one-cycle policy*) is discussed in (\Sref{sec:onecyc}).
+The aforementioned training method (referred to as the *1cycle policy*) is discussed in (\Sref{sec:onecyc}).
 
 We conclude the chapter with a discussion on the interpretability of neural networks in (\Sref{sec:interp}).
 
@@ -42,10 +43,10 @@ We conclude the chapter with a discussion on the interpretability of neural netw
 Autoencoders play a pertinent role in deep learning.
 According to @Goodfellow, the idea of autoencoders have been around since the late 1980's - see for example @LeCun1987, @BourlardKamp1988 and @HintonZemel1994.
 In those years, autoencoders were used for dimensionality reduction and for learning important features in a more general domain than neural networks. 
-From 2006 onwards, their application in neural networks facilitated efficient training of deep neural nets, which in turn caused the upsurge in deep learning research [@Hinton2006; @HintonSalak2006; @Bengio2007].
+From 2006 onwards, their application in neural networks facilitated efficient training of deep neural nets, which in turn caused an upsurge in deep learning research [@Hinton2006; @HintonSalak2006; @Bengio2007].
 Autoencoders are also used to facilitate transfer learning, which we will see is an important way of ensuring efficient training in deep neural networks.
 
-Some of the most popular types of autoencoders are so-called *denoising autoencoders* [@Vincent2008] and *stacked denoising autoencoders* [@Vincent2010], *sparse autoencoders* (refernce), *contractive autoencoders* [@Rifai2011], *semi-supervised recursive autoencoders* [@Socher2011], and *variational autoencoders* [@Kingma2013]. 
+Some of the most popular types of autoencoders are so-called *denoising autoencoders* [@Vincent2008], *stacked denoising autoencoders* [@Vincent2010], *sparse autoencoders* (reference), *contractive autoencoders* [@Rifai2011], *semi-supervised recursive autoencoders* [@Socher2011], and *variational autoencoders* [@Kingma2013]. 
 In this section, we start with an explanation of a plain vanilla autoencoder.
 This is followed with a brief description of the differences among the other kinds of autoencoders listed above, starting with denoising autoencoders.
 
