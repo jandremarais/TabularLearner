@@ -443,7 +443,7 @@ Note that in our experiments we follow the abobve suggestions in order to tune t
 
 ## Model Interpretation \label{sec:interp}
 
-Although deep learning has become state-of-the-art for many machine learning tasks, it is still trailing behind other algorithms in terms of model interpretability.
+Although deep learning has become the state-of-the-art approach in many machine learning tasks, it is still trailing behind other algorithms in terms of model interpretability.
 This is however is not an unusual occurrence: in statistical learning the trade-off between prediction performance and interpretability is well known.
 Deep neural networks are occasionally referred to as "black boxes" since it is very difficult to interpret what is going on inside the stacks of linear and non-linear layers.
 This is one of the biggest criticisms against the deep learning field, and a stumbling block for deployment in production environments. 
@@ -472,35 +472,35 @@ Knowledge distillation entails the process of transferring knowledge from one mo
 @Frosst2017 and @Che2016 respectively use a soft-decision tree and boosted trees to learn the mapping between the inputs and the neural network predictions.
 Once the tree based methods have been trained, the usual intepretation tools of tree based models, like feature importance or evaluating the way in which a sample traverses the tree, may be used in an attempt to understand the neural network.
 It is interesting that in both publications the authors note that tree based models trained on the neural network predictions achieved improved performances over the ones trained using the actual targets.
-This is indicative of the value knowledge distillation can add.
+This is indicative of the value knowledge distillation is able to add.
 
 ### Model Agnostic \label{sec:interp_ma}
 
-Besides interpretation tools specifically designed for neural networks, one can also make use of model agnostic tools, *i.e.* ones that can be used with any machine learning model.
-*The Permutation importance algorithm* computes feature importance scores for each input feature.
-The importance measure of a feature is deterimend by the model's sensitivity to a random permutation of the values of that feature.
-The expectation is that when a feature with a strong signal is shuffled before passed to the model, the performance of the model will drop significantly.
-On the other hand, if a feature has little effect on the target predictions, shuffling its values will not have a major impact on the model's performance.
+Besides interpretation tools specifically designed for neural networks, one may of course also make use of model agnostic tools, *i.e.* methods ones that may be used in combination with any machine learning model.
+The so-called *permutation importance algorithm* is such a tool, computing feature importance scores corresponding to each input feature.
+The importance measure of a feature is determined by the sensitivity of that feature to random permutations of its values.
+The expectation is that when a feature with a strong signal is shuffled before input to a model, the performance of the model will drop significantly.
+On the other hand, if a feature has little effect on the target predictions, shuffling its values will not exhibit major effect on its performance.
 
-This technique was first introduced by [@Breiman2001] for the Random Forest algorithm but can also be generalised to other models.
-The steps for calculating the feature importances by the permuation importance algorithm are as follows:
+Permutation importance was first introduced by @Breiman2001 in the random forest algorithm, but may be generalised to other models.
+The steps for calculating feature importances are provided below:
 
 1. Train a neural network on a dataset with $p$ input features.
-2. Evaluate the network on a validation set to obtain a performance metric $m_{0}$.
-3. For each of the $p$ input features, do:
-    - create a copy of the validation set and randomly shuffle the feature in this copy.
-    - Evaluate the neural network on this version of the validation set to obtain $m_{j}$, $j=1,\dots,p$.
-4. Rank the features based on $m_{j}-m_{0}$ (if a bigger $m$ is better).
+2. Evaluate the network on a validation set in order to obtain a performance metric $m_{0}$.
+3. For each of the $p$ input features:
+    - Create a copy of the validation set and randomly shuffle the feature in this copy.
+    - Evaluate the neural network on this version of the validation set, thereby obtaining $m_{j}$, $j=1,\dots,p$.
+4. Rank the features based upon $m_{j}-m_{0}$ (if a bigger $m$ is preferred).
 
-Permutation importance only produces sensical results on the assumption that the features are independent.
-Permuting the feature independently creates examples that never occurr in real life and the importance of features in that invalid space may be misleading.
-The test however can still be useful to identify inputs that are not important, *i.e.* not used by the model.
-If randomly permuting a feature does not affect the model performance at all, it may be a good indication that the model is not dependent on it.
+Unfortunately note that permutation importance only produces sensical results if the assumption of independent features holds.
+Permuting features independently creates examples that never occurr in real life and the importance of features in that invalid space may be misleading.
+The test however can still be useful to identify inputs that are not important, *i.e.* features that are not used by the model.
+If randomly permuting a feature does not affect the model performance at all, it may be a good indication that the model does not depend on that feature.
 
-*Partial Dependence Plots* can be used to visaulise the relationship between input features and the target.
-This is another post-training interpretation tool and was first used in [@Friedman2001].
-Once a neural network is trained, we can evaluate what effect a change in any input feature has on a single prediction, by observing the change in the prediction.
-Say for example we want to see how feature $X_{1}$ influences the model prediction.
+A second example of a interpretation tool that is independent of the particular model fitted, is the use of *partial dependence plots*.
+These graphs may be used to visualise relationships between a target and input features [@Friedman2001].
+Once a neural network is trained, we may evaluate the effect of a change in any input feature on a single prediction by observing the change in the prediction.
+Suppose for example we evaluate the way in which a feature $X_{1}$ influences predictions.
 By taking a single observation from the data we can evaluate how the model prediction changes by changing the value of $X_{1}$ to other possible values of $X_{1}$.
 And since this behaviour will most like vary for different observations, this process should be repeated for a subset of observations from the dataset.
 The average effect on the predictions at different values of $X_{1}$ can then be calculated along with standard errors of these effects.
