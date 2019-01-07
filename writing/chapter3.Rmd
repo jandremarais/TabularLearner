@@ -372,7 +372,7 @@ Although there are no easy ways to find them, appropriate parameter values do ha
 A grid search or random search in the parameter space seems not to be an option because of its computational expense. 
 
 In this section we summarise the work on structuring specification of NN hyperparameters presented in the papers by Smith in 2015 and 2018, and by Smith and Topin in 2017.
-Through his proposed approaches, the necessity of running complete grid or random searches is eliminated, rendering tremendous improvements in training time and accuracy.
+Through these approaches, the necessity of running complete grid or random searches is eliminated, rendering tremendous improvements in training time and accuracy.
 
 In his 2015 paper Smith considers specification of the learning rate parameter.
 This is a worthwhile enterprise: in \Cref{chp:nn} the importance of the appropriately specifying the learning rate became evident.
@@ -381,12 +381,11 @@ We saw that one may choose to keep its value fixed throughout training, or to al
 The latter was the preferred approach until *cyclical learning rates* (CLR) were proposed in Smith (2015). 
 
 In CLR, as training of a network progresses, the learning rate is varied cyclically between two boundary values.
-A cycle consists of two stages, *viz.* the stage when the learning rate increases to a pre-specified maximum value, and the stage where the learning rate decreases to a chosen minimum value.
+A cycle consists of two steps, *viz.* a stage when the learning rate increases to a pre-specified maximum value, and a stage where the learning rate decreases to a chosen minimum value.
 Different cyclical functions of the learning rate were experimented with.
 Since they performed similarly, the simplest function, *viz.* the so-called *triangular learning rate policy* was adapted.
-In 
-the first stage the learning rate linearly increases to a certain maximum, and in the second stage the learning rate linearly decreases to a chosen minimum.
-As training progresses, many cycles of learning rates occurs.
+In a triangular function, the learning rate increases linearly up to the maximum, and then decreases linearly back to the minimum.
+Note that during training, many cycles of learning rates are traversed.
 
 In order to implement cyclical learning rates, one needs to specify the number of epochs during each stage (also known as the step size), as well as the minimum and maximum learning rates to be attained.
 In Smith (2015), a simple method for finding reasonable learning rate boundaries is provided.
@@ -398,92 +397,82 @@ In CLR it is suggested that the lower bound of the learning rate be set to a fac
 For an update of the CLR proposal, the reader is referred to Smith (2017).
 
 Importantly, during application of the learning rate range test towards fitting ResNets to specific image datasets, Smith and Topin (2017) discovered that the test loss remains constant up to very large values for the learning rate.
-The implication in these setups is that one may use one learning rate cycle together with unusually large learning rates values in order to train neural networks an order of magnitude faster than when using standard training methods.
-This phenomenon is called *super-convergence*.
+This surprising phenomenon is called *super-convergence*.
 
-In his most recent work, Smith (2018) considers a more comprehensive methodology which recognises the interdependence
-of specification of the learning rate, batch size and other regularisation techniques such as weight decay.
-As may be expected, the proposed framework focuses on finding the right balance between overfitting and underfitting.
-Through consideration of the obtained validation loss during early stages of training, clues are found with respect to more desired values of the hyperparameters.
+The implication of super-convergence is that in some setups one may simply use a single learning rate cycle together with unusually large learning rates values in order to train neural networks an order of magnitude faster than when using standard training methods.
+Whether or not super-convergence may occur in a specific network architecture may be verified using the learning rate range test, similar to the way in which the super-convergence discovery was made.
+If super-convergence is possible, Smith and Topin (2017) suggest a slight modification of CLR, *viz.* to "use a single cycle that is smaller than the total number of iterations/epochs and to allow the learning rate to decrease several orders of magnitude less than the initial learning rate for the remaining iterations". 
+Note that the initial learning rate is an abnormally large value. 
+The unusually large learning rate used leads to an additional benefit, *viz.* the facilitation of regularisation.
+The above learning rate methodology is called *1cycle*, and its learning rate setting is illustrated in \autoref{fig:onecyc}.
+![The learning rate schedule of the 1cycle policy.\label{fig:onecyc}](figures/onecyc.png)
 
-
-See \autoref{fig:range_test} for example output of the range test and how to determine the learning rate bounds for the 1Cycle policy.
-One should be careful of too small a stepsize since that increases the rate of the learning rate increase which might make the training process unstable.
-
-
-
-
-
-In his most reason work, *viz.* Smith (2018), the author proposes using only a single cycle of CLR, called the *1Cycle* policy.
-
-The learning rate setting of the 1Cycle policy is illustrated in \autoref{fig:onecyc}.
-
-![The learning rate schedule of the 1Cycle policy.\label{fig:onecyc}](figures/onecyc.png)
-
-Clearly one also needs to set the bounds of the learning rate, however luckily, the author designed a learning rate range test to help one do just that.
-
-
-
-
-In fact, correct implementation leads to the exploitation of a property called *super-convergence* [@Smith2017], where neural networks can be trained an order of magnitude faster than with standard training methods.
-\autoref{fig:supercon} plots the test loss over each training iteration of the proposed hyperparameter strategy compared to a fixed learning rate policy.
-It is clear that using the proposed method, the model achieves improved accuracy compared to the standard approach. This is done in an eigth of the number of training iterations required in the original framework.
-
-We now turn to a discussion of how to select hyperparameters in order to achieve super-convergence.
-
-![Reduced training iterations and improved performance facilitated by the super-convergence principle.\label{fig:supercon}](figures/supercon.png)
-
-
-
-
-One reason why CLR is believed to work is that variable learning rate allows the model to better dodge saddle points on the loss surface.
+Clearly also in the 1cycle regime, bounds for the learning rate need to be set.
+For this purposes the learning rate range test may be used, but with the lower of the learning rate set to a factor of about 10 times less than the maximum learning rate.
+\autoref{fig:range_test} illustrates an example of output obtained from the learning rate range test and of how to determine the learning rate bounds to be used in the 1cycle policy.
 
 ![An example output of a learning rate range test.\label{fig:range_test}](figures/range_test.png)
 
-Note that large learning rates also acts as a form regularisation [@Smith15].
-Thus if one uses large learning rate, one might want to reduce some of the other regularisation controls.
-Along with the learning rate [@Smith2018] suggests and shows that larger batch sizes allow for training with larger learning rates and thus convergence can be reached quicker.
-So when setting the batch size one would choose the largest possible that fits into memory.
+Note that one should be careful of specifying a too small step size since this increases the rate by which the learning rate parameter increases, which in turn might render the training process unstable.
 
-The weight decay is another important value to be set properly along with the 1Cycle policy.
-Since it is a regularisation parameter it is important that it is in balance with the learning rate.
-The proposed way of setting the weight decay is through a grid search.
-Once can do a few short training runs at differnt weight decays and see if the validation loss gives any indication of which one is better.
-Another option is to test different weight decays during the learning rate range test and see how they behave.
-Then we will look for the weigth decay that produces the most stable loss and allows the use of the largest learning rate.
-In our experiments we follow these suggestions to find the best hyperparamters for each model and dataset.
+Next consider \autoref{fig:supercon}, taken from Smith and Topin (2017).
+Here the test loss over each training iteration in the 1cycle methodology is compared to that of a fixed learning rate policy.
+
+![Reduced training iterations and improved performance facilitated by the super-convergence principle.\label{fig:supercon}](figures/supercon.png)
+
+From \autoref{fig:supercon} it is clear that using the proposed method, the model achieves improved accuracy compared to the standard approach. 
+This is done in an eigth of the number of training iterations required in the original framework.
+
+In his most recent work, Smith (2018) considers a more comprehensive methodology which recognises the interdependence
+of specification of the learning rate, batch size and other regularisation techniques such as weight decay.
+An important remark in this paper is that contributions to the amount of regularisation on a network should be balanced across the various hyperparameter values.
+For example, since large learning rates also act as a form of regularisation (Smith, 2015), if one uses a large learning rate in the 1cycle regime, one would have to reduce some of the other regularisation controls.
+
+In the 2018 paper, specification of batch size and of weight decay is also considered.
+It is shown that larger batch sizes allow for training with larger learning rates, thus convergence can be reached quicker.
+Therefore when setting the batch size, the recommendation is to select the largest possible size that fits into memory.
+
+The weight decay parameter is another important value that needs to be properly specified during the 1cycle policy.
+Since it is a regularisation parameter it should be in balance with the learning rate.
+The proposed way of setting the weight decay is by means of a grid search.
+A few short training runs are performed at different weight decay values.
+The validation loss function is then inspected for any hints with regard to a preferred choice. 
+Alternatively, various weight decay values may be used during the learning rate range test and their behavior compared.
+The preferred weight decay value is the one which produces the most stable loss and which allows the use of the largest learning rate.
+Note that in our experiments we follow the abobve suggestions in order to tune the hyperparameter values specific to each different model.
 
 ## Model Interpretation \label{sec:interp}
 
-Although Deep Learning is now the state-of-the-art for many machine learning tasks, it is still trailing behind other algorithms in terms of model interpretability.
-But keep in mind this is not an unusual trade-off; between prediction performance and model interpretability.
+Although deep learning has become state-of-the-art for many machine learning tasks, it is still trailing behind other algorithms in terms of model interpretability.
+This is however is not an unusual occurrence: in statistical learning the trade-off between prediction performance and interpretability is well known.
 Deep neural networks are occasionally referred to as "black boxes" since it is very difficult to interpret what is going on inside the stacks of linear and non-linear layers.
-This is one of deep learning's greatest criticisms and is a large reason why it cannot be used in some production environments. 
+This is one of the biggest criticisms against the deep learning field, and a stumbling block for deployment in production environments. 
 For example, in the clinical domain, model transparency is of utmost importance, given that predictions might be used to affect real-world medical decision-making and patient treatments [@Shickel2017].
-Fortunately, some work has been done to gain insights from neural networks.
-We discuss the topic briefly in the following sections.
+Fortunately some work has been done to gain insight from neural networks.
+This topic is briefly discussed in the following sections.
 
 ### Neural Network Specific \label{sec:interp_ns}
 
-We have showed in \Sref{sec:rep} that it is possible to inspect activations and weights of layers at different levels of the network.
-If the network is small, one might gain insight to what the network has learned or why it is making certain decisions.
+We have showed in \Sref{sec:rep} that it is possible to inspect activations and weights of layers at different levels of a neural network.
+If the network is small, one might gain insight into what the network has learned, or why it is making certain decisions.
 However, most useful neural networks are at least three layers deep, making its activations and weights more complex to interpret.
 
 When fully convolutional networks are used, there are ways to visualise which parts of the inputs were important in making a certain decision.
-These visualisations are called class activation maps [@Zhou2016] ([@Selvaraju2017] suggests a similar approach).
-But they cannot be used with fully connected layers and only with fully convolutional networks.
+These visualisations are called class activation maps [@Zhou2016; @Selvaraju2017].
+They can unfortunately only be used with fully convolutional networks, and not with fully connected layers.
 
-Another common interpretation tool, in order to gain insight into what specific neurons are looking for, is to rank the inputs by the magnitude of their activation at that neuron.
-Then, if one would be able to manually spot similarities between the highest ranked inputs, one would have a potential description of the pattern that triggers that neuron.
-This approach is called *Activation Maximisation* [@Erhan2009].
-This process is manual and not guarranteed to produce useful insights, especially when there are many neurons to investigate.
+Another common interpretation tool in order to gain insight into what specific neurons are looking for, is to rank inputs by the magnitude of their activations at those neurons.
+Then, if it is possible to spot similarities between the highest ranked inputs, this provides a potential description patterns triggering neurons.
+The above approach is called *Activation Maximisation* [@Erhan2009].
+Since it relies on human inspection, Activation Maximisation is infeasible in the face of many neurons to investigate.
 
-An interesting take on model interpretation is shown in [@Frosst2017] and [@Che2016].
+An interesting take on model interpretation is described in @Frosst2017 and @Che2016.
 Their ideas are based on the process of *knowledge distillation* [@Hinton2015] and leverages the fact that decision trees are easier to interpret.
-Knowledge distillation is the process of transferring the knowledge from one model (or an ensemble of models) to another model by training the target model to estimate the predictions of the source model (or ensemble).
-[@Frosst2017] and [@Che2016] used a soft-decision tree and boosted trees respectively to learn the mapping between the input and the neural network predictions.
-Once the tree based methods are trained, the usual intepretation tools of tree based models, like feature importance of evaluating how a sample traverses the tree, can be used to attempt to understand what the neural network is doing.
-It is interesting that in both publications the authors note that the tree based models trained on the neural network predictions achieved a better performance that the ones trained on the actual targets - indicating the value knowledge distillation can add.
+Knowledge distillation entails the process of transferring knowledge from one model (or an ensemble of models) to another model by means of training the target model to estimate the predictions of the source model (or ensemble).
+@Frosst2017 and @Che2016 respectively use a soft-decision tree and boosted trees to learn the mapping between the inputs and the neural network predictions.
+Once the tree based methods have been trained, the usual intepretation tools of tree based models, like feature importance or evaluating the way in which a sample traverses the tree, may be used in an attempt to understand the neural network.
+It is interesting that in both publications the authors note that tree based models trained on the neural network predictions achieved improved performances over the ones trained using the actual targets.
+This is indicative of the value knowledge distillation can add.
 
 ### Model Agnostic \label{sec:interp_ma}
 
