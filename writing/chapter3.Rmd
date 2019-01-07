@@ -380,12 +380,16 @@ To re-emphasise, the learning rate is viewed as the hyperparameter whose appropr
 We saw that one may choose to keep its value fixed throughout training, or to allow it to decrease from a certain point in training onwards.
 The latter was the preferred approach until *cyclical learning rates* (CLR) were proposed in Smith (2015). 
 
-In CLR, the learning rate is varied cyclically between two boundary values.
-Hence a CLR cycle consists of two stages.
-In the first stage the learning rate linearly increases to a certain maximum, and in the second stage the learning rate linearly decreases to a chosen minimum.
+In CLR, as training of a network progresses, the learning rate is varied cyclically between two boundary values.
+A cycle consists of two stages, *viz.* the stage when the learning rate increases to a pre-specified maximum value, and the stage where the learning rate decreases to a chosen minimum value.
+Different cyclical functions of the learning rate were experimented with.
+Since they performed similarly, the simplest function, *viz.* the so-called *triangular learning rate policy* was adapted.
+In 
+the first stage the learning rate linearly increases to a certain maximum, and in the second stage the learning rate linearly decreases to a chosen minimum.
+As training progresses, many cycles of learning rates occurs.
 
 In order to implement cyclical learning rates, one needs to specify the number of epochs during each stage (also known as the step size), as well as the minimum and maximum learning rates to be attained.
-In Smith (2015), a simple method for finding reasonable learning rate boundaries.
+In Smith (2015), a simple method for finding reasonable learning rate boundaries is provided.
 In this learning rate range test, training starts with a small learning rate which is then slowly increased in a linearly fashion throughout a pre-training run.
 Typically with an increase in the learning rate, the training loss decreases until a point where the network converges.
 After this point the learning rate becomes too large, causing the loss to start increasing.
@@ -393,13 +397,17 @@ Hence this is the largest learning rate one should consider using during trainin
 In CLR it is suggested that the lower bound of the learning rate be set to a factor of 3 or 4 times less than the maximum learning rate.
 For an update of the CLR proposal, the reader is referred to Smith (2017).
 
+Importantly, during application of the learning rate range test towards fitting ResNets to specific image datasets, Smith and Topin (2017) discovered that the test loss remains constant up to very large values for the learning rate.
+The implication in these setups is that one may use one learning rate cycle together with unusually large learning rates values in order to train neural networks an order of magnitude faster than when using standard training methods.
+This phenomenon is called *super-convergence*.
+
 In his most recent work, Smith (2018) considers a more comprehensive methodology which recognises the interdependence
 of specification of the learning rate, batch size and other regularisation techniques such as weight decay.
 As may be expected, the proposed framework focuses on finding the right balance between overfitting and underfitting.
 Through consideration of the obtained validation loss during early stages of training, clues are found with respect to more desired values of the hyperparameters.
 
 
-See \autoref{fig:range_test} for example output of the range test and how to deterimine the learning rate bounds for the 1Cycle policy.
+See \autoref{fig:range_test} for example output of the range test and how to determine the learning rate bounds for the 1Cycle policy.
 One should be careful of too small a stepsize since that increases the rate of the learning rate increase which might make the training process unstable.
 
 
