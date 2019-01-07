@@ -502,9 +502,8 @@ These graphs may be used to visualise relationships between a target and input f
 Once a neural network is trained, we may evaluate the effect of a change in any input feature on a single prediction by observing the change in the prediction.
 Suppose for example we evaluate the way in which a feature $X_{1}$ influences predictions.
 By taking a single observation from the data we can evaluate how the model prediction changes by changing the value of $X_{1}$ to other possible values of $X_{1}$.
-And since this behaviour will most like vary for different observations, this process should be repeated for a subset of observations from the dataset.
-The average effect on the predictions at different values of $X_{1}$ can then be calculated along with standard errors of these effects.
+And since this behaviour will most likely vary for different observations, the above process should be repeated for a subset of observations from the dataset.
+The average effect on the predictions at different values of $X_{1}$ can subsequently be obtained, along with standard errors of these effects.
 
-Other model agnostic interpretation tools, like SHAP values [@Lundberg2017], are also available.
-Here we only discussed the basic approaches.
-In the next two chapters we will show examples of how these model interpretation techniques can be implemented.
+For more model agnostic interpretation tools (for instance the use of so-called *SHAP values*), the reader is referred @Lundburg2017.
+Examples of implementation of these model interpretation techniques may be found in the next two chapters.
