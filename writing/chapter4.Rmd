@@ -25,34 +25,32 @@ In the final section, the 1cycle policy and hyperparameter selection in DLTD are
 
 ## Input Representation \label{sec:inp_rep}
 
-One of the major design considerations when building a deep neural network for tabular data is the input representation, *i.e.* how should one represent each feature numerically?
-This choice may heavily influnce the model's ability to extract patterns from the input and the effectiveness of the optimisation algorithm.
-What makes this decision harder is that the features in a tabular dataset are highly heterogeneous [@Shavitt2018].
-What we decide for one features might not be optimal for another and we want to ensure that no feature dominates another in the training process.
-
-A tabular dataset typically has continuous features and categorical features.
-Different approaches are needed to process each.
-But the processing should be done in such a way that the one feature type does not dominate the other in terms of feature extraction and optimisation.
-
-A tabular dataset can be high-dimensional and very sparse which makes the task more difficult but even more important to do effectively, as noted by many [@Song2018, @Wang2017b, @Qu2016, @Cheng2016, @anonymous2019, @Covington2016].
-An example of one such challenging tabular dataset is the Criteo dataset[^criteo].
-Its feature dimension is ~30 million, exhibiting sparsity of ~99%.
-Although not always as extreme, these properties are common in tabular datasets.
+One of the major design considerations when constructing a deep neural network for tabular data is the input representation, *i.e.* the way in which one should numerically represent each feature.
+This choice may heavily influence the ability of the neural net to extract patterns from the input, as well as optimisation efficiency during training.
+This is a more difficult decision in the case of tabular data, since here features are typically highly heterogeneous [@Shavitt2018].
+A representation may be optimal for some features, but not for others, and we want to ensure that no feature dominates the others during training.
+Moreover, a tabular dataset typically contains both continuous and categorical features, where different approaches are needed to process each.
+Tabular dataset are often high-dimensional and very sparse. 
+This is a scenario in which the adverse effect of improper input representations is magnified, as noted by many [@Song2018, @Wang2017b, @Qu2016, @Cheng2016, @anonymous2019, @Covington2016].
+An example of an extremely high-dimensional and sparse tabular dataset is the so-called Criteo dataset[^criteo].
+Its feature dimension is ~30 million, with a sparsity of ~99%.
 
 [^criteo]: https://www.kaggle.com/c/criteo-display-ad-challenge
 
 ### Numerical Features
 
-One of the things that make tree-based methods so attractive is that the scale and the distribution of the features hardly matter, as long as their relative ordering is meaningful.
-With neural networks, we are not that fortunate.
+A major advantage of tree-based methods is that the scale and distribution of features hardly matter.
+The only requirement is that their relative ordering should be meaningful.
+With neural networks we are not that fortunate.
 Neural networks are very sensitive to the scale and distribution of its inputs [@Ioffe2015]. 
-If the features are on different scales, one might dominate the weight updates, and if a feature constains a large value, it may throw of the optimisation procedure and cause exploding or vanishing gradients [@Clevert2015].
-This means that one should do a proper standardisation of all continuous features in a tabular dataset.
+If features are measure on different scales, a single feature might dominate the weight updates.
+In this case, if a feature contains a large value, it may throw off the optimisation procedure, thereby causing gradients to 'explode' or to 'vanish' [@Clevert2015].
+The implication is that proper standardisation of all continuous features in tabular data is mandatory.
 
-The typical standardisation approach for numerical features in deep learning is to do mean centering and variance scaling, *i.e.* $\tilde{x}=(x-\mu)/\sigma$, where $\mu$and $\sigma$ is the mean and standard deviation of $X$ respectively ($x\in X$).
-One would expect this transformation to be sufficient, but in practice, many have found otherwise.
+The typical standardisation approach for numerical features in deep learning is to do mean centering and variance scaling, *i.e.* $\tilde{x}=(x-\mu)/\sigma$, where $\mu$and $\sigma$ are the mean and standard deviation of $X$ respectively ($x\in X$).
+One would expect this transformation to also be sufficient for tabular data, but in practice, it has often been found otherwise.
 
-In [@haldar2018] they suggest to first inspect the distribution of each of the features.
+In [@haldar2018] the authors propose first inspecting the distribution of each feature.
 If a feature looks gaussian, do the standard normalisation, $(x-\mu)/\sigma$, but if the feature looks more like a power law distribution, transform it by $\log\left((1+x)/(1+\text{median})\right)$.
 This ensures that the bulk of the values lie between {-1,1} and that the median is close to zero.
 As an example, we illustrate what effect these transformations have on 2 continuous features in the Adult dataset, Age and Hours-per-week, in \autoref{fig:contnorm}.
