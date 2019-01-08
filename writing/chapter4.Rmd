@@ -2,11 +2,13 @@
 
 ## Introduction
 
-Up to now we have covered the basics of neural networks, as well as the more recent advancements in the era of deep learning.
-The aim of this chapter is to explore how the approaches and techniques we discussed can be leveraged when doing deep learning with tabular data.
-Tabular data is vastly different to so-called unstructured data like images, text and speech and therefore we do not expect all of the methods to be as effective.
+In Chapters 2 and 3 we have covered the basics of neural networks, as well as the more recent advances in deep learning.
+The aim of this chapter is to explore ways in which the modern deep learning approaches in Chapter 3 may be leveraged in the application of deep learning for tabular data.
+In Chapter 1 alluded to the differences of tabular data when compared to unstructured data like such as images, and data used in text and speech applications.
+The widely acclaimed successes of deep learning typically occur areas such as image classification, machine translation and speech recognition.
+In the literature only a handful of publications reporting successful implementation of deep learning for tabular data may be found.
+important applications such as recommender systems [@haldar2018], click-through rate prediction[^ctr] [@Song2018], analysis of electronic health records [@Rajkomar2018] and transport related problems [@Brebisson2015], to name a few.
 Deep learning on tabular data is not as well researched compared to the aformentioned data domains and thus it is not always clear how to solve certain modelling challenges.
-There is only a handful of publications reporting sucessful implementations of deep learning for tabular data on important applications such as recommender systems [@haldar2018], click-through rate prediction[^ctr] [@Song2018], analysis of electronic health records [@Rajkomar2018] and transport related problems [@Brebisson2015], to name a few.
 
 The tabular data domain is still dominated by tree-based models like random forests and gradient boosted trees.
 This makes us curious as to why deep learning is not as effective here as it is in most other data domains.
