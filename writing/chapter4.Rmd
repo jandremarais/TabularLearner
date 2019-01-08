@@ -2,27 +2,26 @@
 
 ## Introduction
 
-In Chapters 2 and 3 we have covered the basics of neural networks, as well as the more recent advances in deep learning.
-The aim of this chapter is to explore ways in which the modern deep learning approaches in Chapter 3 may be leveraged in the application of deep learning for tabular data.
-In Chapter 1 alluded to the differences of tabular data when compared to unstructured data like such as images, and data used in text and speech applications.
-The widely acclaimed successes of deep learning typically occur areas such as image classification, machine translation and speech recognition.
-In the literature only a handful of publications reporting successful implementation of deep learning for tabular data may be found.
-important applications such as recommender systems [@haldar2018], click-through rate prediction[^ctr] [@Song2018], analysis of electronic health records [@Rajkomar2018] and transport related problems [@Brebisson2015], to name a few.
-Deep learning on tabular data is not as well researched compared to the aformentioned data domains and thus it is not always clear how to solve certain modelling challenges.
+In Chapters 2 and 3 we covered the basics of neural networks, as well as the more recent advances in deep learning.
+The aim of this chapter is to explore ways in which the modern deep learning approaches in Chapter 3 may be leveraged in the application of deep learning for tabular data (DLTD).
+In Chapter 1 we alluded to the differences of tabular data compared to unstructured data (such as images, and data used in text and speech applications).
+The widely acclaimed successes of deep learning typically occur in areas such as image classification, machine translation and speech recognition.
+However, in the literature only a handful of publications report successful implementation of deep learning for tabular data.
+In these papers the applications include recommender systems [@haldar2018]; click-through rate prediction[^ctr] [@Song2018]; analysis of electronic health records [@Rajkomar2018]; and transport related problems [@Brebisson2015].
+Not much research has been done in the area of deep learning for tabular data, therefore it is often unclear how to solve certain modelling challenges.
+Hence the tabular data domain is still dominated by tree-based models such as random forests and gradient boosted trees.
+This begs the question as to why deep learning is not nearly as effective here as it is in most other data domains.
+The aim of this chapter is to help illuminate this issue, and to indicate promising directions towards improving current state-of-the-art performances.
 
-The tabular data domain is still dominated by tree-based models like random forests and gradient boosted trees.
-This makes us curious as to why deep learning is not as effective here as it is in most other data domains.
-This chapter will help shed light on this issue and point to promising ways of improving the current state-of-the-art.
+The structure of the chapter is based upon the challenges that occur when using deep learning for tabular datasets, as identified and described in \Sref{sec:tabchal}.
+For each challenge, we reconsider the issue, review the literature to discuss current methodology, and (where possible) provide suggestions towards improving these approaches.
+We start in \Sref{sec:inp_rep} by considering ways to represent input features in tabular data.
+\Sref{sec:feat_int} is devoted to approaches that are used to leverage feature interactions.
+A large part of this chapter is devoted to methodology which facilitates sample efficiency; we discuss in detail in \Sref{sec:samp_eff}.
+This is followed by a brief discussion of ways to interpret deep neural networks for tabular data in \Sref{sec:interp}.
+In the final section, the 1cycle policy and hyperparameter selection in DLTD are discussed, in addition to a selection of miscellaneous topics that do not fit into the above framework.
 
-This chapter is structured based on the tabular dataset challenges introduced in \Sref{sec:tabchal}.
-For each of the challenges we provide a recap of the issue, review the literature to discuss how they are currently being treated, and provide suggestions for improving these approaches, (where applicable).
-In \Sref{sec:inp_rep} we look at ways of representing the input features of a tabular dataset.
-\Sref{sec:feat_int} is abut approaches for leveraging feature interactions.
-A large part of this chapter is on how to be more sample efficient; this we discuss in detail in \Sref{sec:samp_eff}.
-Then we briefly investigate ways of interpreting deep neural networks for tabular data in \Sref{sec:interp}.
-In the final section \Sref{sec:hs_tb} we discuss the 1Cycle policy and hyperparameter selection for tabular data neural networks, in addition to other miscellaneous topics that do not fit into the above categorisation.
-
-[^ctr]: To predict the probability of a user clicking an item, critical to online applications.
+[^ctr]: To predict the probability of a user clicking an an item, which is of critical interest in online applications.
 
 ## Input Representation \label{sec:inp_rep}
 
