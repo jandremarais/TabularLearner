@@ -99,64 +99,70 @@ The other problem with one-hot encodings of categorical features is that there i
 In this representation, all categories lies equally far apart, now matter how semantically similar or dissimilar they are.
 This makes it harder for the model to learn useful patterns.
 
-An alternative to one-hot encodings as representations of categorical features for neural networks are *entity embeddings*.
-An entity embedding is the exact same operation as (word) embeddings we have discussed in \Sref{sec:embeds}, but applied to categories instead of words.
-Therefore an entity embedding assigns a numeric vector representation to each category in a categorical feature, for example: Category 1: $[0.05,-0.1,0.2]$, Category 2: $[0.2,0.01,0.3]$ and $[-0.1,-0.2,0.05]$ for Category 3.
-Once all of the categorical features have been embedded, their representations can be concatenated and passed to the rest of the network.
+An alternative to one-hot encodings as representations of categorical features for neural networks is the use of *entity embeddings*.
+The first publication on entity embeddings in the context of deep learning followed as a result of a taxi destination prediction challenge [@Brebisson2015].
+This was followed by a paper by @Guo2016, wherein the authors succesfully used entity embeddings in order to predict the total sales of a store.
+Furthermore, companies such as [Instacart](https://tech.instacart.com/deep-learning-with-emojis-not-math-660ba1ad6cdc) and [Pinterest](https://medium.com/the-graph/applying-deep-learning-to-related-pins-a6fee3c92f5e) report the effective use of entity embeddings on their internal datasets. 
+Currently all research on deep learning for tabular data facilitate entity embeddings - see for example [@Song2018], [@Wang2017b], [@Covington2016] and [@Zhou2017].
+The reason for their all-round use is the way in which they are able to ameliorate the issues of one-hot encoded representations.
 
-The first published work in modern times on entity embeddings was in the taxi destination prediction challenge [@Brebisson2015].
-In another Kaggle sucess story, [@Guo2016] succesfully used entity embeddings for predicting the total sales of a store.
-Companies like [Instacart](https://tech.instacart.com/deep-learning-with-emojis-not-math-660ba1ad6cdc) and [Pinterest](https://medium.com/the-graph/applying-deep-learning-to-related-pins-a6fee3c92f5e) have reported the effective use of entity embeddings on their internal datasets. 
-Currently, all research on deep learning for tabular data makes use of entity embeddings - see for example [@Song2018], [@Wang2017b], [@Covington2016] and [@Zhou2017].
-
-The reason why it is used all-round is because it does not have the same issues as the one-hot encoded representations.
-A similar formulation to \Sref{sec:embeds}, we define the embedding for the $j$-th categorical feature by:
+An entity embedding entails exactly the same operations as with (word) embeddings (discussed in \Sref{sec:embeds}), only they are applied to categories instead of words.
+Therefore an entity embedding assigns a numeric vector representation to each level in a categorical feature.
+For example, Level 1 is embedded as $[0.05,-0.1,0.2]$; whereas Levels 2 and 3 are embedded as $[0.2,0.01,0.3]$ and $[-0.1,-0.2,0.05]$ respectively.
+In a formulation similar to the one in \Sref{sec:embeds}, note that the embedding for the $j$-th categorical feature is defined by
 $$
-\boldsymbol{e}_{j}=V_{j}\boldsymbol{x}_{j}
+\boldsymbol{e}_{j}=V_{j}\boldsymbol{x}_{j},
 $$
-where $\boldsymbol{x}_{j}$ is the one-hot encoded vector representation of the $j$-th categorical variable and $V_{j}$ is the associated embedding/weight matrix.
+where $\boldsymbol{x}_{j}$ denotes the one-hot encoded vector representation of the $j$-th categorical input, where and $V_{j}$ is the associated embedding/weight matrix.
 The weights in $V_{j}$ are learned along with all of the other parameters in the network.
+Once all categorical features have been embedded, their representations may be concatenated and passed on to the network layers that follow.
 
-The first advantage of entity embeddings is that it speeds up training and reduces the memory footprint which further improves the generalisation ability of the network [@Covington2016], [@Guo2016].
-This especially useful when working with dimensional and sparse inputs.
-Suppose we have a dataset with two categorical features, $X_{1}$ and $X_{2}$, with cardinality of $C_{1}$ and $C_{2}$, respectively.
-Furthermore, suppose that the first hidden layer in the neural network accepts inputs of size $q$ and thus we need project an observation with these two features into a vector representation of the same size.
-If we were to use one-hot encoded representations of $X_{1}$ and $X_{2}$ we would need a weight matrix of size $(C_{1}+C_{2})\times q$.
-However, if we use entity embeddings of $X_{1}$ and $X_{2}$ we may have two weight matrices of sizes $C_{1}\times q/2$ and $C_{2}\times q/2$, which is in total half the number of parameters needed compared to the pure one-hot encoded representation.
+Entity embeddings have been found to significantly speed up the training process and to reduce the memory footprint of a neural network.
+This in turn serves to further improve the generalisation ability of a network [@Covington2016] and [@Guo2016].
+The above advantages are especially useful when working with high-dimensional and sparse inputs (in tabular data).
+Suppose we have available a dataset with two categorical features, $X_{1}$ and $X_{2}$, with cardinality $C_{1}$ and $C_{2}$, respectively.
+Furthermore, suppose that the first hidden layer in the neural network is presented with inputs of size $q$.
+Hence we need project an observation with these two features into a vector representation of the same size.
+If we were to use one-hot encoded representations of $X_{1}$ and $X_{2}$,we would need a weight matrix of size $(C_{1}+C_{2})\times q$.
+However, if we use entity embeddings of $X_{1}$ and $X_{2}$, we may create two weight matrices of sizes $C_{1}\times q/2$ and $C_{2}\times q/2$, which is half the number of parameters needed in the case of one-hot encoded representation.
 
-The size of the embeddings is a hyperparamter of the model and again there is no way to tell what this value should be beforehand.
-Most publications rely on a grid search to find the optimal sizes.
-For example [@Song2018] experimented with embedding sizes [8,16,24,32] and found 16 to work the best, and [@Cheng2016] found that an embedding size of 32 was optimal for their use-case.
-The selection complete depends on the data and the network used.
+The size of the embeddings is a hyperparamter of the model and again there is no way to specify this value *a priori*. 
+Therefore most publications rely on a grid search in order to find the optimal size.
+For example, @Song2018 experiment with embedding sizes 8, 16, 24 and 32; and found the value 16 to work the best, whereas @Cheng2016 reported an embedding size of 32 to be optimal in their use-case.
+Thus it is clear that appropriate specification of the size hyperparameter depends on the data at hand, and on the network architecture to be used.
 
-[@Wang2017b] and [@Brebisson2015] used different embedding sizes for each categorical features and suggested these rules-of-thumb:
+@Wang2017b and @Brebisson2015 made use of different embedding sizes for each categorical feature.
+Intuitively it seems to make sense to incorporate different embedding sizes for categorical features with different levels of complexity.
+In the above papers, the following sizes are proposed:
 
 - $6\times(\text{cardinality})^{\frac{1}{4}}$ [@Wang2017b]
 - $\max(2, \min(\text{cardinality}/2,50))$ [@Brebisson2015]
 
-It makes sense to have different embedding sizes for categorical features with different complexities.
-
-Entity embedding not only reduces memory usage and speeds up neural networks compared to one-hot encoding, but more importantly, by mapping similar values close to each other in the embedding space it reveals the intrinsic properties of the categorical variables, which one cannot obtain with one-hot encoding.
+In addition to advantages in terms of speed and memory usage, the use of entity embeddings as opposed to one-hot encoding maps similar values to lie close to each other in the embedding space.
+Hence it reveals the intrinsic properties of categorical variables, which cannot be obtained by using one-hot encoding.
 This allows us to interpret the classes of the categorical features.
-The embeddings can be visualised to gain further insight into the data and model decision making.
-The weights associated with each category's projection onto the embedding space can be plotted with any dimension reduction technique like t-sne or PCA.
-Then we can compare the categories based on their relative distances and positions in this reduced space.
-In \autoref{fig:edu_embed} we plot a 2 component PCA of the embedding matrix of the Education categorical feature in the adult dataset.
-We see that the school categories all lie in the bottom-right corner of the space, with some notion of ranking from grade 5 (top-right) to grade 12 (bottom-left).
-The tertiary education classes are in a separate cluster and their levels of education correspond conveniently with the vertical axis.
+Embeddings may also easily be visualised, thereby facilitating interpretation of the data and of the decision making process of the network.
+In more detail, the weights associated with the projection of each category onto the embedded space may be plotted using any dimension reduction technique (such as t-sne or PCA).
+We may subsequently compare categories based on relative distances and positions in the reduced space.
+To illustrate, reconsider the 'Education' categorical feature in the Adult dataset (introduced in Chapter 2).
+In \autoref{fig:edu_embed} a two-component PCA of its embedding matrix is plotted.
+From this figure it is clear that the school categories all lie in the bottom-right corner of the space, with some notion of ranking from Grade 5 (top-right) to Grade 12 (bottom-left).
+The tertiary education classes lie in a separate cluster and very conveniently, their levels of education coincide with the vertical axis.
 
-![PCA of the Education entity embedding weight matrix.\label{fig:edu_embed}](figures/education_embeds.png)
+![PCA of the 'Education' entity embedding weight matrix.\label{fig:edu_embed}](figures/education_embeds.png)
 
-To prove that these entity embeddings actually learns something useful, besides plotting the embedding matrix, one can also feed them along with the continuous features to other learning algorithms and see how it affects performance.
-[@Guo2016] found that the embeddings obtained from the trained neural network boosted the performance of all tested machine learning methods considerably when used as the input features. 
-These embeddings can be reused on different machine learning tasks and do not have to be re-learned for each dataset.
-Instacart and Pinterest, referenced above, reported sucessful implementation of this approach.
+In order to verify whether entity embeddings are able to learn useful information, besides plotting the embedding matrix, one may also feed them (along with the continuous features) to other learning algorithms and observe the change in model performance.
+Along these lines @Guo2016 tested the use of embeddings from trained NNs as inputs to a set of machine learning methods.
+They report the embeddings to improvev the performance of all tested ML procedures by a significant margin.
+Moreover, these embeddings may be re-used in different machine learning tasks, obviating the need for them to be re-learned in other data scenarios.
+Successful implementation of the embedding approach 
 
 The entity embedding approach is very flexible.
-One can reuse an embedding over different categorical features if the features have overlapping categories.
-[@Zhou2017] has an intersting take on multi-hot categorical features; where a feature can have more than category associated with it.
-The embedding layer for that instance then outputs a list of embeddings with length the same as the number of categories associated with that instance and feature.
-The list of embeddings then gets projected back into a fixed-length representation by doing a pooling operation.
+If, for example, two features have overlapping categories, one may re-use the embedding for the one feature on the second feature. 
+@Zhou2017 holds and interesting view of the case of multi-hot categorical features. 
+That is, where an observation of a categorical feature may simultaneously be assigned more than one level.
+The embedding layer for that instance then outputs a list of embeddings having the same length as the number of categories associated with that instance and feature.
+Using some pooling operation, the list of embeddings are subsequently projected back to a fixed-length representation.
 
 ### Combining Features
 
