@@ -15,12 +15,10 @@ from mpl_toolkits.mplot3d import Axes3D
 
 path = Path('../../data')
 
-# X, y = make_moons(n_samples=200, shuffle=True, noise=0.05, random_state=42)
-X, y = make_circles(n_samples=200, shuffle=True, noise=0.05, random_state=42, factor=0.5)
+X, y = make_moons(n_samples=200, shuffle=True, noise=0.05, random_state=42)
+# X, y = make_circles(n_samples=200, shuffle=True, noise=0.05, random_state=42, factor=0.5)
 X = X.astype(np.float32)
 # y = y.astype(np.float32)
-
-pdb.set_trace()
 
 np.random.seed(42)
 X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=0.1)
@@ -31,6 +29,14 @@ x1 = np.arange(X_mins[0], X_maxs[0], step=(X_maxs[0]-X_mins[0])/100)
 x2 = np.arange(X_mins[1], X_maxs[1], step=(X_maxs[1]-X_mins[1])/100)
 X_bg = np.vstack(list(itertools.product(x1, x2))).astype(np.float32)
 y_bg = np.zeros(X_bg.shape[0])
+
+fig, ax = plt.subplots(figsize=(10,6))
+ax.scatter(X[:,0], X[:,1], color=plt.cm.viridis(np.clip(y, 0.001, 0.999)))
+plt.tick_params(which='both', left=False, bottom=False, labelbottom=False, labelleft=False)
+ax.set_xlabel('X1')
+ax.set_ylabel('X2')
+ax.legend()
+plt.show()
 
 train_ds = TensorDataset(torch.from_numpy(X_train), torch.from_numpy(y_train))
 valid_ds = TensorDataset(torch.from_numpy(X_valid), torch.from_numpy(y_valid))
@@ -53,17 +59,49 @@ class simpleNN(nn.Module):
         x = self.head(x)
         return x
 
-model = simpleNN(sizes=[2,10,3,2])
-
+model = simpleNN(sizes=[2,2])
 learn = Learner(data, model, loss_func=F.cross_entropy)
 
-lr = request_lr(learn)
-
+# lr = request_lr(learn)
+lr = 2e-1
 learn.fit(20, lr)
 
 preds_bg, _ = learn.get_preds(DatasetType.Test)
 preds_bg = F.softmax(preds_bg, 1)
 preds_bg = preds_bg.cpu().numpy()[:,1]
+
+fig, ax = plt.subplots(figsize=(10,6))
+# ax.scatter(X_bg[:,0], X_bg[:,1], color=plt.cm.viridis(preds_bg>0.5), alpha=0.3)
+ax.scatter(X_bg[preds_bg<0.5,0], X_bg[preds_bg<0.5,1], alpha=0.2, color=plt.cm.viridis(0.001), label='Class 1')
+ax.scatter(X_bg[preds_bg>=0.5,0],X_bg[preds_bg>0.5,1], alpha=0.2, color=plt.cm.viridis(0.999), label='Class 2')
+ax.scatter(X[:,0], X[:,1], color=plt.cm.viridis(np.clip(y, 0.001, 0.999)))
+plt.tick_params(which='both', left=False, bottom=False, labelbottom=False, labelleft=False)
+ax.set_xlabel('X1')
+ax.set_ylabel('X2')
+ax.legend()
+plt.show()
+
+model = simpleNN(sizes=[2,2,2])
+learn = Learner(data, model, loss_func=F.cross_entropy)
+
+lr = request_lr(learn)
+# lr = 2e-1
+learn.fit(20, lr)
+
+preds_bg, _ = learn.get_preds(DatasetType.Test)
+preds_bg = F.softmax(preds_bg, 1)
+preds_bg = preds_bg.cpu().numpy()[:,1]
+
+fig, ax = plt.subplots(figsize=(10,6))
+# ax.scatter(X_bg[:,0], X_bg[:,1], color=plt.cm.viridis(preds_bg>0.5), alpha=0.3)
+ax.scatter(X_bg[preds_bg<0.5,0], X_bg[preds_bg<0.5,1], alpha=0.2, color=plt.cm.viridis(0.001), label='Class 1')
+ax.scatter(X_bg[preds_bg>=0.5,0],X_bg[preds_bg>0.5,1], alpha=0.2, color=plt.cm.viridis(0.999), label='Class 2')
+ax.scatter(X[:,0], X[:,1], color=plt.cm.viridis(np.clip(y, 0.001, 0.999)))
+plt.tick_params(which='both', left=False, bottom=False, labelbottom=False, labelleft=False)
+ax.set_xlabel('X1')
+ax.set_ylabel('X2')
+ax.legend()
+plt.show()
 
 learn.callbacks += [StoreHook(learn.model.layers[-1])]
 _, y_true = learn.get_preds(DatasetType.Train)
@@ -73,8 +111,9 @@ hidden = torch.cat(cb.outputs).cpu().numpy()
 fig, ax = plt.subplots(figsize=(10,6))
 ax.scatter(X_bg[:,0], X_bg[:,1], color=plt.cm.viridis(preds_bg), alpha=0.3)
 ax.scatter(X[:,0], X[:,1], color=plt.cm.viridis(np.clip(y, 0.001, 0.999)))
-ax.axes.get_xaxis().set_visible(False)
-ax.axes.get_yaxis().set_visible(False)
+plt.tick_params(which='both', left=False, bottom=False, labelbottom=False, labelleft=False)
+ax.set_xlabel('X1')
+ax.set_ylabel('X2')
 ax.legend()
 plt.show()
 

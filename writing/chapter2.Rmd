@@ -9,7 +9,7 @@ Each neuron can generate and receive signals.
 A received signal may be described as an input to a neuron, whereas a sent signal may be described as an output from that neuron.
 If two neurons are connected, it means that the output from the one neuron serves as input to the other.
 In a very simple model of the brain, one may argue that a neuron receives several signals, which it weighs and combines, and if the combined value of the inputs is higher than a certain threshold, the neuron sends an output signal to the next neuron.
-\autoref{fig:neurons} (a) provides a schematic of a biological neuron.
+\autoref{fig:neurons} (a) provides a schematic of a biological neuron[^imcred].
 
 An artifical neural network tries to mimic this model of the human brain: it is set up to consist of several layers of connected units (or neurons).
 With exception of units in the first and final layers, each unit outputs a weighted combination of its inputs, combined with a simple non-linear transformation.
@@ -23,7 +23,7 @@ The neural network weights are then learned in such a way that, when given a new
 The process of using the training data to tweak the weights is done by means of an optimisation algorithm called Stochastic Gradient Descent (SGD).
 
 Although recently there has been plenty of excitement around advances in neural networks, it is well known that they were invented many years ago.
-The development of neural networks dates back at least as far as the invention of perceptrons in [@rosenblatt1962].
+The development of neural networks dates back at least as far as the invention of perceptrons in @rosenblatt1962.
 It is also interesting to compare modern neural networks with the Projection Pursuit Regression algorithm in statistics [@friedman1981].
 Only recently a series of breakthroughs caused neural networks to become more effective, leading to the renewed interest in the field.
 
@@ -47,16 +47,8 @@ A single neuron may act as such a function.
 It models $y$ by computing a weighted average of the input features.
 This operation is illustrated in \autoref{fig:neurons} (b).
 
-```{r, fig.cap="Comparison of a biological (a) and an artificial (b) neuron[^imcred].\\label{fig:neurons}"}
-# library(png)
-library(jpeg)
-library(grid)
-library(gridExtra)
-img1 <- rasterGrob(as.raster(readJPEG("figures/biological_neuron.jpg")), interpolate = FALSE)
-img2 <- rasterGrob(as.raster(readJPEG("figures/single_neuron.jpg")), interpolate = FALSE)
-t1 <- textGrob('(a)')
-t2 <- textGrob('(b)')
-grid.arrange(img1, img2, t1, t2, ncol = 2, heights=9:1)
+```{r, fig.cap="Neuron comparison.\\label{fig:neurons}", fig.subcap=c('Biological','Artificial'), out.width='50%', fig.show='hold'}
+knitr::include_graphics(c('figures/biological_neuron.jpg', 'figures/single_neuron.jpg'))
 ```
 
 [^imcred]: Image credit: https://www.jeremyjordan.me/intro-to-neural-networks/
@@ -158,7 +150,7 @@ Use of the ReLU alleviates the gradient vanishing problem as the derivative of t
 This results in significantly shorter steps to convergence, as found by the authors in [@Krizhevsky2012].
 However, ReLUs may suffer from the "dead ReLU" problem, which is, if a ReLU neuron is assigned a zero weight, its weights receive zero gradients. In this way, neurons may be "clamped to zero" and may remain permanently "dead" during training.
 This sparsity of the activations is what some believe is the reason for the effectiveness of ReLUs [@Sun2014].
-If dead activations needs to be avoided, alternative activations functions to apply include PReLUs [@He2015] and Leaky ReLUs [@Maas2013]. 
+If dead activations needs to be avoided, alternative activation functions to apply include PReLUs [@He2015] and Leaky ReLUs [@Maas2013]. 
 
 Selecting an appropriate activation function for a specific task typically involves a trial-and-error process.
 For general tasks, the use of ReLUs after each hidden layer may suffice and has to some extent become standard practice.
@@ -211,7 +203,7 @@ Hence we want to initialise the weights as small as possible, but each weight sh
 Sampling the initial weights from the standard normal distribution seems to be a natural choice. However it turns out that the variance of the outputs from randomly initialised neurons grow as the number of inputs increase.
 Therefore an option is scale the weight vector generated from the standard norm distribution by the square root of its number of inputs. Such a scaling step will normalise the variance of the output, ensuring that all neurons in the network initially have approximately the same output distribution. In addition, it serves to improve the rate of convergence when training the network.
 
-Another option for weight initialisation is the proposal by [@He2015b], which was made specifically in the context of using ReLU activation functions.
+Another option for weight initialisation is the proposal by @He2015b, which was made specifically in the context of using ReLU activation functions.
 
 ### Optimisation \label{sec:optimisation}
 
@@ -563,7 +555,7 @@ However, if we fit a two-layer neural network to the same dataset (where the hid
 ![Decision boundary of a two-layer neural network.\label{fig:simple_dataset_complexNN}](figures/simple_dataset_complexNN.pdf)
 
 Since the hidden layer consists of only two neurons, we are able to plot the output from the hidden layer after the raw data has passed through it. This is depicted in \autoref{fig:simple_dataset_complexNN_rep}.
-From \autoref{fig:simple_dataset_complexNN_rep it can be seen how the hidden layer projects the input data into a space where the observations from the two classes are linearly separable, which then leaves it to the final layer to find the best hyperplane between the two classes.
+From \autoref{fig:simple_dataset_complexNN_rep} it can be seen how the hidden layer projects the input data into a space where the observations from the two classes are linearly separable, which then leaves it to the final layer to find the best hyperplane between the two classes.
 
 ![Hidden representation of a two-layer neural network.\label{fig:simple_dataset_complexNN_rep}](figures/simple_dataset_complexNN_rep.pdf)
 

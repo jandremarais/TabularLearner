@@ -87,35 +87,35 @@ experiment_name, exp_path = create_experiment('attention', path)
 config={'attention': [True, False]}
 config_df = get_config_df(config)
 
-# procs = [FillMissing, Categorify, Normalize]
+procs = [FillMissing, Categorify, Normalize]
 
-# src = TabularList.from_df(df, path=path, cat_names=cat_vars, cont_names=num_vars, procs=procs)
-# kf = KFold(5, random_state=42, shuffle=True)
-# # _,valid_ids = next(kf.split(df))
+src = TabularList.from_df(df, path=path, cat_names=cat_vars, cont_names=num_vars, procs=procs)
+kf = KFold(5, random_state=42, shuffle=True)
+# _,valid_ids = next(kf.split(df))
 
-# # data = (src.split_by_idx(valid_ids).label_from_df(cols=dep_var).databunch(bs=512))
-# # model = AttentionModel(emb_szs, n_cats=len(data.cat_names), n_conts=len(data.cont_names),
-#                     #    act_func=nn.LeakyReLU(inplace=True), d_model=2, h=3)
-# # learn = Learner(data, model, metrics=accuracy)
-# # lr = request_lr(learn)
-# # learn.fit_one_cycle(5, lr)
+# data = (src.split_by_idx(valid_ids).label_from_df(cols=dep_var).databunch(bs=512))
+# model = AttentionModel(emb_szs, n_cats=len(data.cat_names), n_conts=len(data.cont_names),
+                    #    act_func=nn.LeakyReLU(inplace=True), d_model=2, h=3)
+# learn = Learner(data, model, metrics=accuracy)
+# lr = request_lr(learn)
+# learn.fit_one_cycle(5, lr)
 
-# config_df.to_csv(exp_path/'config.csv')
-# for i, params in config_df.iterrows():
-#     for fold, (train_ids, valid_ids) in enumerate(kf.split(df)):
-#         data = (src.split_by_idx(valid_ids).label_from_df(cols=dep_var).databunch(bs=512))
+config_df.to_csv(exp_path/'config.csv')
+for i, params in config_df.iterrows():
+    for fold, (train_ids, valid_ids) in enumerate(kf.split(df)):
+        data = (src.split_by_idx(valid_ids).label_from_df(cols=dep_var).databunch(bs=512))
 
-#         if params['attention']:
-#             emb_szs = data.get_emb_szs({})
-#             model = AttentionModel(emb_szs, n_cats=len(data.cat_names), n_conts=len(data.cont_names),
-#                        act_func=nn.LeakyReLU(inplace=True), d_model=2, h=3)
-#             learn = Learner(data, model, metrics=accuracy)
-#         else:
-#             learn = tabular_learner(data, layers=[200,200], metrics=accuracy)
+        if params['attention']:
+            emb_szs = data.get_emb_szs({})
+            model = AttentionModel(emb_szs, n_cats=len(data.cat_names), n_conts=len(data.cont_names),
+                       act_func=nn.LeakyReLU(inplace=True), d_model=2, h=3)
+            learn = Learner(data, model, metrics=accuracy)
+        else:
+            learn = tabular_learner(data, layers=[200,200], metrics=accuracy)
         
-#         record_experiment(learn, f'{i}-fold_{fold+1}', exp_path.relative_to(path))
-#         if fold==0: lr = request_lr(learn)
-#         learn.fit_one_cycle(5, lr)
+        record_experiment(learn, f'{i}-fold_{fold+1}', exp_path.relative_to(path))
+        if fold==0: lr = request_lr(learn)
+        learn.fit_one_cycle(5, lr)
         
 config_df, recorder_df, param_names, metric_names = load_results(exp_path)
 summary_df = summarise_results(recorder_df, param_names, metric_names)

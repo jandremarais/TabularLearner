@@ -7,6 +7,8 @@ y_tanh = np.tanh(x)
 y_sigmoid = 1. / (1. + np.exp(-x))
 y_relu = np.clip(x, 0, None)
 
+plt.rcParams.update({'font.size': 20})
+
 fig, ax = plt.subplots(figsize=(10,6))
 
 ax.plot(x, y_tanh, label='tanh')
