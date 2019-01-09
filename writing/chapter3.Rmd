@@ -150,7 +150,7 @@ Dropout solves both of the above problems.
 The following explanation of dropout follows the description in @Sriva2014.
 Consider a neural network with $r$ nodes.
 Note that this network can be seen to consist of $2^{r}$ *thinned neural networks*, where each thinned network consists of the neurons that survived dropout.
-Importantly, the weights in each thinned network are shared by the other thinned networks, therefore the number of weights remain in the order of $r^{2} at the most.
+Importantly, the weights in each thinned network are shared by the other thinned networks, therefore the number of weights remain in the order of $r^{2}$ at the most.
 During training, with each input presented to the network, dropout reoccurs.
 That is, each neuron is temporarily omitted from the network with probability $p$.
 This implies that with each input presented, a new thinned network is trained.
@@ -272,11 +272,11 @@ Since any deep neural network can be made shallower by means of setting the tran
 Therefore the occurrence of the degradation problem indicates that multiple non-linear transformations in deep neural networks are unable to learn identity mappings.
 
 In @He2016, the degradation problem is addressed by rephrasing the learning objective of a deep neural network.
-Instead of requiring a group of layers to learn some undefined non-linear mapping, say $H(\boldsymbol{\x})$, the objective is to learn a *residual function*, *viz.* $F(\boldsymbol{\x})=H(\boldsymbol{\x})-\boldsymbol{\x}$.   
-In their paper He *et al.* (2016) postulate that it is more tractable to find $F(\boldsymbol{\x})$ than $H(\boldsymbol{\x})$.
-For example, in the problematic scenario where $H(\boldsymbol{\x})$ should be $H(\boldsymbol{\x})==$\boldsymbol{\x}$, it is easier to truncate $F(\boldsymbol{\x}) to zero than for multiple non-linear layers to learn the identity mapping.
+Instead of requiring a group of layers to learn some undefined non-linear mapping, say $H(\boldsymbol{x})$, the objective is to learn a *residual function*, *viz.* $F(\boldsymbol{x})=H(\boldsymbol{x})-\boldsymbol{x}$.   
+In their paper He *et al.* (2016) postulate that it is more tractable to find $F(\boldsymbol{x})$ than $H(\boldsymbol{x})$.
+For example, in the problematic scenario where $H(\boldsymbol{x})$ should be $H(\boldsymbol{x})=\boldsymbol{x}$, it is easier to truncate $F(\boldsymbol{x}) to zero than for multiple non-linear layers to learn the identity mapping.
 This is indeed supported by the results of empirical work in their paper.
-The original sought after function H(\boldsymbol{\x}) may subsequently be found via the mapping H(\boldsymbol{\x})=F(\boldsymbol{\x})+\boldsymbol{\x}$.
+The original sought after function H(\boldsymbol{x}) may subsequently be found via the mapping H(\boldsymbol{x})=F(\boldsymbol{x})+\boldsymbol{x}$.
 
 The above framework is referred to as *deep residual learning*.
 Residual Networks (ResNets) became very popular after they were used in the winning model of one of the ImageNet competitions [@He2015].
@@ -287,7 +287,7 @@ This idea is illustrated in \autoref{fig:skip_conn}.
 ```{r, fig.align="center", fig.cap="Diagram conceptualising a skip connection.\\label{fig:skip_conn}", out.width="80%"}
 knitr::include_graphics('figures/skip_conn.png')
 ```
-In feedforward neural networks, if skip connections output identity mappings, they can efficiently be used to obtain $H(\boldsymbol{\x})$ via $F(\boldsymbol{\x})+\boldsymbol{\x}$: the skip connection output $\boldsymbol{\x}$ is just added to the $F(\boldsymbol{\x})$ output obtained from a set of stacked layers.
+In feedforward neural networks, if skip connections output identity mappings, they can efficiently be used to obtain $H(\boldsymbol{x})$ via $F(\boldsymbol{x})+\boldsymbol{x}$: the skip connection output $\boldsymbol{x}$ is just added to the $F(\boldsymbol{x})$ output obtained from a set of stacked layers.
 Note that although here, the skip connection and stacked layer output are combined using addition, other ways such as multiplication or concatenation may also be used.
 
 Multiple benefits to using skip connections have been reported in the literature.

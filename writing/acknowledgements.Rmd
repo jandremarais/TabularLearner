@@ -5,7 +5,7 @@ and organisations:
 
 \begin{itemize}
   \item Dr. S. Bierman for her guidance and patience as a supervisor and for allowing me freedom in the choice of research directions.
-  \item The National Research Foundation (NRF) for financial support under grant number: UID xxx. \textit{Opinions expressed and conclusions arrived at, are those of the author and are not necessarily to be attributed to the NRF.}
+  \item The National Research Foundation (NRF) for financial support. \textit{Opinions expressed and conclusions arrived at, are those of the author and are not necessarily to be attributed to the NRF.}
   \item The UCI Machine Learning Repository (Dheeru and Karra Taniskidou, 2017) for hosting a platform to share datasets.
   \item My parents and close family for believing in me and motivating me.
   \item Most importantly, my partner, for her never-ending support, love and understanding.

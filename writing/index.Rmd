@@ -16,7 +16,7 @@ papersize: letter
 classoption: oneside, openany
 margin-ratio: goldenblock
 title: "Deep Learning for Tabular Data: An Exploratory Study"
-titel: "Diepleer Tegnieke vir Gestruktrueerde Data"
+titel: "Diepleer Tegnieke vir Gestruktrueerde Data: 'n Verkennende Studie"
 author: Jan André Marais
 author-short: J.\ A.\ Marais
 degree-short: MCom (Mathematical Statistics)

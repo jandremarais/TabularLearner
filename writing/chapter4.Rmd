@@ -298,7 +298,7 @@ Another thing the authors found when comparing SeLUs with other activations is t
 
 These are all promising results but we have not seen SeLUs been used in other applications or papers on tabular datasets.
 
-## Sample Effeciency \label{sec:samp_eff}
+## Sample Efficiency \label{sec:samp_eff}
 
 It is well know that deep neural networks require a large amout of data to generalise well.
 Typically, tabular datasets are not as large as unstructured datasets like images and texts.

@@ -1,4 +1,4 @@
-\chapter{Nomenclature}
+\chapter{Notation}
 
 \begin{Nomencl}[0.7in]
 
@@ -9,7 +9,7 @@
 \item[$\lambda$] label
 \item[$\mathcal{L}$] complete set of labels in a dataset $\mathcal{L}=\{\lambda_{1},\lambda_{2},\dots,\lambda_{K}\}$
 \item[$Y$] labelset associated with $\boldsymbol{x}$, $Y\subseteq \mathcal{L}$
-\item[$\hat{Y}$] predicted labelset associated with $\boldsymbol{x}$, $\hat{Y}\subseteq \mathcal{L}$, produced by $h(\cdot)$
+\item[$\hat{Y}$] predicted labelset associated with $\boldsymbol{x}$, $\hat{Y}\subseteq \mathcal{L}$
 \item[$\boldsymbol{y}$] $K$-dimensional label indicator vector, $(y_{1},y_{2},\dots,y_{K})^{\intercal}$, associated with observation $\boldsymbol{x}$
 \item[$(\boldsymbol{x}_{i},Y_{i})_{i=1}^{N}$] multi-label dataset with $N$ observations
 \item[$D$] dataset

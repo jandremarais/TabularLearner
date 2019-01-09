@@ -134,7 +134,7 @@ The S-shape of the sigmoid activation function, and its range between 0 an 1 is 
 Note that the reason why the sigmoid function fell out of favour in terms of its use as activation function in neural networks is because of issues related to the gradient based optimisation procedure of NNs. For example, gradient weight updates that veer to far in different directions are caused by the values of sigmoid activations that are not centered around zero. 
 Some other issues with the sigmoid activiation function are discussed in more detail in \Cref{sec:training}. 
 
-```{r, fig.cap="Plots of various activation functions (a) and their local derivatives (b).\\label{fig:activation_functions}", fig.subcap=c('',''), out.width='50%', fig.show='hold'}
+```{r, fig.cap="Activations.\\label{fig:activation_functions}", fig.subcap=c('Function','Local Derivative'), out.width='50%', fig.show='hold'}
 knitr::include_graphics(c('figures/activation_functions.pdf', 'figures/activation_functions_derivative.pdf'))
 ```
 
