@@ -7,7 +7,7 @@ The aim of this chapter is to explore ways in which the modern deep learning app
 In Chapter 1 we alluded to the differences of tabular data compared to unstructured data (such as images, and data used in text and speech applications).
 The widely acclaimed successes of deep learning typically occur in areas such as image classification, machine translation and speech recognition.
 However, in the literature only a handful of publications report successful implementation of deep learning for tabular data.
-In these papers the applications include recommender systems [@haldar2018]; click-through rate prediction[^ctr] [@Song2018]; analysis of electronic health records [@Rajkomar2018]; and transport related problems [@Brebisson2015].
+In these papers, applications include recommender systems [@haldar2018]; click-through rate prediction[^ctr] [@Song2018]; analysis of electronic health records [@Rajkomar2018]; and transport related problems [@Brebisson2015].
 Not much research has been done in the area of deep learning for tabular data, therefore it is often unclear how to solve certain modelling challenges.
 Hence the tabular data domain is still dominated by tree-based models such as random forests and gradient boosted trees.
 This begs the question as to why deep learning is not nearly as effective here as it is in most other data domains.
