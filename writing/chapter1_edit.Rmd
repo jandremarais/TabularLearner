@@ -40,10 +40,11 @@ A data domain in which deep learning have not yet been very successful, is that 
 A *tabular dataset* can be represented by a two-dimensional table, where each of the rows of the table corresponds to one observation and where each column denotes an individual meaningful feature.
 We further explain the use of tabular data in \Cref{sec:tabdat} below.
 
-Some research have recently been done on the use of deep learning models for tabular data [@Shavitt2018, @Song2018].
-However, state-of-the-Art (SotA) results are reported only rarely [@Brebisson2015] (and in this competition[^port]).
+Some research have recently been done on the use of deep learning models for tabular data. 
+See for example @Shavitt2018 and @Song2018.
+However, state-of-the-Art (SotA) results are reported only rarely [@Brebisson2015], and in the Kaggle competition found at the following website[^port]).
 Therefore it can be said that the area is nowhere near as mature or receiving as much attention as is the case with deep learning for computer vision or for NLP.
-In a comprehensive study in the paper by [@Delgado2014], it was found that ML tasks that make use of tabular data are typically more effectively solved using tree-based methods.
+In a comprehensive study in the paper by @Delgado2014, it was found that ML tasks that make use of tabular data are typically more effectively solved using tree-based methods.
 This is also evident when one considers the winning solutions of relevant Kaggle competitions[^kaggle].
 A possible explanation for the superior performance of tree-based metods, is the heterogeneity of tabular data [@Shavitt2018], which forms part of the discussion in the next section.
 
