@@ -52,24 +52,24 @@ Hence the only way to know for sure which normalisation to apply to numeric feat
 The typical standardisation approach for numerical features in deep learning is to do mean centering and variance scaling, *i.e.* $\tilde{x}=(x-\mu)/\sigma$, where $\mu$and $\sigma$ are the mean and standard deviation of $X$ respectively ($x\in X$).
 One would expect this transformation to also be sufficient for tabular data, but in practice it has often been found otherwise.
 
-In [@haldar2018] the authors propose first inspecting the distribution of each feature.
+In @haldar2018 the authors propose first inspecting the distribution of each feature.
 If a feature seems to follow a normal distribution, standard normalisation, *viz.* $(x-\mu)/\sigma$, may be performed.
 However if a feature seems to approximately follow a power law distribution, it should rather be transformed via $\log\left((1+x)/(1+\text{median})\right)$.
 The above mapping ensures that the bulk of the values lie within {-1,1}, and that the median feature value is close to zero.
 Consider for example the effect of this transformation on two continuous features (*viz.* Age and Hours-per-week) in the Adult dataset.
 This is illustrated in \autoref{fig:contnorm}.
 We see in (a) that the features have roughly the same scale, but their distributions are totally different; and in (b) that after applying mean centering and unit variance scaling, the values of the Hours-per-week feature mostly lie in {-1,1}, however many Age values remain outside {-1,1}.
-Consequently, we apply the power distribution transformation in [@haldar2018], and observe that all Age values now lie within {-1,1}. 
+Consequently, we apply the power distribution transformation in @haldar2018, and observe that all Age values now lie within {-1,1}. 
 Of course the downside of the above approach is that it involves a manual process and very cumbersome in high-dimensional data setups.
 
 ```{r, out.width="33%", fig.cap='The effect of normalisation on continuous variables.\\label{fig:contnorm}', fig.subcap=c('Original', 'Gaussian Norm', 'Power Norm'), fig.show='hold'}
 knitr::include_graphics(c('figures/cont_vars.pdf', 'figures/gaus_norm.pdf', 'figures/power_norm.pdf'))
 ```
-With a view to reduce potential high variances exhibited by numeric features, [@Song2018] suggests transforming a numeric feature via $\log^{2}(x)$ if $x>2$.
+With a view to reduce potential high variances exhibited by numeric features, @Song2018 suggests transforming a numeric feature via $\log^{2}(x)$ if $x>2$.
 This was successful in their use-case, but it is hard to imagine that this solution will generalise to many other applications.
 Note that the @Song2018 transformation causes a discontinuity at $x=2$, as well as a possible overlap between values that were originally less than 2 with those that were greater than 2.
 In addition, it does not take care of extreme values on the negative side.
-[@Wang2017b] simply use the standard log transform, *i.e.* $\log{x}$, to normalise continuous features.
+@Wang2017b simply use the standard log transform, *i.e.* $\log{x}$, to normalise continuous features.
 
 @Covington2016] also report appropriate normalisation of numeric features critical for DLTD to converge.
 Their approach is to transform numeric features to be equally distributed in [0,1).
@@ -243,59 +243,62 @@ Again the output of the two streams are concatenated, and the resulting output i
 ### Attention \label{sec:tab_att}
 
 Based on the results presented in the paper by @Song2018 and on findings reported in deep learning research in general, we deem attention to be the most promising mechanism to model feature interactions. 
-[@Song2018] uses a multi-head self-attention mechanism which they call the interacting layer.
-Within in the interacting layer each feature is allowed to interact with every other feature and automatically determine which of those interactions are relevant to the output.
+In this section, note that we focus on a recent contribution by @Song2018.
+In this paper a so-called *multi-head self-attention* mechanism is used. 
+This mechanism is referred to as the *interacting layer*.
+Broadly, within the interacting layer each feature is allowed to interact with every other feature.
+During training, the interacting layer then automatically determines which of those interactions are relevant to the output.
 
-To explain the attention mechanism, consider feature $j$ and suppose we want to determine which high-order features involving feature $j$ are meaningful.
-We first define the correlation between features $j$ and $k$ under attenion head $h$ as:
+In order to further explain the attention mechanism, consider a feature $j$ and suppose that we want to determine which high-order interactions (which involve feature $j$) are meaningful.
+We start by first defining the correlation between features $j$ and $k$ 'under attention head $h$' as follows:
 $$
 \alpha_{j,k}^{(h)}=\frac{\exp{\left(\phi^{(h)}(\boldsymbol{e}_{j},\boldsymbol{e}_{k})\right)}}{\sum_{l=1}^{L}
-\exp{\left(\phi^{(h)}(\boldsymbol{e}_{j},\boldsymbol{e}_{l})\right)}}
+\exp{\left(\phi^{(h)}(\boldsymbol{e}_{j},\boldsymbol{e}_{l})\right)}},
 $$
-where $\boldsymbol{e}_{l}$,$l=1,\dots,L$ is the embedding of the $l$-th features.
-$\phi^{(h)}(.,.)$ is an attention function which defines the similarity between two features.
-It can be defined by a trainable layer or a simple inner product as in:
+where $\boldsymbol{e}_{l}$,$l=1,\dots,L$ denotes the embedding of the $l$-th features, and where $\phi^{(h)}(.,.)$ is an attention function which defines the similarity between two features.
+An attention function may either be defined by a trainable layer, or by a simple inner product:
 $$
-\phi^{(h)}(\boldsymbol{e}_{j},\boldsymbol{e}_{k})=\left<W_{\text{query}}^{(h)}\boldsymbol{e}_{j},W_{\text{key}}^{(h)}\boldsymbol{e}_{k} \right>
+\phi^{(h)}(\boldsymbol{e}_{j},\boldsymbol{e}_{k})=\left<W_{\text{query}}^{(h)}\boldsymbol{e}_{j},W_{\text{key}}^{(h)}\boldsymbol{e}_{k} \right>,
 $$
 where $W_{\text{query}}^{(h)}$ and $W_{\text{key}}^{(h)}$ are transformation matrices which map the original embedding space into new spaces of the same dimension.
-The representation of feature $j$ in subspace $h$ is then updated by combining all relevant features guided by the coefficients $\alpha_{j,k}^{(h)}$:
+The representation of feature $j$ in subspace $h$ is then updated by combining all relevant features, as guided by the coefficients $\alpha_{j,k}^{(h)}$.
+That is:
 $$
-\tilde{\boldsymbol{e}}_{j}^{(h)}=\sum_{k=1}^{K}\alpha_{j,k}^{(h)}W_{\text{value}}^{(h)}\boldsymbol{e}_{k}
+\tilde{\boldsymbol{e}}_{j}^{(h)}=\sum_{k=1}^{K}\alpha_{j,k}^{(h)}W_{\text{value}}^{(h)}\boldsymbol{e}_{k},
 $$
-$\tilde{\boldsymbol{e}}_{j}^{(h)}$ is a combination of feature $j$ and its relevant features under attention head $h$.
-Note that $\alpha_{j,k}^{(h)}$ for $k=1,\dots,K$ sum to 1 since they went to a logit transform/softmax operation.
+where $\tilde{\boldsymbol{e}}_{j}^{(h)}$ denotes the combination of feature $j$ and its relevant features under attention head $h$.
+Note that $\alpha_{j,k}^{(h)}$ for $k=1,\dots,K$ sum to 1 after undergoing a logit transform (or softmax operation).
+From the above, $\tilde{\boldsymbol{e}}_{j}^{(h)}$ thus denotes a learned combinatorial feature.
+Since a feature may be involved in various different combinations, we use multiple heads to extract multiple combinations, *i.e.* $\{\tilde{\boldsymbol{e}}_{j}^{(h)}\}_{h=1}^{H}$.
+In @Song2018 the value of $H$ is set equal to 2, but this is typically a hyperparemeter that needs to be fine-tuned.
+After finding the combinatorial features, they are al concatenated into a single vector, *viz.* $\tilde{\boldsymbol{e}}_{j}$.
+The output is then finally combined with the original raw input, and sent through a ReLU activation:
+$$
+\boldsymbol{e}_{j}^{\text{res}}=\text{ReLU}\left(\tilde{\boldsymbol{e}}_{j}+W_{\text{res}}\boldsymbol{e}_{j}\right).
+$$
+Note that the above mapping from $\boldsymbol{e}_{j}$ to $\boldsymbol{e}_{j}^{\text{res}}$ is performed for each feature.
+In this way the interacting layer is formed.
+Clearly therefore, activations of the interacting layer forms a representation of the high-order features of its inputs.
+Multiple interacting layers may be stacked on-top of each other in order to form arbitrary order combinatorial features.
 
-$\tilde{\boldsymbol{e}}_{j}^{(h)}$ is thus a learned combinatorial feature.
-Since a feature can be involved in various different combinations, we use multiple heads to extract the multiple combinations, *i.e.* $\{\tilde{\boldsymbol{e}}_{j}^{(h)}\}_{h=1}^{H}$.
-In the original paper [@Song2018] used $H=2$, but this is typically a hyperparemeter one needs to tune.
-All of these combinatorial features are concatenated into a single vector, $\tilde{\boldsymbol{e}}_{j}$.
-Then finally the output is combined with its raw input and sent through a ReLU activation:
-$$
-\boldsymbol{e}_{j}^{\text{res}}=\text{ReLU}\left(\tilde{\boldsymbol{e}}_{j}+W_{\text{res}}\boldsymbol{e}_{j}\right)
-$$
-This mapping from $\boldsymbol{e}_{j}$ to $\boldsymbol{e}_{j}^{\text{res}}$ is done for each feature to form the interacting layer.
-The activations of the interacting layer is thus a representation of the high-order features of its inputs.
-These interacting layers can be stacked on-top of each other to form arbitrary order combinatorial features.
+In a vaguely similar idea to attention, in @Zhou2017 the weights to apply to hidden representations are learned automatically.
+Interestingly in this paper, the authors remove the softmax layer as a way to mimic probabilities and to reserve the intensity of activations.
 
-[@Zhou2017] follows a vaguely similar idea to attention by learning the weights to apply to the hidden representations.
-Interestingly, they removed the softmax layer as a way to mimick probabilities to reserve the intensity of activations.
-
-In terms of the skip-connection already mentioned a couple of times above - both [@Song2018] and [@Wang2017b] found by experimentation that by having skip-connections to connect lower-level features with higher-level ones improves the performance of the network.
+Skip connections are also used in both @Song2018 and @Wang2017b to connect features modelling low level interactions with features modelling high order interactions. 
+Their conclusion is that the use of skip connections improves the performance of a neural network.
 
 ### Self-Normalising Neural Networks
 
-By studying the literature of deep neural networks for tabular data we rarely see the optimal network depth go beyond three of four layers.
-The reason is that a fully connected model have very complex optimisation hyperplanes which increases the risk of falling into bad local optimums.
-A proposed way of training deeper neural networks is to make use of *Self-Normalising Neural Networks* [@Klambauer2017].
-They were developed as an alternative to batchnorm layers since batchnorm layers often become unstable when using SGD or stochastic regularisation techniques like dropout,
-especially when using fully-connected neural networks.
-This is exhibited by a high-variance in the training error.
+In the DLTD literature, one rarely encounters an optimal network depth higher than three of four layers.
+The reason is that a fully connected model result in very complex optimisation hyperplanes which increases the risk of falling into local optima.
+A proposed way of training deeper neural networks is to make use of *self-normalising neural networks* [@Klambauer2017].
+These networks were developed as alternatives to the use of batchnorm layers, since the latter often become unstable when using SGD or stochastic regularisation techniques such as dropout.
+This is especially the case in fully connected neural networks, where the resulting instability manifests in terms of high-variance training errors.
 
-The self-normalising neural network is simply a neural network with a novel activation function called the *SeLU*.
-The SeLU helps the network to maintain zero mean and unit variance for the activations at all network levels.
-The SeLU activation eliminates the need for a BatchNorm layer and is also much safer against exploding or vanishing gradients.
-It is defined as:
+The self-normalising neural network is simply a neural network which implements a novel activation function called the *SeLU*.
+The SeLU activation assists the network in maintaining zero mean and unit variance for activations at all network levels.
+In addition to obviating the need for a BatchNorm layer, SeLUs are much more immune to exploding or vanishing gradients.
+The definition of the SeLU activation function follows below:
 $$
 \text{selu}(x)=\lambda 
 \begin{cases}
@@ -304,52 +307,47 @@ x & \text{if}~~~x>0\\
 \end{cases}
 $$
 where $\lambda=1.0507$ and $\alpha=1.6733$ are special constants derived in the paper.
-When using the SeLU activation function, one should be aware of the special weight initialisation and dropout technique that should be used in tandem.
 
-[@Klambauer2017] tested SeLUs on 121 classification datasets from the UCI Machine Learning repository.
-They compared DNNs with SeLU activations to other DNNs and other classifiers like Random Forests and SVMs.
-They found that on the datasets with less than 1000 obervations, random forests and SVMs performed the best.
-However, for the datasets with more than 1000 observations, DNNs with SeLU activations performed the best overall.
-The classifiers were compared by ranking them by their accuracy for each prediction task and doing a pairwise Wilcoxon test.
-Another thing the authors found when comparing SeLUs with other activations is that the model selection approach for DNNs with SeLUs resulted in much deeper networks than DNNs with other activation functions.
-
-These are all promising results but we have not seen SeLUs been used in other applications or papers on tabular datasets.
+In @Klambauer2017, the application of SeLUs were tested using 121 classification datasets from the UCI Machine Learning repository.
+Here the performance of DNNs with SeLU activations were compared to the performance of other DNNs, and to that of completely different classifiers (including random forests and SVMs).
+The various models were compared using a pairwise Wilcoxon test on their ranked accuracies.  
+It was found that in the case of datasets with less than 1000 obervations, random forests and SVMs performed the best.
+However, in the case of datasets with more than 1000 observations, DNNs with SeLU activations outperformed all other models.
+Despite the above promising results, we have not yet seen SeLUs used in any tabular dataset applications.
 
 ## Sample Efficiency \label{sec:samp_eff}
 
-It is well know that deep neural networks require a large amout of data to generalise well.
-Typically, tabular datasets are not as large as unstructured datasets like images and texts.
-There is also no large tabular dataset from which knowledge can be transferred, like an ImageNet for computer vision or a Wikipedia corpora for NLP equivalent.
-We suggest two techniques for overcoming this problem: data augmentaion and unsupervised pre-training.
+Application of deep learning neural networks to tabular data is hindered by the typical size of these datasets.
+Tabular datasets are usually not as nearly large as unstructured datasets used to train neural networks for image and text classification.
+Moreover, in contrast to the ImagNet dataset for computer vision, or the Wikipedia corpora for NLP, there exists no large tabular dataset which may facilitate transfer learning.
+In this section we propose two techniques towards overcoming the above problem, *viz.* data augmentaion and unsupervised pre-training.
 
 ### Data Augmentation
 
-Data augmentation for tabular datasets is rarely studied.
-Tabular data is very different to image data and the standard augmentations used in computer vision does not make sense with tabular data.
-You cannot rotate or scale an observation from a tabular data without losing its meaning.
-One transformation that does make sense for tabular input is the injection of random noise.
+In the context of neural networks for tabular data, the topic of data augmentation is rarely studied.
+This is in part due to the fact that the augmentations used in standard deep learning applications (such as computer vision and NLP) do not make sense in the case of tabular data.
+For example, one cannot rotate or scale an observation in a tabular data set without contorting its true nature and/or meaning.
+There are however some transformations that do make sense for tabular input.
+In this section we discuss is the injection of random noise by means of so-called *marginalised corrupted features* (MCF), *blank-out corruption*, *swap noise* and *mixup augmentation*.
 
-When working with images, we can randomly perturb the pixel intensities by a small amount so that it is still possible to make sense of its content.
-By adding 1 for example to all pixels and all colors in an image, will only make it slightly brighter and we will still be able to make sense of it.
-But with tabular data we can just randomly add a small amount to any feature.
-The input features will probably not all be on the same scale and the addition of noise might result in a feature value that is not within the true distribution. 
-In addition, it does not make sense to add anything to a discrete variables.
-Thus in order to inject random noise to a tabular data sample, the noise should be scaled relative to each input feature range and the results should be a valid value for that feature.
-This also helps the model to be more robust to small variations in the data.
-[@VanDerMaaten2013] suggests an augmentation approach that does this called *Marginalised Corrupted Features* (MCF).
-The MCF approach adds noise to input from some known distribution.
-The process is manual and it cannot be applied to discrete variables.
+When working with images, we may randomly perturb pixel intensities by a small amount so that it is still possible to make sense of the image content.
+For example, adding the value 1 to all pixels and colors in an image, will simply brighten the image.
+Such a of translation can however nog be used in tabular data application, since the inputs are mostly not measured on the same scale and therefore the addition of noise might result in feature values that lie outside the distribution that generated them. 
+Thus in order to inject random noise to a tabular data sample, the values to be added should be scaled in relation to the range of each input feature.
+Subsequently also, the validity of the resulting value for a particular feature should be verified.
+Incorporating some noise may potentially also cause a model to be more robust to small variations in the data.
+Along these lines, @VanDerMaaten2013 suggest an augmentation approach called marginalised corrupted features.
+In the MCF approach, noise are generated from some known distribution and added to input values, but this is done manually and cannot be applied to discrete variables.
 
-In the original DAE paper [@Vincent2008], they used a blank-out corruption procedure.
-Which is randomly selecting a subset of the input features and masking their values with a zero.
-This similar to dropout regularisation but instead applied to the inputs.
-The only conceptual problem with this approach is that for some features a zero value actually carries some meaning, so a suggestion is to blank-out features with a unique value not already belonging to that feature distribution.
+In the original 'denoising autoencoders' paper [@Vincent2008], note that a so-called *blank-out corruption* procedure is used.
+Blank-out corruption entails the random selection of a subset of the input features, and masking their values with zeros.
+This resembles dropout regularisation, but applied to the inputs.
+The only problem with this approach is that for some features a zero value actually carries some meaning.
+Hence features should be 'blanked out' using some unique value that does not belong to the range of their distributions. 
 
-Another input corruption approach shown to work empirically [here](https://www.kaggle.com/c/porto-seguro-safe-driver-prediction/discussion/44629) is what is a technique called *Swap Noise* [@kasar2018].
-The swap noise procedure corrupts inputs by randomly swapping input values with those of other samples in the datasets.
-We have illustrated the approach in \autoref{tab:swpns}.
-In this way you ensure that the corrupted input have at least valid feature values.
-But it still might produce combinations of features that are not actually possible according to the true data distribution.
+Another input corruption approach that has empirically been shown to work well [here](https://www.kaggle.com/c/porto-seguro-safe-driver-prediction/discussion/44629), is the technique called *swap noise* [@kasar2018].
+The swap noise procedure corrupts inputs by randomly swapping input values with those of other samples in the datasets, thereby ensuring that the corrupted input at least assume valid feature values.
+The use of swap noise is illustrated in \autoref{tab:swpns}.
 
 ```{r}
 df = read_csv('../data/adult/adult_sample.csv')
@@ -374,45 +372,42 @@ kable(df, 'latex', caption = 'Swap Noise Example.\\label{tab:swpns}', booktabs=T
   group_rows('Sample with swap noise', 7,7)
 ```
 
-
-The final data augmentation we look at is *mixup augmentation* [@Zhang2017].
-The way mixup creates artifical samples is by the following formulation:
+Finally in this section, we consider the mixup augmentation approach [@Zhang2017].
+Here artifical samples are create by means of the following formulation:
 $$
 \tilde{\boldsymbol{x}}=\lambda\boldsymbol{x}_{i}+(1-\lambda)\boldsymbol{x}_{j}\\
-\tilde{\boldsymbol{y}}=\lambda\boldsymbol{y}_{i}+(1-\lambda)\boldsymbol{y}_{j}\\
+\tilde{\boldsymbol{y}}=\lambda\boldsymbol{y}_{i}+(1-\lambda)\boldsymbol{y}_{j}\\,
 $$
-where $\boldsymbol{x}$ is a input vector,$\boldsymbol{y}$ a one-hot encoded output vector and $\lambda\in[0,1]$.
-$(\boldsymbol{x}_{i}, \boldsymbol{y}_{i})$ and $(\boldsymbol{x}_{j}, \boldsymbol{y}_{j})$ are two samples drawn at random from the training data.
+where $\boldsymbol{x}$ denotes an input vector, where $\boldsymbol{y}$ represents a one-hot encoded output vector, and where $\lambda\in[0,1]$.
+Furthermore, $(\boldsymbol{x}_{i}, \boldsymbol{y}_{i})$ and $(\boldsymbol{x}_{j}, \boldsymbol{y}_{j})$ are two samples drawn at random from the training data.
 Thus mixup assumes that linear interpolations of input vectors lead to linear interpolations of corresponding targets.
-We visualise the creation of artificial samples through mixup on a toy dataset in  \autoref{fig:simple_dataset_mixup}.
+We visualise the creation of artificial samples by means of mixup augmentation on a toy dataset in  \autoref{fig:simple_dataset_mixup}.
 
-![Illustration of points created by mixup augmentation.\label{fig:simple_dataset_mixup}](figures/simple_dataset_mixup.pdf)
+![Illustration of the data points created by mixup augmentation.\label{fig:simple_dataset_mixup}](figures/simple_dataset_mixup.pdf)
 
-$\lambda$ controls the strength of the interpolation between the input-output pairs.
-The closer $\lambda$ is to 0 or 1, the closer the artificial sample will be to an actual training sample.
-The authors suggest using $\lambda\sim\text{Beta}(\alpha, \alpha)$ for $\alpha\in(0,\infty)$, since this makes it more likely that the mixed-up sample lie closer to one of the original samples than in the middle of the two.
-They observed best performance when $\alpha\in[0.1,0.4]$ and if $\alpha$ is too high, they experience underfitting.
+The parameter $\lambda$ governs the strength of the interpolation between the input-output pairs.
+The closer $\lambda$ lies to 0 or 1, the closer the artificial sample will be to an actual training sample.
+The authors suggest using $\lambda\sim\text{Beta}(\alpha, \alpha)$ for $\alpha\in(0,\infty)$, since this makes it more likely for the mixed-up sample to lie closer to one of the original samples (as opposed to midway inbetween two samples).
+Best performances were obtained for $\alpha\in[0.1,0.4]$.
+In cases where the $\alpha$ value was set too high, underfitting occur.
 
-Other ablation studies they did was to find at which stages of the network the interpolation should happen, *e.g.* raw input, after embedding, hidden layer, *etc.*
-But the experiments are not extremely clear and therefore warrants further discussion here.
+Typically data augmentation procedures depend on the dataset at hand and requires expert knowledge.
+It is therefore difficult to invent novel, generic ways to augment tabular data.
+Still, from the way in which mixup augmentation is defined, it is clear that this procedure may be used in the context of any type of data (including tabular datasets).
 
-Typically data augmentation procedures are dataset dependent and therefore requires expert knowledge.
-It is hard to think of ways to augment tabular data, even more so a generic way of doing so.
-However, from this defnition it is clear that mixup can be used on any type of data, including tabular datasets.
-
-Mixup data augmentation can be understood as a mechanism to encourage the model to behave linearly in-between training samples.
-[@Zhang2017] shows that this linear behaviour reduces the amount of undesirable variation when predicting new samples further away from the training samples.
-They also argue and show empirically how training with mixup is more stable in terms of model predicions and gradient norms.
+Mixup data augmentation may be understood in terms of a mechanism encouraging a model to behave linearly inbetween training samples.
+@Zhang2017 show that this linear behaviour reduces the amount of undesirable variation when predicting new samples lying further away from the set of training samples.
+The authors also show empirically that training using mixup augmentation is more stable in terms of both model predictions and gradient norms.
 This is because mixup leads to decision boundaries that transition linearly between classes, resulting in smoother predictions.
 
-The authors tested mixup data augmentation on tabular datasets.
-They tested it on six classification datasets from the UCI Machine Learning repository.
-They used a 2-layer MLP with 128 neurons each and a batch size of 16.
-They found that mixup improved the performance on four out of the six datasets.
+In @Zhang2017, the use of mixup data augmentation was tested on six tabular classification datasets from the UCI Machine Learning repository.
+The network architecture that was used for this purpose involves a two-layer MLP with 128 neurons in each layer, and a batch size of 16.
+It was found that mixup improved prediction performance in the case of four out of the six datasets considered.
 
-All of these methods have hyperparameters that needs to be set.
-For example, with swap noise and blank-out we must set the proportion of feature values to be corrupted and with mixup we need to set the mixup weight.
-These parameters control the strength of the regularisation and thus should be tuned accordingly.
+In conclusion, it is important to note that all data augmentation metods presented here require hyperparameters to be tuned. 
+When using swap noise and blank-out for example, the proportion of feature values to be corrupted needs to be specified.
+In mixup augmentation, the mixup weight needs to be set.
+Since these parameters control the strength of regularisation, their values are important and should be carefully tuned.
 
 ### Unsupervised Pretraining
 
