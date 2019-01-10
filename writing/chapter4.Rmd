@@ -411,27 +411,24 @@ Since these parameters control the strength of regularisation, their values are 
 
 ### Unsupervised Pretraining
 
-We described unsupervised pretraining in \label{sec:tl}.
-It is a very effective way of training deep neural networks.
-It also addressed the feature engineering issue we face with tabular data by automatically learning useful feature combinations in an unsupervised fashion.
-However, we only found two published papers using this approach for tabular data, [@Zhang2016] and [@Miotto2016].
-[@Miotto2016] used a stacked denoising autoencoder as a feature learning method to derive a general-purpose patient representation for EHR data that facilitates clinical predictive modelling.
-The trained DAE is the used as a fixed feature extractor to obtain representations of the data that can be passed to supervised learning algorithms.
-[@Zhang2016] also did pretraining with DAEs.
-
-Feature learniattempts to overcome limitations of supervised feature space definition by automatically identifying patterns and dependencies in the data to learn a compact and general representation that make it easier to automatically extract useful information when building predictive models [@Miotto2016].
-These techniques are very familiar and effective in text, audio and image processing, but not with tabular data.
-
-The DAEs enforce the representations to be robust to partially destroyed inputs.
-By using these learned representations as input, significantly improved the performance of predictive models compared to those only using the raw inputs.
+Recall that unsupervised pretraining was described in \label{sec:tl}, and presented as a very effective way of training deep neural networks.
+There we have seen that, by automatically learning useful feature combinations in an unsupervised fashion, pretraining may also be used to address the feature engineering issue. 
+However in the literature we only found two papers that make use of pretraining in the context of tabular data.
+These are @Zhang2016 and @Miotto2016.
+Both papers made use of pretraining with DAEs.
+In the latter paper, a stacked denoising autoencoder is used as feature learning method.
+The representations derived from the DAE are subsequently passed on to supervised learning algorithms, thereby enabling improved predictions.
+This approach is used in a medical application, where general-purpose patient representations facilitate clinical predictive modelling.
 
 There are a lot of unknowns when it comes to using DAEs for pretraining.
-First we need to decide on the structural hyperparameters of the network (number of layers, sizes, etc.) and then we need to decide what learning paramters to choose.
-This is not as thoroughly explored as hyperparamter selection for supervised neural networks.
-We also need to decide which loss function we need to used for the DAE.
-This choice depends on the type of the input.
-If all the inputs are numeric we can use the common MSE loss, but if the input has categorical features, this decision needs more consideration.
-[@Miotto2016] transformed all numeric features to be in the range of [0,1] and one-hot encoded the categorical features so that they can use the binary cross-entropy as the loss function.
+First we need to decide on the structural hyperparameters of the network (for example the number and sizes of layers).
+Thereafter we need to decide which learning parameters to choose.
+Currently, parameter selection is an aspect which have not yet been as thoroughly explored as hyperparameter selection for supervised neural networks.
+
+In addition we of course also need to decide which DAE loss function to use, where in this regard, a choice depends on the type of inputs.
+If all inputs are numeric, we may use the common MSE loss, but if the inputs include categorical features, more consideration is needed.
+@Miotto2016 transformed all numeric features to lie within [0,1], whereas all categorical features were one-hot encoded.
+This enabled the use of  binary cross-entropy as loss function.
 But we cannot follow this approach if we wish to use entity embeddings for the categorical features.
 A suggestion is to have a separate multiclass cross-entropy loss for each categorical feature and use the MSE loss for the continuous features.
 These lossed should then be combined to obtain a total loss.
