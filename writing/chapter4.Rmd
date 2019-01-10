@@ -427,102 +427,112 @@ Currently, parameter selection is an aspect which have not yet been as thoroughl
 
 In addition we of course also need to decide which DAE loss function to use, where in this regard, a choice depends on the type of inputs.
 If all inputs are numeric, we may use the common MSE loss, but if the inputs include categorical features, more consideration is needed.
-@Miotto2016 transformed all numeric features to lie within [0,1], whereas all categorical features were one-hot encoded.
-This enabled the use of  binary cross-entropy as loss function.
-But we cannot follow this approach if we wish to use entity embeddings for the categorical features.
-A suggestion is to have a separate multiclass cross-entropy loss for each categorical feature and use the MSE loss for the continuous features.
-These lossed should then be combined to obtain a total loss.
-How to weight the different losses is also something that is not yet researched.
+@Miotto2016 transformed all continuous features to lie within [0,1], whereas all categorical features were one-hot encoded.
+This enabled the use of binary cross-entropy as loss function.
+If we wish to use entity embeddings for categorical features, we can however not use their approach.
+A suggestion is to, for each categorical feature, import a separate multiclass cross-entropy loss function, and to use MSE loss for continuous features.
+The losses for categorical and continuous features may then be combined in order to obtain a total loss.
+The weights to be assigned to the two losses is an aspect which has not yet been researched.
 
-We suggest treating the unsupervised pretraining rather as a transfer learning problem than a feature extraction method like in [@Zhang2016] and [@Miotto2016].
-That is, slicing the head of the trained DAE and replacing it with the required classification layers.
-Then first train only the new layers keeping the lower level DAE layers fixed and then train all of the layers simultaneously.
-By doing it this way, the "feature extractor" part of the DAE can still be tweaked to be optimal for the supervised learning task.
-We experiment with this approach in the next chapter.
+Instead of the feature extraction method followed in @Zhang2016 and @Miotto2016, we propose treating unsupervised pretraining as a transfer learning problem.
+That is, we suggest replacing ... with the required classification layers. (please rephrase).
+Then one may first train the newly added layers, keeping the lower level DAE layers fixed.
+Subsequently, all layers may be trained simultaneously.
+Rather using this approach the feature extractor part of the DAE may still be tweaked in order to be optimal for the supervised learning task.
+We experiment with the above approach in the following chapter.
 
 ### Regularisation
 
-Since regularisation can also help one to be more sample efficient we have a brief discussion about it here.
-A popular form of regularisation in the papers we have studied is dropout [@Song2018], [@Zhang2016], [@Qu2016], [@Guo2017].
-The dropout percentage was mostly determined using a grid search and the results showed the optimal percentage depends on the data and the model being used.
+Since regularisation may also be used to facilitate sample efficiency, we provide a brief discussion of the topic in this section. 
+In Chapter 3, dropout was discussed as a popular form of regularisation found in many papers [@Song2018], [@Zhang2016], [@Qu2016], [@Guo2017].
+In the original paper by @Sriva2014, it was advised that the dropout parameter $p$ (which specifies the percentage of neurons to discard), should lie between 0.5 and 1.
+The exact value for $p$ is typically determined using a grid search, and results in the literature indicate the optimal percentage to be data- and model dependent. (please provide a reference).
 
-Interesetingly, [@haldar2018] found that dropout was not effective in their application.
-They pinned it down to dropout producing invalid input scenarious that distracted the model.
-Therefore they opted for hand crafted noise shapes taking into account the distribution of the relevant feature. 
+Interestingly, @haldar2018 reported that dropout was not effective in their application.
+In their analysis of this result, they hypothesise that dropout produces invalid input scenarious which distracts the model.
+Therefore the authors rather opt for hand-crafted noise shapes which takes into account the distribution of a relevant feature. 
 
-The other form of regularisation used for tabular data is weight decay [@Song2018], [@Wang2017b], [@Zhang2016], [@Qu2016] and [@Zhou2017],
-[@Zhang2016] compared dropout with L2 and found dropout to be better.
+The other form of regularisation used in the context of tabular data, is weight decay [@Song2018], [@Wang2017b], [@Zhang2016], [@Qu2016] and [@Zhou2017],
+Note that @Zhang2016 compared dropout with L2 regularisation, and found dropout to be better.
 
-For a different approach to regularisation, recally the difference between tabular data and unstructured data.
-A difference between the two data types that stand out is the relative importance of each of the important features with respect to the target. 
-In computer vision a large amount of pixels should change before an image is of something else.
-Whereas in tabular data a very small change in a single feature may have totally different behaviour with respect to the target [@Shavitt2018].
-The same authors mention that this can be addressed by including a separate reqularisation term for each of the weights in the network. 
-These regularisation terms are seen as additional model hyperparameters.
-It is easy to see that this approach is totally intractable since the only way to train these hyperpararmeters are brute force and repetitive tweaking and validatig which cannot be done in by a gradient based method.
-A workaround is to make these regularisation parameters trainable like all of the other points in the network.
-This is achieved by minimising the counterfactual loss, a novel loss function proposed by [@Shavitt2018].
-They found that training neural networks by optimising the counterfactual loss, outperform other regularisation approaches for neural networks and results in neural networkss that are comparable in performance to gradient boosted trees.
+A different angle to regularisation makes use of the fact that the importance of each feature with respect the target is different for tabular and unstructured data.
+In computer vision for example, a large number of pixels have to change before an image resembles an entirely different object.
+in tabular data, on the other hand, a very small change in a single feature may result large changes with respect to predictions [@Shavitt2018].
+in the latter paper, it is mentioned that this aspect may be addressed by means of including a separate reqularisation term for each of the weights in the network. 
+These regularisation terms are treated as additional model hyperparameters.
+Unfortunately it is clear that the above approach is totally impracticable.
+The only way to train these hyperpararmeters is through repeated tweaking and validating and this is not possible in a gradient-based method.
+A workaround is to make these regularisation parameters trainable, as is the case with all other modules in the network.
+This is achieved by minimising the so-called counterfactual loss function, a novel loss function proposed by [@Shavitt2018].
+Results obtained from empirical work in the paper by @Shavitt2018 are promising.
+It was found that training neural networks by means of optimising the counterfactual loss leads to the NNs outperforming all other NN regularisation approaches.
 
 ## Interpretation \label{sec:interp}
 
-We have mentioned that model explainability is important for various reasons.
-It helps one to know how to improve one's model or where it goes wrong.
-One can even go so far as to say if you cannot explain how a prediction is made, you cannot know how good it is.
-In the literature we focussed on for this work, not much attention was given to model interpretability.
-Although there are a few extra interpretation options avaible when using some of the abovementioned approaches to tabular data.
+The importance of model interpretation was mentioned in Chapter 3.
+A good understanding of a model helps one to improve the model in the areas where it is weak.
+Stated in another way, if one cannot explain the way in which a prediction is arrived at, one cannot be sure about its accuracy.
+In most of the literature for deep learning, thus far relatively little attention has been given to model interpretability.
+Luckily in the context of tabular data, some of the modern deep learning architecture provide more options in terms of simpler interpretation. 
+In terms of modern NN architectures, in this section, we briefly discuss neural network interpretation as facilitated by the use of entity embeddings and attention layers.
+We also discuss model independent interpretation by means of permutation test, and illustrate this approach on the Adult dataset introduced in Chapter 1.
 
-Firstly, if one uses entity embeddings, the embeddings can be visualised once projected into a low dimensional space, as done in \autoref{fig:edu_embed}.
-[@Zhou2017] is an example in the literature that did this.
-The attention layer can also provide insight into which feature combinations are important.
-[@Song2018] and [@Zhou2017] made use of this information.
-The information is obtained from the attentional weights $\alpha$ which is based on feature similarity and can indicate which features are comined to make predicions for certain observations.
-Example output in [@Song2018] from this approach can be found in \autoref{fig:plt_att}.
+With regard to the use of entity embeddings, note that these may easily be visualised once projected into a low-dimensional space.
+This was done \autoref{fig:edu_embed}.
+For a second example, the interested reader may refer to an illustration in the paper by @Zhou2017.
+
+An attention layer can also be used to provide insight into the relative importance of certain feature combinations, as may be seen in the work by @Song2018 and @Zhou2017].
+Relative importance measures are obtained from the attention weights $\alpha$, which in turn are based upon feature similarities.
+From these we may infer which features are combined to make predictions for certain observations.
+As an example, the output after using the above approach, as obtained in @Song2018, is displayed in \autoref{fig:plt_att}.
 Also see [@Shavitt2018] for how the learned regularisation parameters were used to evaluate feature importance.
 
-![The attention weights visualised for a singe observation in the dataset.\label{fig:plt_att}](figures/att_plot.png)
+![A display of the attention weights for a single observation in the dataset.\label{fig:plt_att}](figures/att_plot.png)
 
-[@haldar2018] used one of the model agnostic model interpretation algorithms.
-They used the permuation importance algorithm to evaluate the importance of features.
-However, they came to the same conclusion as what we stated in \Sref{sec:interp_ma}.
-That is that the permutation test did not produce sensical results because the features were not independent.
-Permuting the feature independently created examples that never occurred in real life, and the importance of features in that invalid space misled them. 
-They did find it somewhat useful to identify redundant features.
+@haldar2018 applied a model agnostic model interpretation algorithm in the context of DLTD.
+The authors made use of the permuation importance algorithm in order to evaluate the importance of features.
+However, they reached the same conclusion as stated in \Sref{sec:interp_ma}, *viz.* that the permutation test did not produce sensical results because the features were not independent.
+Independent permutation of the features created examples that never occur in real life, and the deduced importance of features in this invalid space is misleading. 
+Subsequently the authors attempted to identify redundant features, which to some extent alleviated the above issue. 
 
-We implemented an example of a permutation importance plot for a trained neural network on the Adult dataset.
-We shuffled each feature 5 times to get a more robust estimate and to obtain a standard error and we measured the performance in terms of the log loss.
-The resulting plot is in \autoref{fig:imp}.
-The standard error are too small to show on the figure.
-The horizontal axis measures the average drop in the log loss when the feature is shuffled before prediction.
-The ranking of the features can be justified intuitively.
-It is reassuring to see that sex, race and native-country are some of the less important features when it comes to predicting the income of an indivdual.
+For illustration purposes, the remainder of this section is devoted to an implementation of a permutation importance plot on an NN fitted to the Adult dataset.
+In order to obtain a more robust estimate and standard errors, we perturbed each feature fives times and measure the NN performance in terms of the log loss function.
+We perturbed each feature five times in order to obtain a more robust estimate and to obtain a standard error and we measured the performance in terms of the log loss.
+Our results are displayed in \autoref{fig:imp} (note that the standard errors were too small to be incorporated in the figure).
+The horizontal axis measures the average drop in the log loss function when a feature is shuffled before prediction.
+The feature ranking makes intuitive sense.
+It is reassuring to see that the features 'gender', 'race' and 'native-country' are some of the less important features when predicting income.
 
-![Permutation importance plot of a neural network trained on the Adult dataset.\label{fig:imp}](figures/perm_importance.png)
+![A permutation importance plot of an NN trained on the Adult dataset.\label{fig:imp}](figures/perm_importance.png)
 
-Next we compare the permutation importance with the feature importance obtained from knowledge distillation to a boosted trees algorithm (see \Sref{sec:interp_ns}).
-To recap the process, we use the predictions of the neural network trained on the Adult dataset as the target for a boosting model to predict using the same input as that given to the neural network.
-Once the boosting model is trained on these targets, we can extract the feature importance based on the number of times the base trees used a certain feature to split on.
-The results are displayed in \autoref{fig:imp_xgb}.
+Next we compare permutation importance with feature rankings obtained from knowledge distillation to a boosted trees algorithm (see \Sref{sec:interp_ns}).
+To recap the process, we use the predictions of the neural network trained on the Adult dataset as the targer for a boosted model to predict.
+The inputs to the neural network and boosted model are of course the same.  
+Once the boosted model has been trained on these targets, we may extract feature importances based upon the number of times that the individual trees used a certain feature to split on.
+The obtained feature importance values are displayed in \autoref{fig:imp_xgb}.
 
-![Feature importance obtained from a boosted trees model trained on the neural network predictions.\label{fig:imp_xgb}](figures/xgb_importance.png)
+![Feature importance values obtained from a boosted model trained on NN predictions.\label{fig:imp_xgb}](figures/xgb_importance.png)
 
-The ranking of the variables between the two approaches are somewhat the same, except for the marital-status and fnlwgt features.
-This difference might firstly be caused by the permutation importance method not picking up on multivariate feature interactions and thus incorrectly thinks that marital-status is an important feature, but in reality the performance drop was actually caused by another feature dependent on marital-status.
-The other explanation we can give is that the decision trees are more likely to split on features with more splitting points and since the fnlwgt feature is the feature with most unique values in the dataset, it contributed to the reason why it was considered so important for the boosting model.
-These two examples show that one should take care when interpretting models and should use more than one source of information when possible.
+In the two approaches, the variable rankings are more or less the same.
+The only exceptions are the rankings obtained in the case of the 'marital-status' and 'fnlwgt' features.
+This difference might be caused by the permutation importance method not picking up on multivariate feature interactions.
+Therefore it incorrectly perceives 'marital-status' to be an important feature, although in reality the performance drop is actually caused by another feature dependent on 'marital-status'.
+The other explanation we can give is that decision trees are more likely to split on features with more splitting points, and since the 'fnlwgt' feature is the feature with most unique values in the dataset, this might have contributed to the reason 'fnlwgt' was considered to be so important in the case of the boosted model.
+The above differences in interpretation illustrates that one should take care when interpreting models.
+It seems to be a good idea to make use of more than one source of information when possible.
 
 ## Hyperparameter Selection \label{sec:hs_tb}
 
-We have already identified a plethora of hyperparameters to be tuned if we want to sucessfully fit a deep neural network to tabular data.
-Broadly speaking, there are structural hyperparamters to select, like the number of layers and the type of activation function, but then there are also learning algorithm hyperparameters, like the learning rate or the weight decay.
-In term of the structural parameters, since there are no shared patterns among the diverse tabular datasets, it is hard to design a universal architecture that will fit all.
-In most of the literature we have investigated the researcher performs a grid search over many combinations of of hyperparamters [@Song2018], [@Wang2017b], [@Zhang2016], [@Qu2016], [@Guo2017], [@Covington2016].
-Most of these parameters are very dependent on the dataset and other modeling choices and therefore the need to tune them.
-The main structural hyperparameters tuned in the majority of the papers are: hidden layer size, number of hidden layers, activation functions and the shape of the fully-connected layers (*i.e.* is it a constant shape, increasing, decreasing or a diamond shape).
-The values found varied accross publications, showing again that the step is necessary when working with custom datasets and models.
-We include some similar experiments in \autoref{app:B}
+Thus far, we have come across a plethora of hyperparameters to be tuned if we want to sucessfully fit a deep neural network to tabular data.
+Broadly speaking, there are structural hyperparameters to select, such as the number of layers and the type of activation functions to use; and there are also learning algorithm hyperparameters to specify, for example the learning rate or weight decay to be used.
+In term of structural parameters, since there are no shared patterns among diverse tabular datasets, it is very difficult to design a universal architecture to use in all setups.
+In most of the literature, typically a grid search over many combinations of hyperparameter values is performed [@Song2018], [@Wang2017b], [@Zhang2016], [@Qu2016], [@Guo2017], [@Covington2016].
+Most of these parameter values are very dependent on the dataset and other modeling choices; hence the need to tune them.
+The main structural hyperparameters tuned in the majority of the papers may be listed as follows: hidden layer size, number of hidden layers, activation functions, and the shape of fully-connected layers (*i.e.* a constant-, increasing-, decreasing- or diamond shape).
+The optimal hyperparameter values found varied accross publications, indicating once again the necessity of a hyperparameter tuning step in the case of uncustomary datasets and models.
+With regard to hyperparameter selection, we include some experiments of our own (similar to the experiments conducted in the aforementioned papers) in \autoref{app:B}.
 
-In terms of the learning algorithm hyperparamters, not much experimentation was shown in the publication itself.
+In terms of hyperparameters specific to a learning algorithm, not much experimentation was done in... ? which paper?
 The only choice that were shown was selecting the learning rate over a grid of values, as in [@Zhang2016] and [@Wang2017b], and kept the selection constant during training.
 Most of the work used the Adam optimiser and early stopping to prevent overfitting [@Song2018], [@Wang2017b], [@Zhang2016].
 Large batch sizes were chosen in [@Song2018], 1024 and [@Wang2017b], 512.
