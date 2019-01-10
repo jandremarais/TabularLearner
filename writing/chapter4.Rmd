@@ -166,18 +166,20 @@ Using some pooling operation, the list of embeddings are subsequently projected 
 
 ### Combining Features
 
-Once the continuous and categorical features have been processed and embedded, we need a way to combine them before passing it to the rest of the network.
-The standard approach is to concatenate each categorical variable embedding to the continuous variables, as was done in [@haldar2018] and [@Wang2017b] for example, illustrated in \autoref{fig:comb_rep}.
-The potential problem with this approach is that some features might be over-represented in this vector.
-For example, one of the continuous features may be very important for prediction, but it gets lost when concatenated with all the entity embeddings each taking up more space in the combined representation.
+Once all continuous and categorical features have been processed and embedded, we need a way to combine them before their input may be transmitted to the rest of the network.
+The standard approach is to concatenate each categorical variable embedding to the continuous variables, as was done in [@haldar2018] and [@Wang2017b] for example. 
+This is illustrated in \autoref{fig:comb_rep}.
+The potential problem with this approach, however, is that some features might be over-represented in the resulting vector.
+Suppose for example that one of the continuous features are very important for prediction.
+When the continuous feature is concatenated with the entity embeddings, since all entity embeddings each take up more space in the combined representation, it may happen that the contribution of the continuous predictor may be dilluted.
 
-In [@Song2018] they embed both the numerical and categorical features into the same sized embedding.
-By mapping both types in the same feature space facilitates more effective learning of interactions between the mixed features.
-The embedding for the $j$-th numerical features is obtained by:
+In @Song2018 the authors embed both numerical and categorical features into the same embedded space.
+Mapping both types of features into the same feature space facilitates more effective learning of interactions between the mixed set of features.
+Here the embedding for the $j$-th numerical features is obtained by
 $$
 \boldsymbol{e}_{j}=\boldsymbol{v}_{j}x_{j}
 $$
-where $x_{j}$ is a scalar and $\boldsymbol{v}_{j}$ is the associated weight vector.
+where $x_{j}$ is a scalar and where $\boldsymbol{v}_{j}$ denotes the associated weight vector.
 
 ```{r, fig.cap="Combined representation of continuous and categorical features.\\label{fig:comb_rep}", fig.align='center', out.width="30%"}
 knitr::include_graphics("figures/mix_rep.png")
@@ -185,54 +187,63 @@ knitr::include_graphics("figures/mix_rep.png")
 
 ## Learning Feature Interactions \label{sec:feat_int}
 
-In most machine learning tasks the greatest performance gains can be achieved by feature engineering wheras better algorithms may only result in incremental boosts.
-In feature egineering one strives to create new features from the original features based on some domain knowledge of the data or otherwise, that makes it easier for the model to estimate the target and help capture high-order interactions between features.
-Although a crucial step to make the most out of the data, this can be a very laborious process.
-It is widely held that 80% of the effort in an analytic model is preprocessing, merging, customizing, and cleaning datasets, not analysing them for insights [@Rajkomar2018].
-There is no formal path to follow in this stage and thus usually consists of many a trial and error, benefitted by domain knowledge of the data, which is not always accessible.
-A huge advantage of using neural networks on tabular data (and other data structures) is that the feature engineering process gets automated to some extent (with the caveat of numerical feature preprocessing.).
-A neural network learns these optimal feature transformations and interactions implicitly during the training process.
-The hidden layers of a neural network can be viewed as a feauture extractor that was optimised to map the inputs into the best possible feature space for a model (the final layer of the network) to operate in.
+In most machine learning tasks it is known that the greatest performance gains are typically achieved by means of feature engineering, whereas improved algorithms often only result in incremental performance boosts.
+In feature egineering one strives to use the original features to create a new set of features.
+This is done using domain expertise or by exploiting *a priori* knowledge of the data at hand.
+Using more informative features obtained in this way facilitates simpler estimation of the target, and capturing high-order interactions between features.
+Hence feature engineering is viewed as a crucial step in order to learn as much as possible from a training dataset.
+Unfortunately it entails a very laborious process.
 
-The standard approach is to stack a few fully-connected layers one after the other to map the input representation to the output, as was done in [@Covington2016].
-Fully-connected layers model all feature interactions implicitly and in ideal world, we would expect this architecture to be sufficient.
-In practice, with out current learning algorithms, a simple MLP is not good enough to learn all types of interactions.
-A fully connected model structure leads to very complex optimisation hyperplanes with a high risk of falling into local optimums.
+Indeed, it is widely stated that in predictive modelling, typically 80% of the effort is devoted to steps involved during preprocessing, merging, customising, and cleaning of datasets [@Rajkomar2018].
+Perhaps this is party due to the fact that feature engineering is not a structured process and usually consists of many unsuccesful trials and experimentation before more useful features are found.
+The effort associated with feature engineering could have been alleviated by more domain knowledge, but this is not always readily accessible.
 
-Therefore it is necessary to explicitly leverage expressive feature combinations or encourage the network to learn better high-order feature interactions.
-This issue receives attention in publications such as [@Song2018], [@Wang2017b], [@Qu2016] and [@Guo2017].
-The restrictions we impose on the fully-connected structure may further help to limit the model size to make learning more efficient.
-They key question we asked in this section is how do we help the network to determine which features to combine to form meaningful high-order features.
-We first briefly review some of the suggestions in the literature, after which we focus on the attention mechanism which we believe is the most powerful method of learning feature interactions.
+A huge advantage of using neural networks on tabular data (and other data structures) is that the feature engineering process can be automated to some extent.
+That is, a neural network can learn these optimal feature transformations and interactions implicitly during the training process.
+In this way, the hidden layers of a neural network may be viewed as a feature extractor which is optimised to map the network inputs into the best possible feature space for the final layer of the network to operate in.
 
-The authors of [@Wang2017b] makes a case for finding a bounded-degree of feature interactions, arguing that all the Kaggle competions are won with feature engineering of low-degree interactions, whereas deep neural networks learn highly non-linear interactions implicitly.
-They suggest using an automated way of building cross-features, called the cross-network.
-In the cross-network each layer produces higher-order interactions based on existing ones, and keeps the interactions from previous layers. 
-The cross-network consists of cross-layers that can be formalised as:
+The traditional approach towards automatic feature engineering in NNs is to stack a few fully-connected layers in order to map the input representation to the output, as was done in [@Covington2016].
+The set of fully connected layers are used to implicitly model all feature interactions and in ideal world, we would expect this architecture to be sufficient.
+In practice however, without current learning algorithms, a simple MLP is not good enough to learn all types of interactions.
+A fully connected model structure leads to very complex optimisation hyperplanes, therby increasing the risk of falling into local optimums.
+
+Therefore it is necessary to explicitly leverage expressive feature combinations, or to encourage the network to learn better high-order feature interactions.
+The above objective receives attention in publications such as [@Song2018], [@Wang2017b], [@Qu2016] and [@Guo2017].
+The restrictions that we impose on a fully connected structure may further assist in limiting the size of the network, in turn causing learning to be more efficient.
+
+Having motivated the importance of feature engineering, and emphasised the importance of further developing feature extraction methodology for neural networks, in the remainder of this section we focus on ways to assist a network to determine which features to combine in order to form meaningful high-order features.
+We briefly review some of the suggestions in the literature, whereafter we discuss the methodology which we believe to be the most powerful in terms of learning feature interactions.
+
+In @Wang2017b, the authors makes a case for finding a bounded-degree of feature interactions.
+They argue that all Kaggle competions are won when feature engineering comprises low-degree interactions.
+This stands in contrast to automatic feature engineering in deep neural networks, where highly non-linear interactions are typically learned.
+Therefore in @Wang2017b an automated way of constructing cross-features is proposed, and called a *cross-network*.
+In a cross-network, each layer produces higher-order interactions based on existing ones, and keeps the interactions from previous layers. 
+More specifically, a cross-network consists of cross-layers which may be formalised as follows:
 $$
-\boldsymbol{x}_{l+1}=\boldsymbol{x}_{0}\boldsymbol{x}_{l}^{\intercal}\boldsymbol{w}_{l}+\boldsymbol{b}_{l}+\boldsymbol{x}_{l}
+\boldsymbol{x}_{l+1}=\boldsymbol{x}_{0}\boldsymbol{x}_{l}^{\intercal}\boldsymbol{w}_{l}+\boldsymbol{b}_{l}+\boldsymbol{x}_{l},
 $$
-where $\boldsymbol{x}_{l}$ is the output of the $l$-th cross layer and the input to the $(l+1)$-th cross-layer; $\boldsymbol{x}_{0}$ is the combined input representation; $\boldsymbol{w}_{l}$ and $\boldsymbol{b}_{l}$ are its associate weight and bias paramters respectively.
+where $\boldsymbol{x}_{l}$ denotes the output from the $l$-th cross-layer and the input to the $(l+1)$-th cross-layer, and where $\boldsymbol{x}_{0}$ is the combined input representation. 
+Furthermore, $\boldsymbol{w}_{l}$ and $\boldsymbol{b}_{l}$ represent the associated weight and bias parameters respectively.
 Each cross-layer adds back its input after feature in the same fashion as a skip-connection.
-The degree of the cross-features grows with cross-network depth.
-The authors experimented with 1-6 cross-layers and found that a depth of 6 gave the best results.
+Hence the degree of cross-features grows with increasing cross-network depth.
+The authors experimented with 1-6 cross-layers and found a depth of six to yield the best results.
+In parallel with the cross-networks in @Wang2017b, the authors also train a standard deep neural network in order to learn highly non-linear feature interactions.
+The DNN accepts the same input, and its output is then concatenated with that of the cross-network.
 
-In parallel to the cross-network, they also used a standard deep neural network to learn the highly non-linear feature interactions.
-The DNN accepts the same input and its output is then concatenated with that of the cross-network.
-These two networks can then be trained simultaneously.
+In @Qu2016, the idea of a so-called *product layer* is proposed.
+A product layer calculates pairwise inner or outer products of all feature combinations and concatenate them to all linear combinations.
+The output is then sent to two fully connected layers.
 
-[@Qu2016] used something called a product layer, which takes pairwise inner or outer products of all feature combinations and concatenates it to all linear combinations.
-The output is then fed to 2 fully-connected layers.
-
-According to [@Guo2017] and [@Cheng2016] it is necessary to capture both low and high-order interactions.
-They both achieve this by having two parallel networks, similar to [@Wang2017b], where one learns high-order interactions and the other low-order interactions.
-Both use a deep neural network to learn the high-order interatcions.
-[@Cheng2016] uses a shallow but wide neural network to capture the low order interactions and where [@Guo2017] uses a learnable factorisation machine to do that.
-Similar to the other parallel stream networks, the output of the two streams gets concatenated before passing it to the classification layer.
+In contrast to the approach in @Wang2017b, in @Guo2017 and @Cheng2016 the authors aim to capture both low and high-order interactions.
+In both papers this is achieved by means of introducing two parallel networks, and learn the high-order interactions by means of a deep neural network. 
+For the low order interactions, @Cheng2016 uses a shallow but wide neural network, and @Guo2017 use a so-called *factorisation machine*.
+Again the output of the two streams are concatenated, and the resulting output is transmitted to the classification layer.
 
 ### Attention \label{sec:tab_att}
 
-Based on the results in the paper [@Song2018] and by our findings in general deep learning research \Sref{sec:attention}, we deem attention to be the most promsing mechanism to model feature interactions. [@Song2018] uses a multi-head self-attention mechanism which they call the interacting layer.
+Based on the results presented in the paper by @Song2018 and on findings reported in deep learning research in general, we deem attention to be the most promising mechanism to model feature interactions. 
+[@Song2018] uses a multi-head self-attention mechanism which they call the interacting layer.
 Within in the interacting layer each feature is allowed to interact with every other feature and automatically determine which of those interactions are relevant to the output.
 
 To explain the attention mechanism, consider feature $j$ and suppose we want to determine which high-order features involving feature $j$ are meaningful.
