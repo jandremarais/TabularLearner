@@ -153,8 +153,9 @@ This sparsity of the activations is what some believe is the reason for the effe
 If dead activations needs to be avoided, alternative activation functions to apply include PReLUs [@He2015] and Leaky ReLUs [@Maas2013]. 
 
 Selecting an appropriate activation function for a specific task typically involves a trial-and-error process.
-For general tasks, the use of ReLUs after each hidden layer may suffice and has to some extent become standard practice.
-In the context of classification, for each class, it is often useful to produce outputs between 0 and 1 as estimates of conditional class probabilities. Therefore one often uses a sigmoid activation function on the output layer.
+For general tasks, the use of ReLUs after each linear layer may suffice and has to some extent become standard practice.
+In the context of classification, for each class, it is often useful to produce outputs between 0 and 1 as estimates of conditional class probabilities. 
+Therefore one often uses a sigmoid activation function on the output layer for a binary classification task.
 In the context of (single label) multiclass classifcation, it is also desirable for these ouputs to sum to 1, therefore in this case, an activation function called *softmax* is typically used.
 Note that the softmax activation, *viz.* $\text{softmax}(\boldsymbol{x})_{k}=\frac{e^{x_{k}}}{\sum_{l=1}^{K}x_{l}}$ is simply the logit transformation introduced in \Sref{sec:SLT}.
 In a regression context, we mostly omit the use of an activation function on the output layer.
@@ -176,7 +177,7 @@ Currently the best way of finding the optimal size of a network for a given prob
 Note therefore that for many of the components of neural networks in deep learning, hyperparameter values are selected through a process of trial-and-error. Whereas appropriate specification of the size of a neural network is certainly important, in \Sref{sec:basicreg}, we will see why tuning the size of a network is not necessarily the best way to control overfitting.
 
 Theoretically, according to the universal approximation theorem [@Cybenko1989], a neural network with a single hidden layer and with a finite number of neurons can approximate any continuous function. This begs the question: why are additional hidden layers required?
-As stated in [@Ba2013], although a neural network can represent any function, it does not mean that the available learning algorithm is able to find these optimal weights. Moreover, it may be the case that the number of neurons needed in order for a single hidden layer network to represent a specific function of interest, is infeasibly large.
+As stated in @Ba2013, although a neural network can represent any function, it does not mean that the available learning algorithm is able to find these optimal weights. Moreover, it may be the case that the number of neurons needed in order for a single hidden layer network to represent a specific function of interest, is infeasibly large.
 By choosing deeper networks we are assuming that the function we are trying to learn is composed of several simpler functions.
 Incorporating this prior belief has empirically been shown to be useful [@Goodfellow2016, pp.197-198]. This is especially true in the case of tasks that may be partitioned into smaller subtasks, for example in computer vision.
 
@@ -197,13 +198,18 @@ The above steps are typically repeated until the loss function is found to conve
 ### Weight Initialisation
 
 Taining a neural network starts with a weight initialisation step.
+A poorly initialised network hampers the training procedure: it increases the number of iterations needed, reduces the quality of the local optima found and makes convergence more difficult.
 In order to think about sensible initialisation, first note that we expect the number of positive and negative weights of a well trained neural network to be equal.
 If we initialise all weights to be zero, each neuron will compute the same output. Consequently, each neuron will produce the same gradient and undergo the same weight update.
 Hence we want to initialise the weights as small as possible, but each weight should be unique.
-Sampling the initial weights from the standard normal distribution seems to be a natural choice. However it turns out that the variance of the outputs from randomly initialised neurons grow as the number of inputs increase.
-Therefore an option is scale the weight vector generated from the standard norm distribution by the square root of its number of inputs. Such a scaling step will normalise the variance of the output, ensuring that all neurons in the network initially have approximately the same output distribution. In addition, it serves to improve the rate of convergence when training the network.
+Sampling the initial weights from the standard normal distribution seems to be a natural choice. 
+However it turns out that the variance of the outputs from randomly initialised neurons grow as the number of inputs increase.
+Therefore an option is to scale the weight vector generated from the standard normal distribution by the square root of its number of inputs. 
+Such a scaling step will normalise the variance of the output, ensuring that all neurons in the network initially have approximately the same output distribution. 
+In addition, it serves to improve the rate of convergence when training the network.
 
-Another option for weight initialisation is the proposal by @He2015b, which was made specifically in the context of using ReLU activation functions.
+Very deep neural networks have difficulties to converge when using the above mentioned initialisation [@Simonyan2014].
+@He2015a proposes an alternative initialisation, which was made specifically in the context of using ReLU activation functions and making it easier to train deep neural networks.
 
 ### Optimisation \label{sec:optimisation}
 
@@ -495,13 +501,15 @@ The difference between L1 and L2 regularisation lies in the form of the penalty 
 Specification of the $\lambda$ parameter is important since it determines the severity of the penalty of large NN weight values.
 Note that the "$\frac{1}{2}$" in front of the L2 penalty is added for the sake of convenience since it renders the derivative of the penalty term equal to $\lambda w$. 
 The latter form implies a linear decay of the weights towards zero, *i.e.* $w'=w-\lambda w$, which is also known as *weight decay*. 
-In neural network applications it has been shown that L2 regularisation typically outperforms L1 regularisation and is therefore preferred (Reference?)
+In practice, L2 regularisation typically outperforms L1 regularisation in neural network applications.
 
-An alternative way of preventing a neural network to overfit is so-called *early termination* of the training process. That is, one refrains from training the network until the training loss converges. Since the training loss after convergence is not equivalent to the test loss, the loss function on a validation set should be monitored during training. Early termination involves stopping the training process as soon as the validation loss stops decreasing. 
+An alternative way of preventing a neural network to overfit is so-called *early stopping* of the training process. 
+That is, one refrains from training the network until the training loss converges. Since the training loss after convergence is not equivalent to the test loss, the loss function on a validation set should be monitored during training. 
+Early stopping involves terminating the training process as soon as the validation loss stops decreasing. 
 
-> As mentioned before, the learning rate also plays a big part in finding the optimal weights.
-> Next we discuss how we can tune the learning rate to train faster and to find better local minima.
-> More advanced regularisation techniques are discussed in \Cref{chp:dl}.
+As mentioned before, the learning rate also plays a big part in finding the optimal weights.
+Next we discuss how we can tune the learning rate to train faster and to find better local minima.
+More advanced regularisation techniques are discussed in \Cref{chp:dl}.
 
 ## Adaptive Learning Rates \label{sec:lr}
 
@@ -514,12 +522,28 @@ In contrast to a once off specification of the learning rate, an alternative app
 Note that an adaptive learning rate requires one to also tune the rate of decrease and the time steps of each decrease during training.
 Fortunately it is believed that neural network learning algorithms are not very sensitive to these choices.
 
-In addition, there are ways of manipulating the learning rates at a local level, as opposed to the aforementioned global methods.
-Adagrad [@Duchi2011] is an adaptive learning rate method which increases the learning rate at neurons with small gradients and *vice versa*. 
-Adam [@Kingma2014] is the most commonly used weight update approach.
+In addition, there are ways of manipulating the learning rates at a local level, as opposed to the aforementioned global method.
+SGD maintains a single learning rate for all weight updates in the network during training (global).
+However, one may wish to maintain individual learning rates for different weights dependending on some behaviour or property exhibited by the weight during training (local) in order to speed up training and reach better local optima.
+*Adagrad* [@Duchi2011] is an adaptive learning rate method which magnifies the learning rate at neurons with small gradients and shrinks the learning rate at neurons with large gradients. 
+*Adam* [@Kingma2014] is the most commonly used weight update approach and builds on Adagrad by incorporating momentum [@Bengio2012].
 It also uses the magnitude of the gradient to control each weight update, in addition to the previous iteration's gradients and it combines them in a smooth fashion.
-This resembles the physical property of momentum [@Bengio2012].
-For more detail, the reader can refer to the cited publications as it falls out of the scope of this work.
+The algorithm updates exponential moving averages of the gradient, $m_{t}$, and the squared gradient, $v_{t}$, where the exponential decay rates of these moving averages are controlled by the hyperparamters $\beta_{1},\beta_{2}\in [0,1)$.
+Since the moving averages are initialised as zero, the gradient and the squared gradient moving averages are biased corrected ($\hat{m}_{t}, \hat{v}_{t}$).
+The weight update for Adam is given by the following equations:
+$$
+\theta_{t} \leftarrow \theta_{t-1} - \gamma \cdot \frac{\hat{m}_{t}}{\sqrt{\hat{v}_{t}}+\epsilon}
+$$
+where
+$$
+\hat{m}_{t}=\frac{m_{t}}{1-\beta_{1}^{t}},\quad m_{t}=\beta_{1}\cdot m_{t-1}+(1-\beta_{1})\cdot g_{t}
+$$
+and 
+$$
+\hat{v}_{t}=\frac{v_{t}}{1-\beta_{2}^{t}},\quad v_{t}=\beta_{2}\cdot v_{t-1}+(1-\beta_{2})\cdot g_{t}^{2},
+$$
+where $g_{t}$ is the vector of partial derivatives of $f_{t}$ w.r.t. $\theta$ evaluated at time step $t$.
+Adam was found to empirically outperform all other optimisation procedures in @Ruder2016.
 
 ## Representation Learning \label{sec:rep}
 

@@ -15,8 +15,7 @@ Examples of the application of deep learning in commercial applications include 
 
 [^faceid]: https://www.apple.com/business/site/docs/FaceID_Security_Guide.pdf
 
-![The exponential growth of published papers and Google search terms containing the term *Deep Learning*\label{fig:dlpapers}. 
-Sources: Google Trends[^googletrend], Semantic Scholar[^semschol]](figures/trends.pdf).
+![The exponential growth of published papers and Google search terms containing the term *Deep Learning*\label{fig:dlpapers}. Sources: Google Trends[^googletrend], Semantic Scholar[^semschol]](figures/trends.pdf)
 
 [^jeffdeantalk]: https://www.slideshare.net/AIFrontiers/jeff-dean-trends-and-developments-in-deep-learning-research
 [^googletrend]: https://trends.google.com/trends/explore?date=all&q=deep%20learning
