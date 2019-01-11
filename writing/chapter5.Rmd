@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The main objective of this chapter is to better understand the behaviours of certain neural network model architectures and their parameters.
+The main objective in this chapter is to better understand the behaviours of certain neural network model architectures, and their parameters.
 The empirical work presented here also serves as verification in terms of the observations reported in the literature.
 Our focus is on the same deep learning modelling challenges as discussed in \autoref{chp:td}.
 These are:
@@ -26,7 +26,7 @@ In \Sref{sec:rep_exp} we compare the performance of various entity embedding siz
 \Sref{sec:exp_int} is devoted to an investigation of the use of several approaches towards modelling high-order feature interactions, whereas in \Sref{sec:exp_samp} we evaluate the different approaches to avoid overfitting in constrained data environments.
 
 In this chapter we aim for good empiricism by exploring many hyperparamters in various data scenarios and by performing cross-validation in order to obtain unbiased performance measures along with standard errors.
-Our aim is not necessarily to beat the benchmark, but instead consists of simple experiments designed to aid in understanding techniques.
+Our goal is not necessarily to beat the benchmark, but instead consists of simple experiments designed to aid in understanding techniques.
 
 ## The Dataset \label{sec:datasets}
 
@@ -44,62 +44,81 @@ For more specifics regarding the Adult dataset, the reader is referred to \autor
 
 ### Loss Function and Evaluation Metric
 
-Recall the learning problem associated with the Adult dataset, *viz*. 
-Since this is a binary classification task we train the neural network to optimise the binary cross-entropy loss as defined in \Sref{sec:backprop}, with $K=2$.
-This is the standard loss function to optimise for binary classification [@Song2018, @Wang2017b, @Zhang2016, @Qu2016].
-We also monitor the accuracy of the model during training since this is often more interpretable, but note that the accuracy is not directly being optimised and that the binary cross-entropy only acts as an differentialable proxy of the accuracy.
+Recall the learning problem associated with the Adult dataset, *viz*. to predict whether or not an indivdual earns more than $50,000 a year. 
+Since this is a binary classification task, we train a neural network to optimise the binary cross-entropy loss function, as defined in \Sref{sec:backprop} (where of course we set $K=2$).
+This is the standard loss function typically optimised when fitting NNs for binary classification [@Song2018, @Wang2017b, @Zhang2016, @Qu2016].
+Note that during training, the accuracy of the neural network will also be monitored.
+Accuracy is used when monitoring the training process since this measure is often simpler to interpret.
+Note however that the neural network is not trained to optimise its accuracy. 
+In this sense the binary cross-entropy may be seen to act as differentiable proxy to the accuracy.
 
 ### Cross-validation
 
-For most of the experiments we will do a 5-fold cross validation [@Hastie2009, p. 241] to estimate the performance of a model. 
-That is, randomly dividing the dataset in five equal parts and then in turn, hold out one of those parts for validation purposes and train the model using the remaining four parts.
-\autoref{fig:cv} visually explains how the dataset is sub-divided.
-The performance of the model can then be evaluated on the held-out part.
-This process is repeated for every one of the five segmentations of the dataset and thus five measurements of the performance of model is obtained.
-We can then compute the average over these five measurements to obtain a less biased estimate of the model performance.
-Another advantage of this approach is that we can obtain standard error for the model performance.
-These standard errors will be displayed on the figures illustrating the results of the experiments as confidence intervals, *i.e.* $\mu\pm\sigma$.
-This helps us to evaluate the significance of the results.
-
+We made use of five-fold cross validation [@Hastie2009, p. 241] to estimate the performance of a model. 
+Cross-validation is very often used to estimate performance measures in tabular data applications.
+The approach is needed since in small to medium sized datasets, there are not enough data points to be able to split off a test dataset that may not be used during training.
+Cross-validation involves randomly partitioning the dataset into five equal parts.
+Each data part takes turns to be used for validation, while the remaining four parts are then used to train the model.  
+Note that in this way, five model performance measurements are obtained.
+We may subsequently compute the average over these five measurements, thereby obtaining a less biased estimate of the performance of a model.
+The partitioning and training steps in five-fold cross-validation are depicted in \autoref{fig:cv}.
 ![5-Fold Cross-validation dataset split schematic.\label{fig:cv}](figures/cv.pdf)
 
-It is common in deep learning research to do a once-off split of the data dividing it into training, validation and (sometimes) testing datasets, for example in [@Klambauer2017, @Song2018, @Zhang2016].
-Cross-validation is rarely done in Deep Learning, since the models typically take very long to train and any repitition is thus more costly.
-The problem with doing a once-off split is that it does not account for the variance of the model and the performance of the model can in fact be very sensitive to the subset of data.
-By doing cross-validation, we can have more robust performance metrics, including the benefit of reporting on standard errors.
-However, Deep Learning is also mostly applied to large datasets and if a large test set is available, the gains from cross-validation diminishes.
-Fortunately, the neural networks applied to tabular data are much smaller than ones used for unstructured data and therefore cross-validation makes sense.
+Another advantage of cross-validation is that it yields a standard error associated with the performance estimate.
+In our results, standard errors will be displayed on figures, thereby providing confidence interval estimates of performances via *i.e.* $\mu\pm\sigma$.
+This should be helpful in terms of determining the significance of reported differences in performance.
+
+One may ask why we make use of cross-validation while in deep learning research it is common practice to estimate performances using the validation set approach. 
+See for example [@Klambauer2017, @Song2018, @Zhang2016].
+In the validation set approach, a dataset is partitioned into a training-, validation- and (sometimes) also into a test dataset.
+In contrast to cross-validation, partitioning is performed only once.
+The problem with a once-off split is that it provides only a single estimate of the performance of a model.
+Standard errors cannot be obtained, therefore the variance of a performance estimate cannot be gaged.
+Also in terms of bias, cross-validation performs better than the validation set approach, since the size of the training sets in cross-validation is closer to the size of the original training set.
+Cross-validation is therefore typically preferred to the validation set approach.
+However, bearing the computation intensity of training neural networks in mind, the use of cross-validation in deep learning seems to be very impractical. 
+Repetitive partitioning and training steps are much more costly than in the case of tabular data.
+Fortunately, deep learning is mostly applied to large datasets.
+In these cases, large test sets are available, thereby obviating the need for cross-validation.
+Therefore in summary, we make use of cross-validation since our tabular dataset allows (and calls for) its use.
+In deep learning, the validation set method is practical and sufficient, since test datasets are large enough.
 
 ### Preprocessing
 
-For our experiments we aimed to do as little feature engineering and preprocessing as possible, in the spirit of automated analysis.
-We do not create any new feature combinations.
-The only necessary preprocessing steps are to convert the categorical features into integers (necessary for entity embeddings), standard normal scaling for the continuous features (necessary for optimisation algorithms), mean impute the missing values in the continuous features and assign a "null" category to missing values in the categorical features.
-We do not do feature selection since we would want the model to learn by itself which features are relevant.
+As mentioned in \label{sec:datasets}, in our empirical analyses we aim to avoid feature engineering and preprocessing.
+We therefore did not create any new feature combinations.
+The only mandatory preprocessing steps involved:
+- mapping the text in categorical features to integer values (this was of course necessary to be able to apply entity embeddings);
+- standard normal scaling of the continuous features (which was necessary for optimisation algorithms), 
+- mean imputation of missing values in the case of continuous features, and assign a "null" category to missing values in the case of categorical features.
+Note that we did not perform any *a priori* feature selection steps since we wanted the model to learn which features are relevant.
 
-### General Hyperparameters
+### Hyperparameter Specification
 
-Based on our findings in \Sref{sec:hs_tb} we decide to train all models using the 1Cycle policy and the Adam optimiser.
-Unfortunately, we cannot follow the hyperparameter selection process suggested by [@Smith2018] for all the experiments.
-The process is too manual.
-Therefore we follow the approach once to find a good selection of the learning rate, number of epochs and weight decay and then use these paramters for the rest of the experiments on this dataset.
-Some of this is reported in \autoref{app:B}.
-If the model significantly changes over experiments or we experience instable training, we rerun the parameter selection process.
-Thus we will definitely not find the optimal model for each experiment but it should be sufficient to use for comparison purposes.
-According to [@Smith2018] these parameters are also quite robust and the model is not too sensitive on these choices.
+If not stated otherwise, we made us of simple MLPs to map input representations to income predictions.
+Based on our findings in \Sref{sec:hs_tb}, we decided to train all networks using the 1cycle policy (and the Adam optimiser).
+Note that the hyperparameter selection process suggested by @Smith2018 in this context is a manual process.
+Therefore we make use of the @Smith2018 approach only during the first experiment, thereby finding appropriate values for the learning rate, for the number of epochs, and for weight decay (called 'training hyperparameters' in this section).
+These parameter values are then used in all empirical work to follow.
+This initial search for appropriate training hyperparameter values is reported in \autoref{app:B}.
+Note that in the second and third experiments, the parameter selection process was rerun in cases where the fitted model changed significantly from the previous experiment to the next.
+Also, whenever we encountered instability during training, the parameter selection process was redone.
 
-We follow a bit of a greedy approach when selecting optimal parameters.
-All the hyperparameters are very dependent on each other but we cannot run experiments for every possible combination.
-Therefore we find optimal parameters for a certain experiment and then assume that these parameters are also good for other experiments.
-If not specified otherwise, we used a simple MLP as the network mapping the input representation to the output.
-The basice structural hyperparameters we tested can be found in \autoref{app:B}.
-There we experimented with things like the dropout ratio, width and depth of the network, amongst other.
+Following the above hyperparameter specification methodology, note that in each experiment we definitely do not expect to find the optimal model.
+The hyperparameter selection approach should however prove sufficient for comparing performances.
+Luckily also, according to @Smith2018, NNs have been found to be quite robust with respect to the specification of training hyperparameter values.
+
+With regard to the specification of structural hyperparameter values, we experimented with the dropout percentage, and with the width and depth of the network.
+Again we found optimal values for these parameters once off, *viz.* in the first experiment.
+Thereafter, these parameter values were kept fixed.
+More details regarding the specification of structural hyperparameter values may be found in \autoref{app:B}.
 
 ## Input Representation \label{sec:rep_exp}
 
-### Embeddings Sizes
+### Embedding Sizes
 
-The aim of these experiments is to evaluate performance at different embedding sizes.
+In this section we report on our experimentation with respect to the effect of embedding size on the prediction performance of a neural network.
+
 We first explore fixed embedding sizes for all categorical features.
 The sizes we experiment with are [2,4,8].
 Again, we expect there to be optimal embedding size for each variable depedning on the cardinality of the variable and how complex its relationship is with the other variables and the target.
