@@ -1,59 +1,50 @@
 # Experiments \label{chp:exp}
 
-\chapterprecishere{"For us, the most important part of rigor is better empiricism, not more mathematical theories."\par\raggedleft--- \textup{Ali Rahimi and Ben Recht}, NIPS 2017}
-
 ## Introduction
 
-Since theory and practice does not always go hand-in-hand, it is usually advantageous to compliment a theoretical study or literature review with empirical results. 
-Another motivation for empirical study is that we regard the ability to implement an approach equally as important as understanding the theory behind it. 
-We characterise a good empirical experiment as one that is *rigorous* and *reproducible*. 
-Recently the field of DL has been criticised for the growing gap between the understanding of its techniques and its practical successes[^talk2] where most of the recent focus was on the latter. 
-The speakers urged the deep learning community to be more rigorous in their experiments where, for them, the most important part of rigor is better empiricism, not more mathematical theories. 
+The main objective of this chapter is to better understand the behaviours of certain neural network model architectures and their parameters.
+The empirical work presented here also serves as verification in terms of the observations reported in the literature.
+Our focus is on the same deep learning modelling challenges as discussed in \autoref{chp:td}.
+These are:
 
-[^talk2]: How do I cite the talk given at NIPS2017 - https://www.youtube.com/watch?v=Qi1Yry33TQE
+- appropriate input representation;
+- learning from feature interactions; and
+- enhancing sample efficiency.
 
-In this chapter we aim for good empiricism by exploring many hyperparamters in various data scenarios and doing cross-validation for unbiased performance measures along with standard errors.
-Our work is not necessarily about beating the benchmark and instead consists of simple experiments that aid in the understanding of how the techniques work and what effect they have.
+The reader will note that the aspect of model interpretation is not listed above, since this challenge was covered in \autoref{sec:interp}.
 
-Furthermore, we want all our experiments to be as reproducible as possible.
-Therefore we provide all the code, data and necessary documentation to reproduce the experiments that were done in this thesis (see \autoref{app:code}). 
-This is often an overlooked feature of experiments, but is however crucial for transparent and accountable reporting and making your work useful for others to build upon.
+Appropriate specification of more general hyperparameters such as learning rate, batch size, layer size and layer depth does not form part of the focus in our experimentations. 
+The reason is that these do not form part of the main challenges presented by the use of neural networks for tabular data, and also, with some of these parameters we have already experimented in Chapter 4.
+Nevertheless, since these parameters are tightly linked with each other and with other model parameters, where appropriate, their specification is still done using a hyperparameter grid search.
+Our findings with regard to these grid searches may be found in \Cref{app:B}.
 
-The main aim of this chapter is to better understand the behaviours of certain models and parameters and to cross-check the literature with empirical observations.
-We focus on the same main modelling challenges for deep learning on tabular datasets that we discussed in \autoref{chp:td}, which are:
+An outline of the remainder of the chapter is as follows: 
+In \Sref{sec:datasets} we discuss the dataset that was used in the empirical study, and motivate the reason for having selected this specific dataset.
+Thereafter, in \Sref{sec:eval}, we discuss the general methodology followed, as well as the measures of evaluation for each method. 
+The experiments may be found in \Sref{sec:rep_exp}, \Sref{sec:exp_int} and \Sref{sec:exp_samp}.
+In \Sref{sec:rep_exp} we compare the performance of various entity embedding sizes.
+\Sref{sec:exp_int} is devoted to an investigation of the use of several approaches towards modelling high-order feature interactions, whereas in \Sref{sec:exp_samp} we evaluate the different approaches to avoid overfitting in constrained data environments.
 
-- how to represent the inputs,
-- how to learn from feature interactions, and
-- how to be more sample efficient.
+In this chapter we aim for good empiricism by exploring many hyperparamters in various data scenarios and by performing cross-validation in order to obtain unbiased performance measures along with standard errors.
+Our aim is not necessarily to beat the benchmark, but instead consists of simple experiments designed to aid in understanding techniques.
 
-The model interpretation challenge was covered in \autoref{sec:interp}.
+## The Dataset \label{sec:datasets}
 
-The more general hyperparameters, like learning rate, batch size, layer size and layer depth is not the focus of these experiments and some we have already experimented with in previous chapters.
-However, since these parameters are tightly linked with each other and other model parameters, we still do a hyperparamter search where we deem appropriate and report the findings in \Cref{app:B}.
-The rest of the chapter continues as follows: 
-In \Sref{sec:datasets} we discuss the dataset used for these experiments and why it was chosen.
-Thereafter, in \Sref{sec:eval}, we discuss the general methodology of the experiments and how they are evaluated.
-Then the main experiments follow.
-\Sref{sec:rep_exp} compares the performance of various entity embedding sizes.
-\Sref{sec:exp_int} looks at the proposed approaches to model high-order feature interactions.
-\Sref{sec:exp_samp} evaluates the different approaches to avoid overfitting in constrained data environments.
+We chose to conduct our empricial work on the Adult dataset. This was done for the following reasons:
 
-## Datasets \label{sec:datasets}
++ **Simplicity**: The Adult dataset is representative of a real-world scenario, while not having specific modelling challenges (such as plenty of missing values or highly imbalanced classes). This fits in with our goal of evaluating models on a generic tabular dataset (as opposed to one that requires special attention or the skills of a domain expert). Thus when in terms of prediction performance, a specific network architecture is found to fall short, we may know that this may be attributed to the model, and not to some peculiarity inherent in the data.
++ **Minimal preprocessing**: We want to focus our time on training the algorithms and not on preprocessing the data. The Adult dataset is a relatively 'clean' dataset.
++ **Open access**: Since we want our work to be reproducible, we want the dataset that we use to be accessible to everyone.
++ **Good size**: We have seen that fitting deep neural networks requires large datasets. Hence in order to yield optimal performance we prefer at least a medium sized dataset. If one wants to test models using smaller datasets, one may simply run the experiments on a subset of the data.
++ **Strong baselines**: The Adult dataset has been used in other deep neural network studies, and therefore the performance of several methods on this dataset have been reported in the literature. In order to know how well we are doing, we need to be able to compare our performances with those of others.
 
-We chose to do our experiments on the Adult dataset for the following reasons:
-
-+ **Simplicity**: We wanted a dataset that is representative of a real-world case but one that does not have specific modelling challenges like plenty of missing values or highly imbalanced classes. Our goal is to evaluate the models on a generic tabular dataset and not one that requires special attention or the skills of a domain expert. Thus when we fall short we know it is because of the model and not something that is in the data.
-+ **Minimal preprocessing**: We want to focus our time on training the algorithms and not preprocessing the data. The Adult dataset is relatively clean.
-+ **Open access**: Since we want our work to be reproducible, we want the dataset we use to be accessible by all.
-+ **Good size**: Neural networks are data hungry and therefore for optimal performance we prefer a medium size dataset. If we want to test the performance of the models on smaller datasets, we can just run the experiment on a subset of the data.
-+ **Strong baselines**: In order to know how well we are doing we need to be able to compare our performance with those of others.
-
-For more specifics on the dataset, one can refer to \autoref{app:data}
+For more specifics regarding the Adult dataset, the reader is referred to \autoref{app:data}
 
 ## General Methodology \label{sec:eval}
 
 ### Loss Function and Evaluation Metric
 
+Recall the learning problem associated with the Adult dataset, *viz*. 
 Since this is a binary classification task we train the neural network to optimise the binary cross-entropy loss as defined in \Sref{sec:backprop}, with $K=2$.
 This is the standard loss function to optimise for binary classification [@Song2018, @Wang2017b, @Zhang2016, @Qu2016].
 We also monitor the accuracy of the model during training since this is often more interpretable, but note that the accuracy is not directly being optimised and that the binary cross-entropy only acts as an differentialable proxy of the accuracy.
