@@ -115,27 +115,29 @@ More details regarding the specification of structural hyperparameter values may
 
 ## Input Representation \label{sec:rep_exp}
 
-### Embedding Sizes
+### Embedding Size
 
 In this section we report on our experimentation with respect to the effect of embedding size on the prediction performance of a neural network.
 Specifically, we consider the use of 2, 4 and 8 neurons in the embedding layers.
+These values are chosen since in our setup, we expect the ideal embedding size to be a small value, but not so small that it is unable to capture all of the signal conveyed by the available features.
 
-Again, we expect there to be optimal embedding size for each variable depedning on the cardinality of the variable and how complex its relationship is with the other variables and the target.
-We expect the ideal embedding size to be as small as possible but still being able to capture all of the information of the variable.
-But the only way to tell is by trial and error.
-We would also like to see if the rules-of-thumb mentioned in \Sref{sec:cat_inp} provide reasonable performance.
-A benefit that these schemes can add is that they depend on the cardinality of the categorical feature.
+As stated in \Sref{sec:rep_exp}, we expect there to be an optimal embedding size for each variable, depending on the cardinality of the variable, and on how complex its relationship is with the other variables and with the target.
+Recall that in \Sref{sec:cat_inp} a set of rules for representation of categorical variables is proposed, where these rules depend on the cardinality of each categorical feature.
+In addition to experimenting with embedding sizes, we would therefore also like to see whether these rules are able to, also in our data setup, provide reasonable performances.
 
-The results of the one sized embeddings are displayed in \autoref{fig:exp_emb_f}.
-We see that if all embeddings are fixed at size 2, the model showed greater performance than at 4 and 8.
-One reason for this may be that the categorical features are not that important for the prediction of the target and that a smaller representation helps to reduce noise.
+The results of the first experiment (in which we compared three pre-specified embedding sizes) are displayed in \autoref{fig:exp_emb_f}.
+In the lefthandside panel, note that the loss function value, obtained for the validation data is plotted against the number of epochs; whereas in the righthandside panel the validation accuracy is plotted on the y-axis.
+Shaded areas indicate standard errors.
+From this figure, since at epoch 5, the blue line lies below the red and green lines, it is clear that an embedding size of 2 is preferred. 
+One reason for this may be that for these data, categorical features are not that important in terms of enhancing prediction accuracy. 
+Therefore a smaller representation may assist in reducing noise.
 
 ![Effect of the embedding size if all categorical features are mapped to the same number of dimensions.\label{fig:exp_emb_f}](../data/adult/results/embeddingsize/all_epochs.png)
 
-We now compare the constant size 2 embeddings with the rules from [@Wang2017b] and [@Brebisson2015] to see how the cardinality dependency effects the performance.
-The results are shown in \autoref{fig:exp_emb_r}.
-There is almost no difference between the approaches.
-Brebisson's methos performs sightly better on the validation loss and the fixed size of 2 performs the best on accuracy.
+In order to investigate the effect of cardinality dependence, we compared the constant size 2 embeddings with the rules from @Wang2017b and @Brebisson2015.
+The results of this experiment are shown in \autoref{fig:exp_emb_r}.
+From the figure we infer that there is almost no difference between the three approaches.
+Brebisson's method performs sightly better on the validation loss and the fixed size of 2 performs the best on accuracy.
 On other datasets this result will most likely be different if the categorical features contain more rich information.
 
 ![Effect of variable sizes on the performance of the model.\label{fig:exp_emb_r}](../data/adult/results/embeddingsize_rule/all_epochs.png)
