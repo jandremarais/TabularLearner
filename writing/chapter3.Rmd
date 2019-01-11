@@ -9,11 +9,11 @@ From this perspective, deep (multilayer) neural networks were already proposed b
 In the paper by @Vincent2008 it is stated that "the belief that additional levels of functional decomposition will yield increased representational and modeling power is not new". 
 The authors then cite @Rumelhart1986, @Hinton1989, and @Utgoff2002.
 
-Still the boom in deep learning research may be said to have started only a bit more than a decade ago, since effective training of a multi-layer network was only made possible after a breakthrough presented in the papers by @Hinton2006, @HintonSalak2006, @Ranzata2006,  @Bengio2007, and @Lee2008.
+Still the boom in deep learning research may be said to have started only a bit more than a decade ago, since effective training of a multi-layer network was only made possible after a breakthrough presented in the papers by @Hinton2006, @Hinton2006a, @Ranzato2006,  @Bengio2007, and @Lee2008.
 From around 2006 onwards, tons of contributions have been made to the neural network field. 
 New types of layers, more effective training strategies, and novel approaches to guard against overfitting have since been proposed.
 A more general definition of *deep learning* therefore encompasses all modern developments in the neural network space.
-Because of the large number of deep learning contributions during the past decade, note that in this chapter we restrict attention to developments that form a basis for deep learning in the context of tabular data.
+Because of the large number of deep learning contributions during the past decade, note that in this chapter we restrict attention to developments that form a basis for improving deep learning in the context of tabular data.
 
 Conceptual categorisation of modern contributions to the deep learning field is a difficult task.
 Perhaps one way to order some of the more important developments, is to use the aim or effect of their implementation as criterion.
@@ -28,8 +28,8 @@ Note that more detail regarding transfer learning is provided in \Sref{sec:tl}.
 A large number of deep learning developments are explicitly geared toward regularisation in order to prevent overfitting.
 We discuss two important modern proposals that fall in this category, *viz.* the use of the so-called *dropout* method in (\Sref{sec:dropout}) and the use of *data augmentation* in (\Sref{sec:daug}).
 
-A miscellaneous group of modern deep learning proposals that succeed in hitting several targets, are discussed in (\Sref{sec:bnorm}), (\Sref{sec:resnet}), (\Sref{sec:embeds}) and (\Sref{sec:attention}).
-Amongst others, the successes of this group of developments include regularisation, increasing speed, and reducing sensitivity to starting weights (batch normalisation); improving accuracy (skip connections); representing and visualising categorical variables, and representation learning (embeddings); and visualising and interpreting NNs (attention).
+A group of modern deep learning architectural proposals that succeed in hitting several targets, are discussed in \Sref{sec:bnorm}, \Sref{sec:resnet}, \Sref{sec:embeds} and \Sref{sec:attention}.
+Amongst others, the successes of this group of developments include regularisation, increasing speed, and reducing sensitivity to starting weights (batch normalisation); improving accuracy (skip connections); representing and visualising categorical variables, and representation learning (embeddings); visualising and interpreting NNs (attention).
 The use of these modern architecture have become standard practice in deep learning applications.
 
 With regard to optimisation of neural networks, a method has been proposed which provides a way of almost automatically finding a good learning rate.
