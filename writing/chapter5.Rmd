@@ -178,71 +178,77 @@ However, the differences are so minor that, in the absence of more evidence, we 
 ### Skip Connections
 
 Another mechanism which have contributed to the successful implementation of deeper networks is skip connection.  
+Apart from facilitating more efficient neural network training, skip connections have been found to alleviate the degradation problem, thereby improving the prediction performance of deep neural networks.
 Skip connections are often also used to combine different orders of feature interactions.
-The skip connection combines the activations before and afer a linear layer through an elementwise addition.
-We tested networks with skip-connections for a shallow and a deep neural network.
-The results are summarised in \autoref{fig:resid_epoch} and \autoref{fig:resid_best}.
-On average did the deeper neural network perform better and in terms of the validation loss did the skip-connections slightly improve the performance.
-Again, there is very little between the two types and thus we cannot say one is better thant the other.
-For simplicity sake, we would suggest not using skip-connections, until more experiments have been done.
+Using this mechanism, elementwise addition (or other concatenation functions) may be use in order to combine input and output before and afer a linear layer.
+In our empirical work, we investigate the performances of both a shallow and a deep network using skip connections.
+The results are summarised in \autoref{fig:resid_epoch} and in \autoref{fig:resid_best}.
+On average, the deep neural network performed slightly better in terms of validation loss, whereas... 
+Once again, performances are very similar.
+At this stage we therefore recommend the simpler design of not using skip connections.
 
 ![Average performance at each epoch for shallow and deep neural networks, with and without skip connections.\label{fig:resid_epoch}](../data/adult/results/residual_depth/all_epochs.png)
 
-![Overall performance of the skip-connections used in a shallow and deep neural network.\label{fig:resid_best}](../data/adult/results/residual_depth/best.png)
+![Overall performance of the skip connections used in a shallow and deep neural network.\label{fig:resid_best}](../data/adult/results/residual_depth/best.png)
 
 ## Sample Efficiency \label{sec:exp_samp}
 
-We did an experiment to see how the number of samples available to the network for training influences its learning ability.
-We trained the network at training set sizes of 1000, 2000, 4000, 8000, 16000 and 32000.
+In the next experiment we investigate the effect of the number of samples on the prediction performance of a neural network.
+Therefore the network was optimised using training dataset of sizes of 1000, 2000, 4000, 8000, 16000 and 32000.
 The results are reported in \autoref{fig:sampsize}.
-As expected, the network performs better as the training set increases, but the increase diminish as the sample size gets higher.
-We do observe a strange results where the model trained only using 4000 samples exhibit one of the best accuracies.
+As expected, the network performs better with an increase in the training set size, where the enhancements in performance diminishes in the case of higher sample size values.
 
 ![Effect of the number of training samples on the performance of neural networks.\label{fig:sampsize}](../data/adult/results/samplesize/all_epochs2.png)
 
 ### Data Augmentation
 
-Mixup was the most promising form of data augmentation from our literature review.
-In this experiment we want to investigate how mixup with different mixup ratios influence the performance of our neural networks on the adult dataset.
-Since data augmentation also acts as a form of regularisation, we want to see the interaction between weight decay and mixup ratios.
-We experimented with mixup $\alpha$-ratios of [0,0.4] and with weight decays of [$10^{-5}$, $10^{-3}$] on a neural network with 3 hidden layers of 200 units each.
-The results of the experiment are captured in \autoref{fig:exp_mix_best} and \autoref{fig:exp_mix_epoch}.
+From the literature review in Chapter 3, mixup augmentation emerged as seemingly the most promising form of data augmentation.
+In this experiment we wanted to investigate the way in which the application of mixup, using various mixup ratios, influences the performance neural networks on the Adult dataset.
+Since data augmentation also acts as a form of regularisation, we also wanted to investigate the interaction between weight decay and mixup ratios.
+We experimented with mixup $\alpha$-ratios of 0 and 0.4, and with weight decays of [$10^{-5}$, $10^{-3}$] in a neural network with 3 hidden layers, consisting of 200 units each.
+The results of the experiment are displayed in \autoref{fig:exp_mix_best} and in \autoref{fig:exp_mix_epoch}.
 
-The results indicate that mixup is not improving the validation loss or the accuracy of the models.
-It is also interesting to see the interaction between mixup and weight decay.
-Since both are forms of regualrisation we would expect one to reduce the need of the other, but this is not what the results suggest.
-Although a promising technique from the literature, we think the value of mixup depends on the dataset and whether or not interpolating between samples makes sense.
+The results indicate that mixup is not improving either the validation loss or the accuracy of the models.
+The observed interaction between mixup and weight decay is an interesting aspect of the experiment.
+Whereas one might expect the use of mixup to reduce the need for weight decay and vice versa, this notion is not supported by our results.
+Although from the literature mixup seems to be a promising technique, its success seems to be domain specific.
+Our suggestion would be that for tabular data, mixup should only be used when interpolating between samples makes sense.
 
-![Average performance of models with various mixup and weight decay parameters.\label{fig:exp_mix_best}](../data/adult/results/mixup/best.png)
+![Average performance of models using various mixup and weight decay parameters.\label{fig:exp_mix_best}](../data/adult/results/mixup/best.png)
 
 ![Performance per epoch for models with different weight decays and mixup ratios.\label{fig:exp_mix_epoch}](../data/adult/results/mixup/all_epochs.png)
 
 ### Unsupervised Pretraining
 
-Here we investigate whether or not DAEs as a method of unsupervised pretraining is beneficial to a supervised learning neural network.
-We trained a DAE with swap noise for 15 epochs on the Adult dataset, with the swap noise proportion set at 15%.
-The DAE had 3 hidden layers of 500 units each.
-Then we transfer the learned weights to a supervised learning network, also with 3 hidden layers of 500 units.
-But the supervised network has a different output layer to the DAE.
-Therefore we first keep the transferred weights fixed and train only the last layer of the supervised learning network, as a way of initialising its weights.
-Otherwise if we would have trained all the weights together from the start, the random weights of the output layer might have interfered with the learned weights in the hidden layers.
-Once the output layer is initialised with this process, we can train all of the network simultaneously.
-This final stage of training is showed in \autoref{fig:exp_pretr} where we compare it to a model without pretraining.
-We see that in terms of both the accuracy and the validation loss that the pretrained model has an advantage over the trained from scratch classifier.
-This makes sense since the pretrained model does not have to start from a random initialisation.
-But as training continues this gaps becomes smaller.
-In terms of the validation loss the two models are equivalent when training completed, but in terms of the accuracy the trained from scratch classifier outperformed the pretrained model.
-We do not believe these results are conclusive since there are still so many avenues to explore for unsupervised pretraining with DAEs.
-We do not know yet how to design the DAE in terms of its network architecture, amount of noise injected, lenght of training cycle, etc, and then what the best way is of transferring this knowledge to a classifier.
-As a test to validate if the DAE learned something useful one can feed the activations from one of the DAE hidden layers to another machine learning algorithm and see whether these representations perform better than with the raw data.
-From the results of this basic implementation, we do still believe that there is value in this approach and that it warrants further exploration.
+In our final experiment, we investigated whether or not the use of DAEs in unsupervised pretraining yield output which may be  beneficial to a (supervised) neural network for tabular data.
+Therefore we trained a DAE with swap noise for 15 epochs on the Adult dataset.
+We set the swap noise proportion equal to 15%, and the DAE had 3 hidden layers consisting of 500 units each.
+The learned weights were subsequently carried over to a supervised learning network, where the latter also comprised 3 hidden layers consisting of 500 units each.
+Note that the supervised network had a different output layer than that of the DAE.
+Therefore we first kept the transferred weights fixed, and trained only the last layer of the supervised learning network.
+This is done in order to initialise the network weights.
+Otherwise, if we simultaneously trained all the weights from the start, random weights to the output layer might have interfered with learned weights in the hidden layers.
+Once the output layer is initialised with this process, we may train all layers of the network simultaneously.
+This final stage of training is showed in \autoref{fig:exp_pretr}, where we compare it to the final stage of training of a model without pretraining.
+in terms of both accuracy and validation loss, we see that that the pretrained model has an advantage over the classifier that was trained-from-scratch.
+The above result makes sense, since the pretrained model does not have to start from a random initialisation.
+However as expected, as training continues, this gaps gradually decreases.
 
-![The effect of pretraining on the classifier's performance.\label{fig:exp_pretr}](../data/adult/results/pretraining/all_epochs3.png)
+Since there are still so many avenues to explore for unsupervised pretraining with DAEs, we do not believe these results to be conclusive.
+We do not yet know how to design DAEs in terms of their network architectures, the amount of noise injected, and the lengths of training cycles.
+Furthermore, investigation into the preferred way of transferring the learned knowledge from a DAE to the supervised classifier,  remains outstanding.
+The results of this basic implementation seems to indicate that the use of unsupervised pretraining in the context of tabular data warrants further exploration.
 
-## General Thoughts
+![The effect of unsupervised pretraining on supervised classification for tabular data.\label{fig:exp_pretr}](../data/adult/results/pretraining/all_epochs3.png)
 
-We ran thorough experiments for the most promising techniques in deep learning for tabular data.
-In most of the experiments there were not clear differences between the performances of the different techniques.
+## Summary
+
+This chapter was devoted to a discussion of the empirical work that was done in order to test some of the latest successful mechanisms in the field of deep learning.
+Specifically, application of these methodologies were investigated in the context of tabular data.
+
+Fairly disappointingly, in all 9 experiments, we did not find significant differences between the performances of the techniques considered.
+Therefore, regarding preferences with respect to methodologies for appropriate input representation, for learning from feature interactions and for leveraging sample efficiency, no clear recommendations could unfortunately be made.
+
 Our one hypothesis is that the Adult dataset does not lend itself to more advanced modelling techniques and that the basic neural network is close to the best one can get.
 Our other concern is that the greedy fashion of our hyperparameter selection has limited the various approaches.
 Since it was not feasible to tune the required paramters for all models in all folds, we selected a set of paramters from initial experiments and used them for most of the experiments.
