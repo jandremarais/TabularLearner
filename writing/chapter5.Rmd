@@ -118,9 +118,8 @@ More details regarding the specification of structural hyperparameter values may
 ### Embedding Sizes
 
 In this section we report on our experimentation with respect to the effect of embedding size on the prediction performance of a neural network.
+Specifically, we consider the use of 2, 4 and 8 neurons in the embedding layers.
 
-We first explore fixed embedding sizes for all categorical features.
-The sizes we experiment with are [2,4,8].
 Again, we expect there to be optimal embedding size for each variable depedning on the cardinality of the variable and how complex its relationship is with the other variables and the target.
 We expect the ideal embedding size to be as small as possible but still being able to capture all of the information of the variable.
 But the only way to tell is by trial and error.
