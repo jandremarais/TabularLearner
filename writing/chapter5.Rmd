@@ -161,7 +161,7 @@ Moreover, one wonders in which way the above results would have changed if a dat
 
 ![Comparing the attention mechanism with a simple MLP.\label{fig:exp_att5}](../data/adult/results/attention/all_epochs.png)
 
-### SeLU
+### SeLU Activations
 
 In Chapter 3 we have seen that deeper networks can help us learn higher-order feature interactions.
 The SeLU activation function is supposed to help us train deeper neural networks.
@@ -177,8 +177,8 @@ However, the differences are so minor that, in the absence of more evidence, we 
 
 ### Skip Connections
 
-Another mechanism we can use to make deeper networks possible is a skip-connection.
-Skip-connections may also help to combine different orders of feature interactions.
+Another mechanism which have contributed to the successful implementation of deeper networks is skip connection.  
+Skip connections are often also used to combine different orders of feature interactions.
 The skip connection combines the activations before and afer a linear layer through an elementwise addition.
 We tested networks with skip-connections for a shallow and a deep neural network.
 The results are summarised in \autoref{fig:resid_epoch} and \autoref{fig:resid_best}.
