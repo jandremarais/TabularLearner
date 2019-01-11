@@ -91,7 +91,7 @@ That is, the one-hot encoded form corresponding to a categorical feature with (s
 
 Multiple inefficiencies occur when using one-hot encodings in neural networks.
 Clearly its use introduces sparsity to the data: the dimension of the one-hot encoded form is equal to the number or categories in a feature.
-Thus if a dataset consist of many high-cardinality features, the data will be extremely sparse and difficult to model.
+Thus if a dataset consist of many high-cardinality features (*i.e.* features with a large number of categories), the data will be extremely sparse and difficult to model.
 If not handled properly, sparse data may easily cause neural networks to overfit [@Covington2016].
 The presence of categorical features with many levels also increases size requirements of the first linear NN layer, which in turn creates a need for more computing power and memory.
 
@@ -126,7 +126,7 @@ Hence we need project an observation with these two features into a vector repre
 If we were to use one-hot encoded representations of $X_{1}$ and $X_{2}$,we would need a weight matrix of size $(C_{1}+C_{2})\times q$.
 However, if we use entity embeddings of $X_{1}$ and $X_{2}$, we may create two weight matrices of sizes $C_{1}\times q/2$ and $C_{2}\times q/2$, which is half the number of parameters needed in the case of one-hot encoded representation.
 
-The size of the embeddings is a hyperparamter of the model and again there is no way to specify this value *a priori*. 
+The size of the embeddings is a hyperparameter of the model and again there is no way to specify this value *a priori*. 
 Therefore most publications rely on a grid search in order to find the optimal size.
 For example, @Song2018 experiment with embedding sizes 8, 16, 24 and 32; and found the value 16 to work the best, whereas @Cheng2016 reported an embedding size of 32 to be optimal in their use-case.
 Thus it is clear that appropriate specification of the size hyperparameter depends on the data at hand, and on the network architecture to be used.
