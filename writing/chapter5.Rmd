@@ -135,44 +135,47 @@ Therefore a smaller representation may assist in reducing noise.
 ![Effect of the embedding size if all categorical features are mapped to the same number of dimensions.\label{fig:exp_emb_f}](../data/adult/results/embeddingsize/all_epochs.png)
 
 In order to investigate the effect of cardinality dependence, we compared the constant size 2 embeddings with the rules from @Wang2017b and @Brebisson2015.
-The results of this experiment are shown in \autoref{fig:exp_emb_r}.
-From the figure we infer that there is almost no difference between the three approaches.
-Brebisson's method performs sightly better on the validation loss and the fixed size of 2 performs the best on accuracy.
-On other datasets this result will most likely be different if the categorical features contain more rich information.
+The results from this experiment are shown in \autoref{fig:exp_emb_r}.
+From the figure we infer there to be almost no difference between the three approaches.
+With respect to validation loss, de Brebisson's method performed sightly better, whereas in terms of accuracy, the fixed size of 2 performed the best. 
+In datasets where categorical features contain more information, one may however expect this result to be different.
 
-![Effect of variable sizes on the performance of the model.\label{fig:exp_emb_r}](../data/adult/results/embeddingsize_rule/all_epochs.png)
+![Effect of variable sizes on the performance of the NN model.\label{fig:exp_emb_r}](../data/adult/results/embeddingsize_rule/all_epochs.png)
 
 ## Feature Interactions \label{sec:exp_int}
 
 ### Attention
 
-We believe attention is the most promising approach to modelling high-order interactions between features for tabular data, since it has been so effective in other data domains.
-To test this assuptiom we implemented a multi-head attention module as described in [@Song2018] so that we can compare it to a standard neural network.
-We did not have the computing power to try different configurations for this module and thus we went with the biggest configuration that could be run in reasonable time.
-We chose $H=3$ (Number of heads) and use embedding sizes of 3 all-round.
-We only used on multi-head attention layer and connected its output to a single hidden layer of size 200, which in turn is connected to the output layer.
-We compared it to a simple MLP with a similar number of total parameters.
-The results of this experiment is given in \autoref{fig:exp_att5}.
-The model with the attention mechanism performs worse than the one without and exhibits higher variance.
-In the future we would like to experiment with more of the hyperparameters of the multi-head attention module and try stacked attention layers.
-It will be interesting to see how this results would change if the dataset had more features.
+Since attention is so effectively used in other data domains, we believe it to be the most promising approach towards modelling high-order interactions between features for tabular data.
+In order to test this hypothesis, we implemented a multi-head attention module, as described in [@Song2018].
+In this way, our results are comparable to those of produced by a standard neural network.
+We did not have the computing power to try different configurations for this module and thus we went with the largest possible configuration that could be run in reasonable time.
+We chose the number of head, $H$, to be 3, and made use of embedding sizes of 3 throughout.
+Moreover, we only made use of a single multi-head attention layer, and connected its output to a single hidden layer of size 200, which in turn was connected to the output layer.
+The performance of the above architecture was then compared to the performance of simple MLP with a similar number of total parameters.
+The results of this experiment are reported in \autoref{fig:exp_att5}.
+Surprisingly, the model with the attention mechanism performed worse than the MLP on its own; its predictions exhibiting higher variance than the MLP.
+A possible explanation is that the hyperparameter specification in the attention layers was inadequate, or that the single attention layer is not complex enough.
+In the future therefore, we would like to experiment with more of the hyperparameters of the multi-head attention module and also try out stacked attention layers.
+Moreover, one wonders in which way the above results would have changed if a dataset with more features were used. 
 
 ![Comparing the attention mechanism with a simple MLP.\label{fig:exp_att5}](../data/adult/results/attention/all_epochs.png)
 
 ### SeLU
 
-Deeper networks can help us learn higher-order feature interactions.
+In Chapter 3 we have seen that deeper networks can help us learn higher-order feature interactions.
 The SeLU activation function is supposed to help us train deeper neural networks.
-Therefore we compare it to the ReLU activation function over two models, one with 2 layers and the other with 8, to investigate its impact on performance.
-The SeLU activation function was implemented with its special weight intitialisation, but no dropout was used.
-In \autoref{fig:selu_all} and \autoref{fig:selu_best} we observe that the model with 8 layers and SeLU activations, perform the best overall in terms of the validation loss, but in terms of accuracy the ReLU model with 2 layers showed the best results.
-The differences observed are minor which leads us to believe that the choice is not that important and that sticking with shallow ReLU networks are sufficient until more experiments are done.
+Therefore we compare use of SeLUs to use of the ReLU activation using two networks.
+The first network was specified to have two layers, whereas the second network had eight layers in total.
+The SeLU activation function was implemented using its customised weight intitialisation method, but no dropout was used.
+In \autoref{fig:selu_all} and \autoref{fig:selu_best} we observe that in terms of validation loss, the model with eight layers using SeLU activations performed the best overall; whereas in terms of accuracy, the model with two layers using ReLU activatios emerged as the winner.
+However, the differences are so minor that, in the absence of more evidence, we tend to still recommend the use of shallow ReLU networks .
 
-![The average performance of ReLU and SeLU activation functions for shallow and deep networks over every epoch.\label{fig:selu_all}](../data/adult/results/activation_depth/all_epochs2.png)
+![The average performance of ReLU and SeLU activation functions for shallow and deep networks as a function of the number of training epochs.\label{fig:selu_all}](../data/adult/results/activation_depth/all_epochs2.png)
 
 ![The average performance of ReLU and SeLU activation functions for shallow and deep networks.\label{fig:selu_best}](../data/adult/results/activation_depth/best2.png)
 
-### Skip-Connections
+### Skip Connections
 
 Another mechanism we can use to make deeper networks possible is a skip-connection.
 Skip-connections may also help to combine different orders of feature interactions.
