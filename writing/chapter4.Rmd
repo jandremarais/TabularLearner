@@ -559,7 +559,7 @@ From the range test it seems that a weight decay of $10^{-5}$ gives the best per
 To check that this result holds during a full training run, we do an experiment to compare the full training runs with the different weight decays.
 The results are displayed in \autoref{fig:wd_test}.
 From the results it shows that the learning rate range test is a good indicator of the optimal weight decay, since in the full training run, the model with weight decay of $10^{-5}$ performed the best.
-Note, that the differences between the training runs are small, and thus if we were to choose one of the other weight decays for this task, we would have only performed slightly worse.
+Note that the differences between the training runs are small, and thus if we were to choose one of the other weight decays for this task, we would have only performed slightly worse.
 
 ![A learning rate range test with different weight decays.\label{fig:wd_range}](figures/wd_lr_range.pdf)
 
