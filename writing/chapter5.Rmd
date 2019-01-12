@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The main objective in this chapter is to better understand the behaviours of certain neural network model architectures, and their parameters.
+The main objective in this chapter is to better understand the behaviours of certain neural network model architectures (and their parameters).
 The empirical work presented here also serves as verification in terms of the observations reported in the literature.
 Our focus is on the same deep learning modelling challenges as discussed in \autoref{chp:td}.
 These are:
