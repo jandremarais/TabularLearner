@@ -52,34 +52,46 @@ Our empirical work is summarised in \Cref{chp:exp}.
 The experiments reported on, complement the exploratory study of deep learning for tabular data.
 We attempted to answer three main questions, *viz.* which approach to use for input representation, for inferring feature interactions, and for enhancing sample efficiency.
 In the input representation experiments, we evaluated the effect of entity embedding sizes on the performance of neural networks.
-Here we experimented with the attention mechanism, along with the use of skip connections and of the SeLU activation function. 
+with regard to feature interactions, we experimented with the attention mechanism, along with use of the SeLU activation function, and of skip connections. 
 Finally, in the sample efficiency section, we attempted to gage the sensitivity of neural networks to the number of training samples.
-We also tested the use of unsupervised pretraining towards alleviating this sensitivity.
-
-We also looked at the mixup and swap noise data augmentation approaches as means to avoid overfitting.
+We tested the use of unsupervised pretraining towards alleviating this sensitivity, and investigated the use of mixup- and swap noise data augmentation as a means to prevent overfitting.
 
 ## Limitations \label{sec:lim}
 
-There were various aspects that limited the impact of this study.
-Two technical limitations were experienced:
+There are various aspects that limited the impact of this study.
+In this regard, there were two main obstacles which we needed to overcome:
 
-+ **Access to large compute:** Deep learning techniques are notorious for the amount of computing power they require. There was limited access to cloud computing providers on which some of the experiments were done. However, in most cases, we only had access to a small personal machine without a graphical processing unit (GPU). This significantly increased the running time of the experiments and hindered rapid iteration of different approaches. In future work we would make sure that sufficient computing power is available for experimenting in this field.
++ **Access to large compute**: Deep learning techniques are notorious for the computing power they require. 
+We had limited access to cloud computing providers on which some of the experiments were done. 
+Therefore most experiments were conducted on a small personal machine without a graphical processing unit (GPU).
+This significantly increased the running time of the experiments, and hindered rapid execution of the various approaches. 
+In future one would want to ensure sufficient computing power to be available, enabling higher quality empirical work.
   
-+ **Access to quality code:** Many of the recent developments discussed in this work had no official implementation at the time of writing. This forced us to rewrite many of the code in order to validate the results claimed in the literature and to be able to use it in our data and models. Sometimes technical details were left out of the original papers and we had to improvise to get a working example. By doing it this way we risked using code for our experiments that might not have been exactly what the authors intendend.
++ **Access to quality code**: At the time of writing, many of the recent developments discussed in this thesis were not accompanied by any official implementation. 
+This forced us to rewrite much of the code that was used to validate the results reported in the literature in order to be able to apply it to our data and models. 
+Sometimes important technical details were omitted from the original papers.
+This called for some improvisation in order to obtain working examples. 
+Unfortunately this approach brings with it the risk of unintentionally departing from the original intention of some of the proposed methodologies.
 
-The other limitations to this study were:
+Further limitations were:
 
-+ **Experiments on a single dataset:** Due to the technical limitations described above, we only had the capacity to process a single dataset for our experiments. This made our results inconclusive, but still adds value as an exploratory study. There is also a possibility that this dataset was in a sense to easy to solve and that we could not demonstrate the full power of the deep learning approaches. This study would have benefitted from experiments on datasets with different properties and with different tasks. We published all of our code online if anyone wants to build on this work.
++ **Experiments on a single dataset**: Due to the technical limitations mentioned above, we only had capacity to process a single dataset in our empirical study. 
+This rendered our findings to be inconclusive, although we believe there still to be value in our exploratory study.
+The possibility remains that the strength of the signal in the Adult data does not make the use of this particular dataset amenable to  demonstrating the full power of deep learning approaches. 
+Naturally, repeating experimentation on datasets with different properties, and to applications with different tasks, would have facilitated clearer recommendations with regard to the questions that arise during implementation of deep learning for tabular data.
+Such an extention is possible, since we have made all or our code available on-line.
 
-+ **Based on pre-prints:** Deep learning is such a fast developing area of research and in an attempt to keep this work relevant, pre-prints of publications were cited. Pre-prints are not peer-reviewed and subject to change. We did our best to critically evaluate the work cited and to confirm findings with experiments. Although we tried to keep up with the deluge of publications, there remains a possibility that new publications arised during the post-research phase of this work.
++ **Based on pre-prints**: Deep learning is such a fast developing area of research and in an attempt to keep this work relevant, pre-prints of publications were cited. 
+Pre-prints are of course not peer-reviewed and subject to change. 
+We did our best to critically evaluate the work cited, and to confirm findings with our own experiments.
+Although we tried to keep up with the deluge of publications that are currently available, there remains a possibility that new publications arised during the post-review phase of the study.
 
-## Promising Future Directions \label{sec:future}
+## Future Directions \label{sec:future}
 
-Throughout this thesis we have identified promising research directions which, however, did not fit into the scope of this work.
-Besides repeating the empirical work on a wider variety of datasets, we propose the following to be a valuable research path to follow:
+With a view to future research directions, in this section we would like to point the reader to the potential of using *generative models* in the context of deep learning for tabular data.
+More specifically, it might be worthwhile to study variational autoencoders [@Kingma2013] and *Generative Adversarial Networks* (GANs) [@Goodfellow2014].
+We propose studying VAEs as a means to perform more effective unsupervised pretraining, 
 
-**Generative models for tabular data**.
-Here we specifically refer to *Variational Autoencoders* (VAE) [@Kingma2013] and *Generative Adversarial Networks* (GAN) [@Goodfellow2014].
 A VAE provides a probabilistic manner for describing an observation in a latent space.
 That is, instead of using a single value to describe an attribute in the latent space, like the standard autoencoder, a VAE uses a probability distribution as a description of a latent space attribute.
 The greatest value we think VAEs can add is as a method of unsupervised pretraining.
