@@ -88,21 +88,21 @@ Although we tried to keep up with the deluge of publications that are currently 
 
 ## Future Directions \label{sec:future}
 
-With a view to future research directions, in this section we would like to point the reader to the potential of using *generative models* in the context of deep learning for tabular data.
+With a view to future research directions, in this final section we would like to point the reader to the potential of using *generative models* in the context of deep learning for tabular data.
 More specifically, it might be worthwhile to study variational autoencoders [@Kingma2013] and *Generative Adversarial Networks* (GANs) [@Goodfellow2014].
-We propose studying VAEs as a means to perform more effective unsupervised pretraining, 
+We propose studying VAEs as a means to perform more effective unsupervised pretraining, and we believe GANs to offer a good alternative to generating new training samples.
+In conclusion, therefore, a brief over of VAEs and GANs follows below.
 
-A VAE provides a probabilistic manner for describing an observation in a latent space.
-That is, instead of using a single value to describe an attribute in the latent space, like the standard autoencoder, a VAE uses a probability distribution as a description of a latent space attribute.
-The greatest value we think VAEs can add is as a method of unsupervised pretraining.
-When using DAEs for unsupervised pretraining, it needs to be injected with some noise.
-However, the best noise schemes we found, were swap noise and blank-out, but as mentioned before, neither makes complete sense in the tabular dataset environment.
-A VAE can provide a more robust way of doing unsupervised learning because it decoding function needs to learning to process probabilistic output and thus it is not reliant on noise injection.
-In addition, once trained, a VAE can be used to generate new samples by sampling from the latent probabilistic distribution, which may serve as a way to generate more training samples.
+VAEs provide a probabilistic manner of describing observations in a latent space.
+That is, instead of using a single value to describe an attribute in the latent space, as is the cases with standard autoencoders, VAEs use probability distributions to describe a latent space attribute.
+When using DAEs for unsupervised pretraining, we have seen that they need to be injected with some noise.
+However, we have seen that neither of the two best noise schemes that we could find (*viz.* swap noise and blank-out), makes complete sense in the tabular dataset environment.
+We postulate that VAEs may provide a more robust way of doing unsupervised pretraining, since its decoding function learns probabilistic output. 
+Thus it is not reliant on noise injection.
+In addition, once trained, the latent probabilistic distribution of VAE can be used to generate additional training samples.
 
-We also believe that GANs offer a good alternative to generating new training samples.
-A GAN consists of two neural networks, a generator ($G$) and a discriminator ($D$).
-The task of $G$ is: given random noise as input, generate artificial samples of the data that are indistinguishable from the genuine samples.
-The task $D$ is to attempt to discriminate between the two.
-GANs have shown tremendous value in data synthesis, especial in the domains of computer vision and speech synthesis, producing life-like faces [@Karras2017] and voices [@Donahue2018].
-We think GANs can achieve similar success in data synthesis for tabular data and can thus also be used to artificially enlarge training datasets for supervised learning.
+GANs consist of two neural networks, *viz.* a generator ($G$) and a discriminator ($D$).
+Given random noise as input, the task given to $G$ is to generate artificial samples of the data that are indistinguishable from a set of genuine training samples.
+The task assigned to $D$ is to attempt to discriminate between the artificial and genuine samples.
+GANs have shown tremendous value in data synthesis, especial in the domains of computer vision and speech synthesis, producing lifelike faces [@Karras2017] and voices [@Donahue2018].
+We postulate that GANs may be able to achieve similar successes in data synthesis for tabular data, which may be used to artificially enlarge training datasets for supervised learning.
