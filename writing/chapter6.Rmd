@@ -12,20 +12,20 @@ We conclude the thesis with a section on promising future directions for researc
 
 ## Summary \label{sec:summary}
 
-In \textbf{\Cref{chp:intro}} the motivation and the objectives of the study were described.
+In \Cref{chp:intro}, the motivation and the objectives of the study were described.
 It was stated that deep learning for tabular data is an important topic, but in our opinion, also one that has not yet received sufficient attention in the literature.
 Hence the main issues that need to be addressed in order to make progress in the field, were highlighted.
 The chapter also provided an overview of the fundamentals of Statistical Leaning Theory, including various learning paradigms and loss functions; as well as aspects of optimisation and overfitting.
 The SLT framework served as background for the problems we aimed to solve.
 
-The focus in \textbf{\Cref{chp:nn}} were the core concepts in neural networks, and neural network training.
+The focus in \Cref{chp:nn} included the core concepts in neural networks, and neural network training.
 Neurons, layers, activation functions and network architectures were described in order to gain an understanding of the mechanics of neural networks.
 With regard to neural network training, the backpropogation and stochastic gradient descent algorithms were introduced, and illustrated by way of a few examples.
 The chapter included a brief look at basic regularisation methods for neural networks, as well as a section on representation learning.
 The aim of the latter section was to facilitate insight into the way that a neural network learns from data, and into what concepts are actually learned. 
 In summary therefore, the contribution of the chapter was to equip us with the fundamentals of neural networks in order to grasp the ideas underlying modern developments in deep learning.
 
-The topic in \textbf{\Cref{chp:dl}} was deep learning. 
+The topic in \Cref{chp:dl} was deep learning. 
 The aim of the chapter was to provide insight into the methodologies enabling deep learning to be successful in the NLP and computer vision fields.
 This provided a good starting point for contemplating ways of improving deep learning for tabular data.
 The chapter started with an introduction to autoencoders and the concept of using them for unsupervised pretraining in transfer leaning.
@@ -35,28 +35,27 @@ The chapter included a section on the concept of superconvergence.
 Here we discussed the 1cycle policy and more effective hyperparameter selection as ways in which superconvergence may be achieved.
 We concluded with a brief discussion (and examples) of both neural network specific and model agnostic tools that may be used to interpret deep neural networks. 
 
-\textbf{\Cref{chp:td}} was devoted to the topic of deep learning for tabular data.
+\Cref{chp:td} was devoted to the topic of deep learning for tabular data.
 This chapter entailed a review of recent contributions with regard to the application of deep neural networks to tabular data.
 As stated in \Cref{chp:intro}, the review was guided by the main challenges posed by tabular data in this context. 
 We explored various ways of preprocessing continuous features, and of optimally embedding and presenting categorical features.
 We also investigated approaches towards encouraging networks to learn better feature interactions.
 These included the use of attention modules and cross features.
-The SeLU activation was proposed, along with skip-connections, as ways to build deeper neural networks for more complex feature learning.
-This was followed by evaluating approaches that make deep neural networks more sample efficient.
-It focussed on denoising autoencoders as a way of pretraining a network and the data augmentation techniques, swap noise and mixup.
-Reference was made to per-feature regularisation.
-Then there was a discussion on more ways of intepretting neural networks for tabular data, considering the approaches disscussed earlier in the chapter.
-An example of interpretting a network with knowledge distillation was also given.
-The chapter concluded with an empirical investigation of superconvergence on tabular data.
-This chapter provided us with a solid technical understanding of the approaches available to overcome the challenges in the field.
-It also gave sufficient detail to be able to implement these promising approaches.
+In terms of training deeper neural networks for more complext feature learning, the SeLU activation function was discussed, along with the use of skip connections.
+Subsequently, we described several approaches towards making deep neural networks more sample efficient.
+In this section we focused on denoising autoencoders, and on data augmentation techniques such as swap noise and mixup augmentation.
+The penultimate section described ways of interpreting neural networks for tabular data, and provided an illustration of interpretation by means of knowledge distillation.
+We concluded with an empirical investigation of superconvergence in the context of tabular data.
+Hence \Cref{chp:td} contributed to the technical understanding necessary for tackling challenges in deep learning for tabular data.
 
-\textbf{\Cref{chp:exp}} contains the empirical experiments.
-The experiments served to assist the exploratory study of deep learning for tabular data.
-The experiments were categorised by three main themes: input representation, feature interaction and sample efficiency.
-In the input representation experiments we evaluated the effect the entity embedding sizes had on the performance of the model.
-The attention mechanism, along with skip-connections and the SeLU activation were experimented with to see how they do in modeling feature interactions.
-Finally, in the sample efficiency section, we investigated how sensitive neural networks are to the number of observations in a dataset and tested unsupervised pretraining as an approach to alleviate this sensitivity.
+Our empirical work is summarised in \Cref{chp:exp}.
+The experiments reported on, complement the exploratory study of deep learning for tabular data.
+We attempted to answer three main questions, *viz.* which approach to use for input representation, for inferring feature interactions, and for enhancing sample efficiency.
+In the input representation experiments, we evaluated the effect of entity embedding sizes on the performance of neural networks.
+Here we experimented with the attention mechanism, along with the use of skip connections and of the SeLU activation function. 
+Finally, in the sample efficiency section, we attempted to gage the sensitivity of neural networks to the number of training samples.
+We also tested the use of unsupervised pretraining towards alleviating this sensitivity.
+
 We also looked at the mixup and swap noise data augmentation approaches as means to avoid overfitting.
 
 ## Limitations \label{sec:lim}
