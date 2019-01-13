@@ -411,7 +411,7 @@ Since these parameters control the strength of regularisation, their values are 
 
 ### Unsupervised Pretraining
 
-Recall that unsupervised pretraining was described in \label{sec:tl}, and presented as a very effective way of training deep neural networks.
+Recall that unsupervised pretraining was described in \Sref{sec:tl}, and presented as a very effective way of training deep neural networks.
 There we have seen that, by automatically learning useful feature combinations in an unsupervised fashion, pretraining may also be used to address the feature engineering issue. 
 However in the literature we only found two papers that make use of pretraining in the context of tabular data.
 These are @Zhang2016 and @Miotto2016.

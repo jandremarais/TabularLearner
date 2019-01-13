@@ -184,6 +184,14 @@ Incorporating this prior belief has empirically been shown to be useful [@Goodfe
 In our empirical work we investigate the effect of network depth and layer width on the generalisation performance of neural networks.
 We also analyse why networks used in the case of tabular data are typically much shallower than in the case of computer vision or NLP applications. For some additional insight in the matter, later on in this chapter we view the problem of the specification of the network size from a representation learning perspective. 
 
+Note, that there also exists other classes of neural networks besides the basic feed-forward network focussed on thus far.
+The *convolutional neural network* (CNN) is a very common choice in computer vision [@Krizhevsky2012] and only recently in NLP applications [@Devlin2018].
+Its main difference to standard NNs is the use of a convolutional layer that performs a cross-correlation operation on its inputs with a set of learnable filters.
+The *recurrent neural network* (RNN) [@Mikolov2010] is a class of neural networks that are helpful for modelling variable lenght inputs or outputs, for example in machine translation or video classification.
+A RNN has loops in them, allowing information to persist.
+It can also be thought of as multiple copies of the same network, each passing a message to its successor, if one were to "unfold" the loops.
+These classes of neural networks are not within the scope of this work since they have no clear benefit for using with tabular data.
+
 ## Training a Neural Network \label{sec:training}
 
 Briefly, basic training of a neural network entails the following four steps:

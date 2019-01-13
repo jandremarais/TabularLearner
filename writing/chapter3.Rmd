@@ -14,6 +14,7 @@ From around 2006 onwards, tons of contributions have been made to the neural net
 New types of layers, more effective training strategies, and novel approaches to guard against overfitting have since been proposed.
 A more general definition of *deep learning* therefore encompasses all modern developments in the neural network space.
 Because of the large number of deep learning contributions during the past decade, note that in this chapter we restrict attention to developments that form a basis for improving deep learning in the context of tabular data.
+The developments chosen to be focussed on are a result of our own extensive research and practical experience in the field deep learning.
 
 Conceptual categorisation of modern contributions to the deep learning field is a difficult task.
 Perhaps one way to order some of the more important developments, is to use the aim or effect of their implementation as criterion.
@@ -23,14 +24,14 @@ However, learning algorithms are not necessarily able to find these solutions, t
 An example is the class of neural networks called *autoencoders* (\Sref{sec:ae}).
 These neural networks are mostly used as unsupervised learning methods with the aim of aiding us to learn more robust data representations, which may subsequently be transferred to supervised learning algorithms.
 We have mentioned in Chapter 1 that the process of transferring knowledge from one network to another is called transfer learning. 
-Note that more detail regarding transfer learning is provided in \Sref{sec:tl}.
+More detail regarding transfer learning is provided in \Sref{sec:tl}.
 
 A large number of deep learning developments are explicitly geared toward regularisation in order to prevent overfitting.
 We discuss two important modern proposals that fall in this category, *viz.* the use of the so-called *dropout* method in (\Sref{sec:dropout}) and the use of *data augmentation* in (\Sref{sec:daug}).
 
 A group of modern deep learning architectural proposals that succeed in hitting several targets, are discussed in \Sref{sec:bnorm}, \Sref{sec:resnet}, \Sref{sec:embeds} and \Sref{sec:attention}.
-Amongst others, the successes of this group of developments include regularisation, increasing speed, and reducing sensitivity to starting weights (batch normalisation); improving accuracy (skip connections); representing and visualising categorical variables, and representation learning (embeddings); visualising and interpreting NNs (attention).
-The use of these modern architecture have become standard practice in deep learning applications.
+Amongst others, the successes of this group of developments include better regularisation, decreased training time, reduced sensitivity to starting weights, improved accuracy, representing and visualising categorical variables, more robust representation learning and more useful interpretability of NNs.
+The use of these modern architectures are present in almost all of the SotA deep learning models in the computer vision and NLP domains.
 
 With regard to optimisation of neural networks, a method has been proposed which provides a way of almost automatically finding a good learning rate.
 This leads to a drastic reduction in the number of training iterations needed.
@@ -41,23 +42,24 @@ We conclude the chapter with a discussion on the interpretability of neural netw
 ## Autoencoders \label{sec:ae}
 
 Autoencoders play a pertinent role in deep learning.
-According to @Goodfellow, the idea of autoencoders have been around since the late 1980's - see for example @LeCun1987, @BourlardKamp1988 and @HintonZemel1994.
+According to @Goodfellow2014, the idea of autoencoders have been around since the late 1980's - see for example @Lecun1987, @Bourlard1988 and @Hinton1994.
 In those years, autoencoders were used for dimensionality reduction and for learning important features in a more general domain than neural networks. 
-From 2006 onwards, their application in neural networks facilitated efficient training of deep neural nets, which in turn caused an upsurge in deep learning research [@Hinton2006; @HintonSalak2006; @Bengio2007].
+From 2006 onwards, their application in neural networks facilitated efficient training of deep neural nets, which in turn caused an upsurge in deep learning research [@Hinton2006; @Bengio2007].
 Autoencoders are also used to facilitate transfer learning, which we will see is an important way of ensuring efficient training in deep neural networks.
 
-Some of the most popular types of autoencoders are so-called *denoising autoencoders* [@Vincent2008], *stacked denoising autoencoders* [@Vincent2010], *sparse autoencoders* [@Makhzani2013], *contractive autoencoders* [@Rifai2011], *semi-supervised recursive autoencoders* [@Socher2011], and *variational autoencoders* [@Kingma2013]. 
+Some of the most popular types of autoencoders are so-called *denoising autoencoders* [@Vincent2008], *sparse autoencoders* [@Makhzani2013], *contractive autoencoders* [@Rifai2011], *semi-supervised recursive autoencoders* [@Socher2011], and *variational autoencoders* [@Kingma2013]. 
 In this section, we start with an explanation of a plain vanilla autoencoder.
-This is followed with a brief description of denoising, sparse, variational and contractive autoencoders. 
+This is followed with a brief description of denoising, sparse, variational and contractive autoencoders for reference. 
 
 A basic autoencoder is a neural network which is trained to attempt to reconstruct its inputs.
 The simplest form of an autoencoder is a neural network with one hidden layer and with an output layer having the same size as the input layer. 
-This architecture is illustrated in \autoref{fig:ae}).
+This architecture is illustrated in \autoref{fig:ae}.
 The linear layer transforming the input to the hidden layer is referred to as the *encoder*, *viz.* $\boldsymbol{z}=f(\boldsymbol{x})$, and the layer producing the output from the hidden layer is called the *decoder*, *viz.* $\boldsymbol{x}'=g(\boldsymbol{z})$.
-The autoencoder can be trained in the same way as any other neural network, however the loss function to be minimised is called *reconstruction loss*. 
+The autoencoder can be trained in the same way as any other neural network, with a slight change in the type of loss function to be minimised.
+The loss function used for a common autoencoder is called the *reconstruction loss*. 
 The reconstruction loss function measures the difference between the reconstructed and actual input, hence the MSE loss function is a common choice in the case of continuous data.
 Hence technically, note that autoencoders belong to the self- (or semi-) supervised class of methods, although many still think of it as unsupervised.
-It is unsupervised in the sense that it does not require labelling, but it is supervised in the sense that it does predict an ouput.
+It is unsupervised in the sense that it does not require labelled data, but it is supervised in the sense that it does predict an ouput.
 
 ```{r, fig.cap="A simple single hidden layer autoencoder with four-dimensional inputs and with two neurons in the hidden layer.\\label{fig:ae}", out.height="30%", fig.align='center'}
 knitr::include_graphics('figures/ae.png')
@@ -72,7 +74,7 @@ That is, the learned weights of the autoencoder are use to initialise the weight
 Note that in order to encourage representation learning by means of autoencoders, they are typically constructed with some type of constraint imposed.
 A common option is to restrict the number of neurons in the hidden layer to be smaller than the number of input features.
 This forces the autoencoder to capture only the most useful properties of the data in the hidden representation and can thus effectively be used as a way of dimensionality reduction [@Hinton2006a].
-Indeed, if there are no non-linear activation functions after the linear layers, one can show that this autoencoder is equivalent to application of *Principal Component Analysis* (PCA) to the inputs.
+Indeed, if there are no non-linear activation functions after the linear layers, one can show that this autoencoder is equivalent to the application of *Principal Component Analysis* (PCA) to the inputs.
 Of course there is no restriction to the number or the size of the layers used in the encoder and decoder, and if activation functions are used, one can potentially learn a more powerful non-linear generalisation of PCA.
 It is difficult to verify whether or not an autoencoder has learned a useful latent representation of the data.
 One way to evaluate the representation is to use the features extracted by the encoder in a supervised learning task and to then compare its performance to that of a model using only the raw data as inputs.
@@ -100,7 +102,7 @@ Finally in this section, in a *contractive autoencoder* (CAE), one encourages le
 
 ## Transfer Learning \label{sec:tl}
 
-Semi-supervised (or 'unsupervised) learning exploited for example in autoencoders played a key part in the rise of deep learning.
+Semi-supervised (or unsupervised) learning exploited for example in autoencoders played a key part in the rise of deep learning.
 This is also stated in the paper by @Vincent2010:
 "Training a deep network to directly optimise only the supervised objective function of interest by gradient descent, starting from random initialised parameters, does not work very well. 
 What works *much* better is to use a local unsupervised criterion to (pre)train each layer in turn, with the goal of learning to produce a useful higher-level representation from the lower-level presentation output by the previous layer. 
@@ -109,9 +111,10 @@ Indeed, autoencoders and related methods facilitated successful deep neural netw
 For example, it is possible to use a DAE to learn the latent features from unlabelled data, and then to use these features to initialise a deep neural net for a related supervised learning task based on the same type of inputs.
 
 Note that instead of using autoencoders in pretraining, one may also do supervised pretraining.
-This is for example done by first training the network to estimate a certain target variable (say $y$), and by then using those weights or features when trying to predict a different target variable (say $y'$).
+This is for example done by first training the network to estimate a certain target variable (say $y$) of dataset $D$, and by then using those weights of the trained network as an initialisation when trying to predict a different target variable (say $y'$) of dataset $D'$.
+This is most effective when there is overlap between the structure, semantics and properties of $D$ and $D'$.
 
-Unsupervised pretraining for supervised learning is very common in NLP [@Devlin2018, @Howard2018] , whereas supervised pretraining for supervised learning is widely used in computer vision [@Yosinski2015, @He2015].
+Unsupervised pretraining for supervised learning is very common in NLP [@Devlin2018, @Howard2018], whereas supervised pretraining for supervised learning is widely used in computer vision [@Yosinski2015, @He2015].
 To our knowledge, theoretical proofs towards understanding why pretraining works, cannot yet be found in the literature.
 It is postulated that using the pretrained weights as initialisation to the supervised model provides a better starting position on the loss surface, thereby inducing regulatory effects [@Goodfellow2016, Ch. 14].
 Pretraining is most effective in scenarios where a relatively small dataset is available for the supervised task, but where a lot of data are available for the pretraining task.
@@ -131,7 +134,7 @@ Here we discuss two regularisation techniques proven to be extremely powerful in
 
 ### Dropout \label{sec:dropout}
 
-Regularisation by means of dropout was proposed in a paper by Srivastava and co-authors [-@Sriva2014].
+Regularisation by means of dropout was proposed in a paper by Srivastava and co-authors [@Sriva2014].
 The term refers to the process of temporarily removing sets of neurons and their connections during NN training.
 In @Sriva2014, the authors explain that the dropout invention started with the challenge of attempting to optimise neural networks by means of averaging multiple neural networks.
 This pursuit was motivated by the following two notions.
@@ -162,8 +165,26 @@ In @Sriva2014, note that $p=0.5$ is suggested to work well for hidden nodes, whe
 In practice the exact optimal value of $p$ depends on the use case and is typically found via experimentation.
 
 In mathematical notation, note that the dropout model may be described as follows.
-
-...
+Consider a NN with $L$ hidden layers, each indexed with $l\in \{1,\dots,L\}$.
+Let $\boldsymbol{z}^{(l)}$ and $\boldsymbol{z}^{(l+1)}$ denote the vector of inputs and outputs to layer $l$ respectively.
+$W^{(l)}$ and $\boldsymbol{b}^{(l)}$ are the weights and biases at layer $l$.
+Then the feed-forward operation for any hidden unit $i$ can be expressed as
+$$
+z_{i}^{(l+1)}=a\left(\boldsymbol{w_{i}}^{(l+1)}\boldsymbol{z}^{(l)}+b_{i}^{(l+1)}\right),
+$$
+where $a(\cdot)$ is any activation function.
+With dropout, this operation becomes
+$$
+\begin{aligned}
+r_{j}^{(l)}&\sim \text{Bernoulli}(p)\\
+\tilde{\boldsymbol{z}}^{(l)}&=\boldsymbol{r}^{(l)}*\boldsymbol{z}^{(l)}\\
+z_{i}^{(l+1)}&=a\left(\boldsymbol{w_{i}}^{(l+1)}\tilde{\boldsymbol{z}}^{(l)}+b_{i}^{(l+1)}\right)
+\end{aligned}
+$$
+$\boldsymbol{r}^{(l)}$ is a vector of independent Bernoulli random variables each of which has probability $p$ of being 1.
+This vector is sampled and multiplied element-wise ($*$) with the outputs of that layer to create the thinned outputs $\tilde{\boldsymbol{z}}^{(l)}$.
+The thinned outputs are then used as inputs to the next layer.
+At test time the weights are scaled as $W^{(l)}_{test}=pW^{(l)}$.
 
 In summary of this section, dropout removes a neuron from a network with probability $p$.
 The neurons that are omitted do not contribute to the forward pass and do not participate in backpropogation. 
@@ -273,10 +294,10 @@ Therefore the occurrence of the degradation problem indicates that multiple non-
 
 In @He2016, the degradation problem is addressed by rephrasing the learning objective of a deep neural network.
 Instead of requiring a group of layers to learn some undefined non-linear mapping, say $H(\boldsymbol{x})$, the objective is to learn a *residual function*, *viz.* $F(\boldsymbol{x})=H(\boldsymbol{x})-\boldsymbol{x}$.   
-In their paper He *et al.* (2016) postulate that it is more tractable to find $F(\boldsymbol{x})$ than $H(\boldsymbol{x})$.
-For example, in the problematic scenario where $H(\boldsymbol{x})$ should be $H(\boldsymbol{x})=\boldsymbol{x}$, it is easier to truncate $F(\boldsymbol{x}) to zero than for multiple non-linear layers to learn the identity mapping.
+In their paper @He2016 postulate that it is more tractable to find $F(\boldsymbol{x})$ than $H(\boldsymbol{x})$.
+For example, in the problematic scenario where $H(\boldsymbol{x})$ should be $H(\boldsymbol{x})=\boldsymbol{x}$, it is easier to truncate $F(\boldsymbol{x})$ to zero than for multiple non-linear layers to learn the identity mapping.
 This is indeed supported by the results of empirical work in their paper.
-The original sought after function H(\boldsymbol{x}) may subsequently be found via the mapping H(\boldsymbol{x})=F(\boldsymbol{x})+\boldsymbol{x}$.
+The original sought after function $H(\boldsymbol{x})$ may subsequently be found via the mapping $H(\boldsymbol{x})=F(\boldsymbol{x})+\boldsymbol{x}$.
 
 The above framework is referred to as *deep residual learning*.
 Residual Networks (ResNets) became very popular after they were used in the winning model of one of the ImageNet competitions [@He2015].
@@ -332,9 +353,9 @@ Examples include image captioning [@Xu2015] and audio processing tasks [@Duong20
 The main idea of an attention module is to force a layer to only focus on a certain subset of its inputs at different stages of computation.
 For example, in image captioning, one may use a recurrent neural network (RNN) to sequentially output words describing the image.
 With the use of an attention module, the network is at each step restricted to only consider certain parts of an image, thereby avoiding to have to consider the full image every time.
-This is illustrated in \autoref{fig:imattn}.
+This is illustrated in \autoref{fig:imattn} (Source: @Xu2015).
 Notice how the network focuses on the bird part of the image when predicting the word "bird" and "flying", whereas it focuses on the water part of the image when predicting the words "body" and "water".
-Similarly, when used in machine translation, we may visualise attention weights to capture the way in which a network focuses on a different subset of words when predicting each word in the target language (\autoref{fig:nlpattn}).
+Similarly, when used in machine translation, we may visualise attention weights to capture the way in which a network focuses on a different subset of words when predicting each word in the target language (\autoref{fig:nlpattn} (Source: @Bahdanau2014)).
 
 ```{r, fig.cap="Attention applied to image captioning.\\label{fig:imattn}", out.width="90%", fig.align='center'}
 knitr::include_graphics('figures/img_attention.jpeg')
@@ -369,7 +390,7 @@ A grid search or random search in the parameter space seems not to be an option 
 In this section we summarise the work on structuring specification of NN hyperparameters presented in the papers by Smith in 2015 and 2018, and by Smith and Topin in 2017.
 Through these approaches, the necessity of running complete grid or random searches is eliminated, rendering tremendous improvements in training time and accuracy.
 
-In @Smith2015, the author considers specification of the learning rate parameter.
+In @Smith2015b, the author considers specification of the learning rate parameter.
 This is a worthwhile enterprise: in \Cref{chp:nn} the importance of the appropriately specifying the learning rate became evident.
 To re-emphasise, the learning rate is viewed as the hyperparameter whose appropriate specification is most important compared to all other neural network hyperparameter values.
 We saw that one may choose to keep its value fixed throughout training, or to allow it to decrease from a certain point in training onwards.
@@ -391,7 +412,7 @@ Hence this is the largest learning rate one should consider using during trainin
 In CLR it is suggested that the lower bound of the learning rate be set to a factor of 3 or 4 times less than the maximum learning rate.
 For an update of the CLR proposal, the reader is referred to @Smith2017.
 
-Importantly, during application of the learning rate range test towards fitting ResNets to specific image datasets, @SmithTopin2017 discovered that the test loss remains constant up to very large values for the learning rate.
+Importantly, during application of the learning rate range test towards fitting ResNets to specific image datasets, @Smith2017 discovered that the test loss remains constant up to very large values for the learning rate.
 This surprising phenomenon is called *super-convergence*.
 
 The implication of super-convergence is that in some setups one may simply use a single learning rate cycle together with unusually large learning rate values in order to train neural networks an order of magnitude faster than when using standard training methods.
@@ -400,6 +421,7 @@ If super-convergence is possible, Smith and Topin (2017) suggest a slight modifi
 Note that the initial learning rate is an abnormally large value. 
 The unusually large learning rate used leads to an additional benefit, *viz.* the facilitation of regularisation.
 The above learning rate methodology is called *1cycle*, and its learning rate setting is illustrated in \autoref{fig:onecyc}.
+
 ![The learning rate schedule of the 1cycle policy.\label{fig:onecyc}](figures/onecyc.png)
 
 Clearly also in the 1cycle regime, bounds for the learning rate need to be set.
@@ -500,5 +522,5 @@ By taking a single observation from the data we can evaluate how the model predi
 And since this behaviour will most likely vary for different observations, the above process should be repeated for a subset of observations from the dataset.
 The average effect on the predictions at different values of $X_{1}$ can subsequently be obtained, along with standard errors of these effects.
 
-For more model agnostic interpretation tools (for instance the use of so-called *SHAP values*), the reader is referred to @Lundburg2017.
+For more model agnostic interpretation tools (for instance the use of so-called *SHAP values*), the reader is referred to @Lundberg2017.
 Note also that examples of implementation of these model interpretation techniques may be found in the next two chapters.
