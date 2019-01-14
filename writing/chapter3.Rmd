@@ -21,13 +21,13 @@ Perhaps one way to order some of the more important developments, is to use the 
 Since representation learning is such an important characteristic of NNs, many deep learning developments focus on this aspect. 
 As mentioned before, neural networks are able to approximate any function.
 However, learning algorithms are not necessarily able to find these solutions, therefore we need more efficient ways to learn from the available data. 
-An example is the class of neural networks called *autoencoders* (\Sref{sec:ae}).
+An example is the class of neural networks called *autoencoders* \Sref{sec:ae}.
 These neural networks are mostly used as unsupervised learning methods with the aim of aiding us to learn more robust data representations, which may subsequently be transferred to supervised learning algorithms.
 We have mentioned in Chapter 1 that the process of transferring knowledge from one network to another is called transfer learning. 
 More detail regarding transfer learning is provided in \Sref{sec:tl}.
 
 A large number of deep learning developments are explicitly geared toward regularisation in order to prevent overfitting.
-We discuss two important modern proposals that fall in this category, *viz.* the use of the so-called *dropout* method in (\Sref{sec:dropout}) and the use of *data augmentation* in (\Sref{sec:daug}).
+We discuss two important modern proposals that fall in this category, *viz.* the use of the so-called *dropout* method in \Sref{sec:dropout} and the use of *data augmentation* in \Sref{sec:daug}.
 
 A group of modern deep learning architectural proposals that succeed in hitting several targets, are discussed in \Sref{sec:bnorm}, \Sref{sec:resnet}, \Sref{sec:embeds} and \Sref{sec:attention}.
 Amongst others, the successes of this group of developments include better regularisation, decreased training time, reduced sensitivity to starting weights, improved accuracy, representing and visualising categorical variables, more robust representation learning and more useful interpretability of NNs.
@@ -35,9 +35,9 @@ The use of these modern architectures are present in almost all of the SotA deep
 
 With regard to optimisation of neural networks, a method has been proposed which provides a way of almost automatically finding a good learning rate.
 This leads to a drastic reduction in the number of training iterations needed.
-The aforementioned training method (referred to as the *1cycle policy*) is discussed in (\Sref{sec:onecyc}).
+The aforementioned training method (referred to as the *1cycle policy*) is discussed in \Sref{sec:onecyc}.
 
-We conclude the chapter with a discussion on the interpretability of neural networks in (\Sref{sec:interp}).
+We conclude the chapter with a discussion on the interpretability of neural networks in \Sref{sec:interp}.
 
 ## Autoencoders \label{sec:ae}
 

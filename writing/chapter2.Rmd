@@ -27,9 +27,9 @@ The development of neural networks dates back at least as far as the invention o
 It is also interesting to compare modern neural networks with the Projection Pursuit Regression algorithm in statistics [@friedman1981].
 Only recently a series of breakthroughs caused neural networks to become more effective, leading to the renewed interest in the field.
 
-The aim of this chapter is to provide an overview of neural networks, emphasising their basic structure (\Sref{sec:structure}) and the way in which they are trained (\Sref{sec:training}).
-This is done with a view to discuss modern neural network structures and training policies in \Cref{chp:dl}, which in turn will help us shed light on Deep Learning for tabular data. In (\Sref{sec:basicreg}) and (\Sref{sec:lr}), regularisation for neural networks and the use of adaptive learning rates are discussed. These are necessary components for regulating the generalisation performance of NNs, as well as for keeping the required training time at bay.
-The chapter concludes with a section on representation learning (\Sref{sec:rep}), which is an important topic toward understanding the inner workings of neural networks.
+The aim of this chapter is to provide an overview of neural networks, emphasising their basic structure \Sref{sec:structure} and the way in which they are trained \Sref{sec:training}.
+This is done with a view to discuss modern neural network structures and training policies in \Cref{chp:dl}, which in turn will help us shed light on Deep Learning for tabular data. In \Sref{sec:basicreg} and \Sref{sec:lr}, regularisation for neural networks and the use of adaptive learning rates are discussed. These are necessary components for regulating the generalisation performance of NNs, as well as for keeping the required training time at bay.
+The chapter concludes with a section on representation learning \Sref{sec:rep}, which is an important topic toward understanding the inner workings of neural networks.
 
 ## The Structure of a Neural Network \label{sec:structure}
 

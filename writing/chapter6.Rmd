@@ -8,7 +8,7 @@ Some of the modern proposals could then be identified as potentially useful in t
 This chapter provides a summary of our work.
 In \Sref{sec:summary} the contribution of each chapter is discussed, and in \Sref{sec:lim}, some limitations and avenues towards possible improvements are indicated.
 
-We conclude the thesis with a section on promising future directions for research in the field of deep learning for tabular data  (\Sref{sec:future}).
+We conclude the thesis with a section on promising future directions for research in the field of deep learning for tabular data \Sref{sec:future}.
 
 ## Summary \label{sec:summary}
 
