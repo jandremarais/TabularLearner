@@ -1,25 +1,33 @@
 \begin{abstract}[UKenglish]
 
-In this thesis we set out to investigate an area of deep learning, \textit{viz}. the application of deep learning approaches to tabular datasets.
-The deep learning field is an extention of the class of machine learning algorithms called \textit{Artificial Neural Networks}.
-Currently, deep learning is receiving a remarkable amount of attention, both in research and in practice.
-Deep learning models excel in tasks processing unstructured data, especially in the domains of computer vision, natural language processing and audio processing.
+From about 2006, deep learning has proven to be very successul in application areas such as computer vision, natural language processing, speech and audio recognition, machine translation, bioinformatics, and social network filtering. 
+These successes were undoubtedly facilitated by many advances in neural network architectures. 
+In contrast, deep learning has not yet been found to excel in the context of tabular datasets. 
 
-A data domain in which deep learning have not yet been very successful, is that of tabular data.
-Many important machine learning applications make use of tabular data and currently the best machine learning models for tabular data are tree-based models.
-Therefore it is of our opinion that this direction warrants further research.
-This work is an exploratory study, evaluating the current state of the field and what is needed for it to progress.
-The contribution made by this work is 2-fold.
-The first part constitutes a literature review of the latest developments in deep learning.
-We highlight all the major developments in field and specifically evaluate them through the lense of aiding in the endeavour of improving deep learning for tabular data.
-From this research we also identify the major challenges of applying deep learning to tabular data and suggest ways of improving on this front.
+Many key machine learning tasks make use of tabular data, where currently the best machine learning models for tabular data use classification or regression trees as base learners.
+Therefore, the objective of this study is to identify, discuss and explore recent developments in deep learning which may be used to enhance the accuracy of deep neural networks in the tabular data domain.
+All major developments in the deep learning field are discussed and critically considered, with a view to improving deep learning in the context of tabular data. 
+The challenges of applying deep learning to tabular data are identified, and on each of these fronts, potential improvements are proposed.
 
-The second major contribution is an empirical study of the most promosing deep learning developments highlighted in the literature review.
-We build a code base for implementing the latest deep learning techniques and doing comparitive experiments for model selection.
-Through various experiments we evaluate the validity of the findings in the literature and comment on the effectiveness of the proposed methods.
+The most promising modern deep learning architectures are further explored by means of empirical work.
+We also evaluate the validity of findings reported in the literature, and comment on the effectiveness of recent proposals.
+A useful byproduct of the study is the development of a code base that may be used to implement the latest deep learning techniques, as well as for comparative model selection experiments.
 
 \end{abstract}
 
 \begin{abstract}[afrikaans]
-Afrikaans abstract
+
+Vanaf ongeveer 2006 is die sukses van diepleer-tegnieke in toespassings-areas soos rekenaarvisie, taalprosessering, spraak- en klankherkenning, masjienvertaling, bio-informatika, en om sosiale netwerk te filtreer, alombekend.
+Die sukses van diepleer-metodes is ongetwyfeld aangehelp deur baie ontwikkelings rondom die argitektuur van neurale netwerke.
+Nogtans is bevind dat diep neural netwerke tot dusver nie goed vaar in die konteks van die gebruik van 'gewone matriksvorm data' nie.
+
+Verskeie belangrike masjienleer take maak gebruik van matriksvorm data, waar die beste masjienleer modelle in hierdie konteks klassifikasie- of regressiebome gebruik as basis.
+Derhalwe is die doelwit van hierdie studie om onlangse ontwikkelings in diepleer (wat gebruik kan word om die akkuraatheid van diep neural netwerke te verbeter in die konteks van matriksvorm-data), te identifiseer, te bespreek, en empiries te ondersoek.
+Alle belangrike ontwikkelings in die diepleer veld word bespreek, en krities beskou, ten einde diepleer te verbeter in die konteks van matriksvorm data.
+Die uitdagings wat die toepassing van diepleer op matriksvorm data bied, word geidentifiseer, en op elkeen van hierdie fronte word potensiële verbeterings voorgestel.
+
+Die belowendste moderne diepleer argitekture word deur middel van empiriese werk verder verken.
+Ons evalueer ook die geldigheid van bevindings wat in die literatuur rapporteer word, en lewer kommentaar op die effektiwiteit van onlangse voorstelle.
+'n Nuttige byproduk van die studie is die ontwikkeling van 'n kodebasis wat gebruik kan word vir die implementering van die nuutste diepleer-tegnieke, asook vir vergelykende eksperimente rondom modelseleksie.
+
 \end{abstract}
