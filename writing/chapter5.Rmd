@@ -97,7 +97,7 @@ The highest reported accuracy in the original paper [@Kohavi1996] was 85.9% by t
 
 ![Histograms for each of the continuous features in the Adult dataset.\label{fig:ad_cont}](figures/adult_conts.png)
 
-![Bar plot for each of the categorical features in the Adult dataset.\label{fig:ad_cat}](figures/adult_cat.png)
+![Bar plot for each of the categorical features in the Adult dataset.\label{fig:ad_cat}](figures/adult_cat2.png)
 
 ## General Methodology \label{sec:eval}
 

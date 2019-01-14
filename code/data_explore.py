@@ -2,6 +2,7 @@ from pathlib import Path
 import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
+import pdb
 
 path = Path('../data/adult')
 df = pd.read_csv(path/'adult.csv')
@@ -19,6 +20,10 @@ print(df.head())
 # df[dep_var].plot.hist()
 # plt.show()
 
+for var in cat_vars:
+    df[var]=df[var].str.slice(stop=4)
+
+plt.rcParams.update({'font.size': 20})
 
 fig, ((a,b),(c,d),(e,f), (g,h)) = plt.subplots(4,2,figsize=(20,15))
 sns.countplot(df['workclass'],hue=df[dep_var],ax=f)
@@ -31,4 +36,5 @@ sns.countplot(df['education'],hue=df[dep_var],ax=g)
 sns.countplot(df['occupation'],hue=df[dep_var],ax=h)
 # a.set_xticks(rotation=45)
 # a.xaxis.set_tick_params(rotation=45)
-plt.show()
+# plt.show()
+plt.savefig('adult_cat2.png', bbox_inches='tight')
