@@ -4,14 +4,14 @@
 
 The main objective in this chapter is to better understand the behaviours of certain neural network model architectures (and their parameters).
 The empirical work presented here also serves as verification in terms of the observations reported in the literature.
-Our focus is on the same deep learning modelling challenges as discussed in \autoref{chp:td}.
+Our focus is on the same deep learning modelling challenges as discussed in \Cref{chp:td}.
 These are:
 
 - appropriate input representation;
 - learning from feature interactions; and
 - enhancing sample efficiency.
 
-The reader will note that the aspect of model interpretation is not listed above, since this challenge was covered in \autoref{sec:interp}.
+The reader will note that the aspect of model interpretation is not listed above, since this challenge was covered in \Sref{sec:interp}.
 
 Appropriate specification of more general hyperparameters such as learning rate, batch size, layer size and layer depth does not form part of the focus in our experimentations. 
 The reason is that these do not form part of the main challenges presented by the use of neural networks for tabular data, and also, with some of these parameters we have already experimented in Chapter 4.

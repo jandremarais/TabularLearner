@@ -2,7 +2,7 @@
 
 ## Width and Depth of Network
 
-This is a very common hyperparamter to train, for exmaple, done by [@Guo2017, @Qu2016, @Zhang2016].
+This is a very common hyperparameter to train, for exmaple, done by [@Guo2017; @Qu2016; @Zhang2016].
 Here we investigate the effect of the size of the network on the different datasets.
 We compare the performance of the models at different numbers and sizes of layers.
 Larger networks are more flexible and therefore we expect it to act similarly to any learning model flexibility parameter.

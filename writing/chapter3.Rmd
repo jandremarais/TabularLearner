@@ -344,7 +344,7 @@ An embedding layer may be re-used by all input features having the same input ty
 ### Attention \label{sec:attention}
 
 The incorporation of *attention* modules in networks is one of the standout breakthroughs made in deep learning in recent times.
-They especially played an integral part in advances in NLP and other sequence related tasks [@Vaswani2017, @Devlin2018].
+They especially played an integral part in advances in NLP and other sequence related tasks [@Vaswani2017; @Devlin2018].
 Attention was first popularised in the neural machine translation field [@Bahdanau2014].
 Currently it is almost used ubiquitously in NLP applications.
 Also in computer vision applications, the use of attention modules have been found extremely useful.

@@ -540,7 +540,7 @@ It seems to be a good idea to make use of more than one source of information wh
 Thus far, we have come across a plethora of hyperparameters to be tuned if we want to sucessfully fit a deep neural network to tabular data.
 Broadly speaking, there are structural hyperparameters to select, such as the number of layers and the type of activation functions to use; and there are also learning algorithm hyperparameters to specify, for example the learning rate or weight decay to be used.
 In term of structural parameters, since there are no shared patterns among diverse tabular datasets, it is very difficult to design a universal architecture to use in all setups.
-In most of the literature, typically a grid search over many combinations of hyperparameter values is performed [@Song2018, @Wang2017b, @Zhang2016, @Qu2016], @Guo2017, @Covington2016].
+In most of the literature, typically a grid search over many combinations of hyperparameter values is performed [@Song2018; @Wang2017b; @Zhang2016; @Qu2016; @Guo2017; @Covington2016].
 Most of these parameter values are very dependent on the dataset and other modeling choices; hence the need to tune them.
 The main structural hyperparameters tuned in the majority of the papers may be listed as follows: hidden layer size, number of hidden layers, activation functions, and the shape of fully-connected layers (*i.e.* a constant-, increasing-, decreasing- or diamond shape).
 The optimal hyperparameter values found varied accross publications, indicating once again the necessity of a hyperparameter tuning step in the case of uncustomary datasets and models.
@@ -548,7 +548,7 @@ With regard to hyperparameter selection, we include some experiments of our own 
 
 In terms of hyperparameters specific to the optimisation algorithm (like learning rate, batch size, learning rate decay, *etc.*), not much experimentation was done in the researched papers.
 The only choice that were shown was selecting the learning rate over a grid of values, as in @Zhang2016 and @Wang2017b, and kept the selection constant during training.
-Most of the work used the Adam optimiser and early stopping to prevent overfitting [@Song2018, @Wang2017b, @Zhang2016].
+Most of the work used the Adam optimiser and early stopping to prevent overfitting [@Song2018; @Wang2017b; @Zhang2016].
 Large batch sizes were chosen in @Song2018 (1024) and @Wang2017b (512).
 
 Clearly, the 1Cycle policy and the concept of superconvergence has not yet been tested in the tabular data setting.
