@@ -5,7 +5,7 @@
 In Chapters 2 and 3 we covered the basics of neural networks, as well as the more recent advances in deep learning.
 The aim of this chapter is to explore ways in which the modern deep learning approaches in Chapter 3 may be leveraged in the application of deep learning for tabular data (DLTD).
 In Chapter 1 we alluded to the differences of tabular data compared to unstructured data (such as images, and data used in text and speech applications).
-The widely acclaimed successes of deep learning typically occur in areas such as image classification, machine translation and speech recognition.
+The widely acclaimed successes of deep learning typically occur in areas such as computer vision, NLP and audio processing.
 However, in the literature only a handful of publications report successful implementation of deep learning for tabular data.
 In these papers, applications include recommender systems [@haldar2018]; click-through rate prediction[^ctr] [@Song2018]; analysis of electronic health records [@Rajkomar2018]; and transport related problems [@Brebisson2015].
 Not much research has been done in the area of deep learning for tabular data, therefore it is often unclear how to solve certain modelling challenges.
@@ -103,7 +103,7 @@ An alternative to one-hot encodings as representations of categorical features f
 The first publication on entity embeddings in the context of deep learning followed as a result of a taxi destination prediction challenge [@Brebisson2015].
 This was followed by a paper by @Guo2016, wherein the authors succesfully used entity embeddings in order to predict the total sales of a store.
 Furthermore, companies such as [Instacart](https://tech.instacart.com/deep-learning-with-emojis-not-math-660ba1ad6cdc) and [Pinterest](https://medium.com/the-graph/applying-deep-learning-to-related-pins-a6fee3c92f5e) report the effective use of entity embeddings on their internal datasets. 
-Currently all research on deep learning for tabular data facilitate entity embeddings - see for example [@Song2018], [@Wang2017b], [@Covington2016] and [@Zhou2017].
+Currently all research on deep learning for tabular data facilitate entity embeddings - see for example @Song2018, @Wang2017b, @Covington2016 and @Zhou2017.
 The reason for their all-round use is the way in which they are able to ameliorate the issues of one-hot encoded representations.
 
 An entity embedding entails exactly the same operations as with (word) embeddings (discussed in \Sref{sec:embeds}), only they are applied to categories instead of words.
@@ -118,7 +118,7 @@ The weights in $V_{j}$ are learned along with all of the other parameters in the
 Once all categorical features have been embedded, their representations may be concatenated and passed on to the network layers that follow.
 
 Entity embeddings have been found to significantly speed up the training process and to reduce the memory footprint of a neural network.
-This in turn serves to further improve the generalisation ability of a network [@Covington2016] and [@Guo2016].
+This in turn serves to further improve the generalisation ability of a network as stated in @Covington2016 and @Guo2016.
 The above advantages are especially useful when working with high-dimensional and sparse inputs (in tabular data).
 Suppose we have available a dataset with two categorical features, $X_{1}$ and $X_{2}$, with cardinality $C_{1}$ and $C_{2}$, respectively.
 Furthermore, suppose that the first hidden layer in the neural network is presented with inputs of size $q$.
@@ -167,7 +167,7 @@ Using some pooling operation, the list of embeddings are subsequently projected 
 ### Combining Features
 
 Once all continuous and categorical features have been processed and embedded, we need a way to combine them before their input may be transmitted to the rest of the network.
-The standard approach is to concatenate each categorical variable embedding to the continuous variables, as was done in [@haldar2018] and [@Wang2017b] for example. 
+The standard approach is to concatenate each categorical variable embedding to the continuous variables, as was done in @haldar2018 and @Wang2017b for example. 
 This is illustrated in \autoref{fig:comb_rep}.
 The potential problem with this approach, however, is that some features might be over-represented in the resulting vector.
 Suppose for example that one of the continuous features are very important for prediction.
@@ -202,13 +202,13 @@ A huge advantage of using neural networks on tabular data (and other data struct
 That is, a neural network can learn these optimal feature transformations and interactions implicitly during the training process.
 In this way, the hidden layers of a neural network may be viewed as a feature extractor which is optimised to map the network inputs into the best possible feature space for the final layer of the network to operate in.
 
-The traditional approach towards automatic feature engineering in NNs is to stack a few fully-connected layers in order to map the input representation to the output, as was done in [@Covington2016].
+The traditional approach towards automatic feature engineering in NNs is to stack a few fully-connected layers in order to map the input representation to the output, as was done in @Covington2016.
 The set of fully connected layers are used to implicitly model all feature interactions and in ideal world, we would expect this architecture to be sufficient.
 In practice however, without current learning algorithms, a simple MLP is not good enough to learn all types of interactions.
 A fully connected model structure leads to very complex optimisation hyperplanes, therby increasing the risk of falling into local optimums.
 
 Therefore it is necessary to explicitly leverage expressive feature combinations, or to encourage the network to learn better high-order feature interactions.
-The above objective receives attention in publications such as [@Song2018], [@Wang2017b], [@Qu2016] and [@Guo2017].
+The above objective receives attention in publications such as @Song2018, @Wang2017b, @Qu2016 and @Guo2017.
 The restrictions that we impose on a fully connected structure may further assist in limiting the size of the network, in turn causing learning to be more efficient.
 
 Having motivated the importance of feature engineering, and emphasised the importance of further developing feature extraction methodology for neural networks, in the remainder of this section we focus on ways to assist a network to determine which features to combine in order to form meaningful high-order features.
@@ -218,6 +218,7 @@ In @Wang2017b, the authors makes a case for finding a bounded-degree of feature 
 They argue that all Kaggle competions are won when feature engineering comprises low-degree interactions.
 This stands in contrast to automatic feature engineering in deep neural networks, where highly non-linear interactions are typically learned.
 Therefore in @Wang2017b an automated way of constructing cross-features is proposed, and called a *cross-network*.
+A feature cross is a synthetic feature that encodes nonlinearity in the feature space by multiplying two or more input features together.
 In a cross-network, each layer produces higher-order interactions based on existing ones, and keeps the interactions from previous layers. 
 More specifically, a cross-network consists of cross-layers which may be formalised as follows:
 $$
@@ -225,7 +226,7 @@ $$
 $$
 where $\boldsymbol{x}_{l}$ denotes the output from the $l$-th cross-layer and the input to the $(l+1)$-th cross-layer, and where $\boldsymbol{x}_{0}$ is the combined input representation. 
 Furthermore, $\boldsymbol{w}_{l}$ and $\boldsymbol{b}_{l}$ represent the associated weight and bias parameters respectively.
-Each cross-layer adds back its input after feature in the same fashion as a skip-connection.
+Each cross-layer adds back its input after a feature crossing in the same fashion as a skip-connection.
 Hence the degree of cross-features grows with increasing cross-network depth.
 The authors experimented with 1-6 cross-layers and found a depth of six to yield the best results.
 In parallel with the cross-networks in @Wang2017b, the authors also train a standard deep neural network in order to learn highly non-linear feature interactions.
@@ -237,7 +238,7 @@ The output is then sent to two fully connected layers.
 
 In contrast to the approach in @Wang2017b, in @Guo2017 and @Cheng2016 the authors aim to capture both low and high-order interactions.
 In both papers this is achieved by means of introducing two parallel networks, and learn the high-order interactions by means of a deep neural network. 
-For the low order interactions, @Cheng2016 uses a shallow but wide neural network, and @Guo2017 use a so-called *factorisation machine*.
+For the low order interactions, @Cheng2016 uses a shallow but wide neural network, and @Guo2017 use a separate supervised learning model called a *factorisation machine* [@Rendle2010].
 Again the output of the two streams are concatenated, and the resulting output is transmitted to the classification layer.
 
 ### Attention \label{sec:tab_att}
@@ -248,9 +249,10 @@ In this paper a so-called *multi-head self-attention* mechanism is used.
 This mechanism is referred to as the *interacting layer*.
 Broadly, within the interacting layer each feature is allowed to interact with every other feature.
 During training, the interacting layer then automatically determines which of those interactions are relevant to the output.
+Multiple identical self-attention modules ("heads") are used, but each allowed to have different weights since a feature is likely involved in different combinatorial features.
 
 In order to further explain the attention mechanism, consider a feature $j$ and suppose that we want to determine which high-order interactions (which involve feature $j$) are meaningful.
-We start by first defining the correlation between features $j$ and $k$ 'under attention head $h$' as follows:
+We start by first defining the correlation between features $j$ and $k$ under attention head $h$ as follows:
 $$
 \alpha_{j,k}^{(h)}=\frac{\exp{\left(\phi^{(h)}(\boldsymbol{e}_{j},\boldsymbol{e}_{k})\right)}}{\sum_{l=1}^{L}
 \exp{\left(\phi^{(h)}(\boldsymbol{e}_{j},\boldsymbol{e}_{l})\right)}},
@@ -269,7 +271,7 @@ $$
 where $\tilde{\boldsymbol{e}}_{j}^{(h)}$ denotes the combination of feature $j$ and its relevant features under attention head $h$.
 Note that $\alpha_{j,k}^{(h)}$ for $k=1,\dots,K$ sum to 1 after undergoing a logit transform (or softmax operation).
 From the above, $\tilde{\boldsymbol{e}}_{j}^{(h)}$ thus denotes a learned combinatorial feature.
-Since a feature may be involved in various different combinations, we use multiple heads to extract multiple combinations, *i.e.* $\{\tilde{\boldsymbol{e}}_{j}^{(h)}\}_{h=1}^{H}$.
+Since a feature may be involved in various different combinations, we use multiple heads to extract multiple combinations, *i.e.* $\{\tilde{\boldsymbol{e}}_{j}^{(h)}\}_{h=1}^{H}$, where $H$ is the number of self-attention heads chosen.
 In @Song2018 the value of $H$ is set equal to 2, but this is typically a hyperparemeter that needs to be fine-tuned.
 After finding the combinatorial features, they are al concatenated into a single vector, *viz.* $\tilde{\boldsymbol{e}}_{j}$.
 The output is then finally combined with the original raw input, and sent through a ReLU activation:
@@ -281,7 +283,7 @@ In this way the interacting layer is formed.
 Clearly therefore, activations of the interacting layer forms a representation of the high-order features of its inputs.
 Multiple interacting layers may be stacked on-top of each other in order to form arbitrary order combinatorial features.
 
-In a vaguely similar idea to attention, in @Zhou2017 the weights to apply to hidden representations are learned automatically.
+In a similar idea to attention, in @Zhou2017 the attention weights to apply to the input of an attention layer is produced by a linear layer and learned along the rest of the network.
 Interestingly in this paper, the authors remove the softmax layer as a way to mimic probabilities and to reserve the intensity of activations.
 
 Skip connections are also used in both @Song2018 and @Wang2017b to connect features modelling low level interactions with features modelling high order interactions. 
@@ -337,7 +339,10 @@ Thus in order to inject random noise to a tabular data sample, the values to be 
 Subsequently also, the validity of the resulting value for a particular feature should be verified.
 Incorporating some noise may potentially also cause a model to be more robust to small variations in the data.
 Along these lines, @VanDerMaaten2013 suggest an augmentation approach called marginalised corrupted features.
-In the MCF approach, noise are generated from some known distribution and added to input values, but this is done manually and cannot be applied to discrete variables.
+In the MCF approach, noise are generated from some chosen distribution and used to transform the input values.
+In @VanDerMaaten2013, they experimented with Gaussian, Laplace and Poisson distributions for generating noise.
+But it is typically unclear beforehand which corruption distributions are useful for what types of data.
+In addition, this corruption procedure is only applicable to numerical features.
 
 In the original 'denoising autoencoders' paper [@Vincent2008], note that a so-called *blank-out corruption* procedure is used.
 Blank-out corruption entails the random selection of a subset of the input features, and masking their values with zeros.
@@ -345,9 +350,11 @@ This resembles dropout regularisation, but applied to the inputs.
 The only problem with this approach is that for some features a zero value actually carries some meaning.
 Hence features should be 'blanked out' using some unique value that does not belong to the range of their distributions. 
 
-Another input corruption approach that has empirically been shown to work well [here](https://www.kaggle.com/c/porto-seguro-safe-driver-prediction/discussion/44629), is the technique called *swap noise* [@kasar2018].
+Another input corruption approach that has empirically been shown to work well[^portoseg], is the technique called *swap noise* [@kasar2018].
 The swap noise procedure corrupts inputs by randomly swapping input values with those of other samples in the datasets, thereby ensuring that the corrupted input at least assume valid feature values.
 The use of swap noise is illustrated in \autoref{tab:swpns}.
+
+[^portoseg]: https://www.kaggle.com/c/porto-seguro-safe-driver-prediction/discussion/44629
 
 ```{r}
 df = read_csv('../data/adult/adult_sample.csv')
@@ -435,35 +442,42 @@ The losses for categorical and continuous features may then be combined in order
 The weights to be assigned to the two losses is an aspect which has not yet been researched.
 
 Instead of the feature extraction method followed in @Zhang2016 and @Miotto2016, we propose treating unsupervised pretraining as a transfer learning problem.
-That is, we suggest replacing ... with the required classification layers. (please rephrase).
+That is, we suggest replacing the output layer of the DAE with the required output layers for the supervised learning task.
 Then one may first train the newly added layers, keeping the lower level DAE layers fixed.
 Subsequently, all layers may be trained simultaneously.
-Rather using this approach the feature extractor part of the DAE may still be tweaked in order to be optimal for the supervised learning task.
+Rather using this approach the feature extractor part of the DAE may still be tuned in order to be optimal for the supervised learning task.
 We experiment with the above approach in the following chapter.
 
 ### Regularisation
 
 Since regularisation may also be used to facilitate sample efficiency, we provide a brief discussion of the topic in this section. 
-In Chapter 3, dropout was discussed as a popular form of regularisation found in many papers [@Song2018], [@Zhang2016], [@Qu2016], [@Guo2017].
+In Chapter 3, dropout was discussed as a popular form of regularisation, which is also true for DLTD and found in a lot of work such as @Song2018, @Zhang2016, @Qu2016, @Guo2017.
 In the original paper by @Sriva2014, it was advised that the dropout parameter $p$ (which specifies the percentage of neurons to discard), should lie between 0.5 and 1.
-The exact value for $p$ is typically determined using a grid search, and results in the literature indicate the optimal percentage to be data- and model dependent. (please provide a reference).
+The exact value for $p$ is typically determined using a grid search, and results in the literature indicate the optimal percentage to be data- and model dependent (compare for example the optimal $p$ in @Song2018, @Zhang2016, @Qu2016, @Guo2017).
 
 Interestingly, @haldar2018 reported that dropout was not effective in their application.
-In their analysis of this result, they hypothesise that dropout produces invalid input scenarious which distracts the model.
-Therefore the authors rather opt for hand-crafted noise shapes which takes into account the distribution of a relevant feature. 
+In their analysis of this result, they hypothesise that dropout produces invalid input scenarious instead of mimicking valid scenarios that may be missing in the training data.
+This may distract the model during training causing it to be suboptimal for 'real' examples.
+Therefore the authors rather opt for hand-crafted noise shapes which takes into account the distribution of a relevant feature, similar to the MCF approach. 
 
-The other form of regularisation used in the context of tabular data, is weight decay [@Song2018], [@Wang2017b], [@Zhang2016], [@Qu2016] and [@Zhou2017],
+The other form of regularisation used in the context of tabular data, is weight decay, used in @Song2018, @Wang2017b, @Zhang2016, @Qu2016 and @Zhou2017,
 Note that @Zhang2016 compared dropout with L2 regularisation, and found dropout to be better.
 
 A different angle to regularisation makes use of the fact that the importance of each feature with respect the target is different for tabular and unstructured data.
 In computer vision for example, a large number of pixels have to change before an image resembles an entirely different object.
 in tabular data, on the other hand, a very small change in a single feature may result large changes with respect to predictions [@Shavitt2018].
 in the latter paper, it is mentioned that this aspect may be addressed by means of including a separate reqularisation term for each of the weights in the network. 
+The learning loss is thus:
+$$
+L(D,W,\Lambda)=L(D,W)+\sum_{i=1}^{M}\exp({\lambda_{i}})\cdot \left\|w_{i}\right\|,
+$$
+where $D=\left\{(x_{i},y_{i})\right\}_{i=1}^{N}$ are the training samples, $W$ the weights of the model and $\Lambda=\{\lambda_{i}\}_{i=1}^{M}$ are the regularisation coefficients for each of the $M$ parameters in the network.
 These regularisation terms are treated as additional model hyperparameters.
 Unfortunately it is clear that the above approach is totally impracticable.
 The only way to train these hyperpararmeters is through repeated tweaking and validating and this is not possible in a gradient-based method.
 A workaround is to make these regularisation parameters trainable, as is the case with all other modules in the network.
-This is achieved by minimising the so-called counterfactual loss function, a novel loss function proposed by [@Shavitt2018].
+This is achieved by minimising the so-called counterfactual loss function, a novel objective proposed by @Shavitt2018.
+The counterfactual loss is the emprical loss $L(D,W)$, where the weights have already been updated using the regularised loss $L(D,W,\Lambda)$.
 Results obtained from empirical work in the paper by @Shavitt2018 are promising.
 It was found that training neural networks by means of optimising the counterfactual loss leads to the NNs outperforming all other NN regularisation approaches.
 
@@ -481,11 +495,11 @@ With regard to the use of entity embeddings, note that these may easily be visua
 This was done \autoref{fig:edu_embed}.
 For a second example, the interested reader may refer to an illustration in the paper by @Zhou2017.
 
-An attention layer can also be used to provide insight into the relative importance of certain feature combinations, as may be seen in the work by @Song2018 and @Zhou2017].
+An attention layer can also be used to provide insight into the relative importance of certain feature combinations, as may be seen in the work by @Song2018 and @Zhou2017.
 Relative importance measures are obtained from the attention weights $\alpha$, which in turn are based upon feature similarities.
 From these we may infer which features are combined to make predictions for certain observations.
 As an example, the output after using the above approach, as obtained in @Song2018, is displayed in \autoref{fig:plt_att}.
-Also see [@Shavitt2018] for how the learned regularisation parameters were used to evaluate feature importance.
+Also see @Shavitt2018 for how feature importance were evaluated using the regularisation strength of the learned per weight regularisation parameters $\lambda_{i}|_{i=1}^{M}$.
 
 ![A display of the attention weights for a single observation in the dataset.\label{fig:plt_att}](figures/att_plot.png)
 
@@ -496,8 +510,8 @@ Independent permutation of the features created examples that never occur in rea
 Subsequently the authors attempted to identify redundant features, which to some extent alleviated the above issue. 
 
 For illustration purposes, the remainder of this section is devoted to an implementation of a permutation importance plot on an NN fitted to the Adult dataset.
-In order to obtain a more robust estimate and standard errors, we perturbed each feature fives times and measure the NN performance in terms of the log loss function.
-We perturbed each feature five times in order to obtain a more robust estimate and to obtain a standard error and we measured the performance in terms of the log loss.
+In order to obtain a more robust estimate and standard errors, we perturbed each feature fives times and measure the NN performance in terms of the log likelihood loss function.
+We perturbed each feature five times in order to obtain a more robust estimate and to obtain a standard error and we measured the performance in terms of the log likelihood loss.
 Our results are displayed in \autoref{fig:imp} (note that the standard errors were too small to be incorporated in the figure).
 The horizontal axis measures the average drop in the log loss function when a feature is shuffled before prediction.
 The feature ranking makes intuitive sense.
@@ -526,16 +540,16 @@ It seems to be a good idea to make use of more than one source of information wh
 Thus far, we have come across a plethora of hyperparameters to be tuned if we want to sucessfully fit a deep neural network to tabular data.
 Broadly speaking, there are structural hyperparameters to select, such as the number of layers and the type of activation functions to use; and there are also learning algorithm hyperparameters to specify, for example the learning rate or weight decay to be used.
 In term of structural parameters, since there are no shared patterns among diverse tabular datasets, it is very difficult to design a universal architecture to use in all setups.
-In most of the literature, typically a grid search over many combinations of hyperparameter values is performed [@Song2018], [@Wang2017b], [@Zhang2016], [@Qu2016], [@Guo2017], [@Covington2016].
+In most of the literature, typically a grid search over many combinations of hyperparameter values is performed [@Song2018, @Wang2017b, @Zhang2016, @Qu2016], @Guo2017, @Covington2016].
 Most of these parameter values are very dependent on the dataset and other modeling choices; hence the need to tune them.
 The main structural hyperparameters tuned in the majority of the papers may be listed as follows: hidden layer size, number of hidden layers, activation functions, and the shape of fully-connected layers (*i.e.* a constant-, increasing-, decreasing- or diamond shape).
 The optimal hyperparameter values found varied accross publications, indicating once again the necessity of a hyperparameter tuning step in the case of uncustomary datasets and models.
 With regard to hyperparameter selection, we include some experiments of our own (similar to the experiments conducted in the aforementioned papers) in \autoref{app:B}.
 
-In terms of hyperparameters specific to a learning algorithm, not much experimentation was done in... ? which paper?
-The only choice that were shown was selecting the learning rate over a grid of values, as in [@Zhang2016] and [@Wang2017b], and kept the selection constant during training.
-Most of the work used the Adam optimiser and early stopping to prevent overfitting [@Song2018], [@Wang2017b], [@Zhang2016].
-Large batch sizes were chosen in [@Song2018], 1024 and [@Wang2017b], 512.
+In terms of hyperparameters specific to the optimisation algorithm (like learning rate, batch size, learning rate decay, *etc.*), not much experimentation was done in the researched papers.
+The only choice that were shown was selecting the learning rate over a grid of values, as in @Zhang2016 and @Wang2017b, and kept the selection constant during training.
+Most of the work used the Adam optimiser and early stopping to prevent overfitting [@Song2018, @Wang2017b, @Zhang2016].
+Large batch sizes were chosen in @Song2018 (1024) and @Wang2017b (512).
 
 Clearly, the 1Cycle policy and the concept of superconvergence has not yet been tested in the tabular data setting.
 Therefore we will test its effectiveness here using the Adult dataset.
@@ -552,7 +566,7 @@ This proves that the 1Cycle policy is also effective when working with tabular d
 ![Constant learning rate vs the 1Cycle schedule.\label{fig:cyc_test}](../data/adult/results/sgd_1cyc/all_epochs2.png)
 
 Since the weight decay plays and important part in the super-convergence phenomena, we do an experiment to find the optimal value and to see how it influences the performance.
-By the suggestion of [@Smith2018] we try weight decay values for $10^{-3}$, $10^{-5}$ and 0.
+By the suggestion of @Smith2018 we try weight decay values for $10^{-3}$, $10^{-5}$ and 0.
 First we do a learning rate range test with the different weight decays to identify the best value.
 The results are displayed in \autoref{fig:wd_range}.
 From the range test it seems that a weight decay of $10^{-5}$ gives the best performance.

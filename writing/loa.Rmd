@@ -6,8 +6,8 @@
 \acro{CNN}{Convolutional Neural Network}
 \acro{CTR}{Click-through Rate}
 \acro{CV}{Computer Vision}
+\acro{DNN}{Deep Neural Network}
 \acro{DL}{Deep Learning}
-\acro{EHR}{Electronic Health Records}
 \acro{GAN}{Generative Adversarial Network}
 \acro{kNN}{$k$-Nearest Neighbour}
 \acro{mAP}{Mean Average Precision}

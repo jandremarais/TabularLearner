@@ -40,7 +40,7 @@ This chapter entailed a review of recent contributions with regard to the applic
 As stated in \Cref{chp:intro}, the review was guided by the main challenges posed by tabular data in this context. 
 We explored various ways of preprocessing continuous features, and of optimally embedding and presenting categorical features.
 We also investigated approaches towards encouraging networks to learn better feature interactions.
-These included the use of attention modules and cross features.
+These included the use of attention modules and cross-features.
 In terms of training deeper neural networks for more complext feature learning, the SeLU activation function was discussed, along with the use of skip connections.
 Subsequently, we described several approaches towards making deep neural networks more sample efficient.
 In this section we focused on denoising autoencoders, and on data augmentation techniques such as swap noise and mixup augmentation.

@@ -26,8 +26,8 @@ graad: Magister in die Handelswetenskappe (Wiskundige Statistiek)
 faculty: Faculty of Economic and Management Sciences
 fakulteit: Fakulteit Ekonomiese en Bestuurswetenskappe
 supervisor: Dr.\ S.\ Bierman
-year: 2018
-month: 12
+year: 2019
+month: 03
 abstract: abstract.Rmd
 acknowledgements: acknowledgements.Rmd
 lot: true
@@ -70,9 +70,6 @@ options(knitr.table.format = "latex")
 
 \appendix
 \appendixpage\relax
-
-```{r child = 'appendixA.Rmd'}
-```
 
 ```{r child = 'appendixB.Rmd'}
 ```

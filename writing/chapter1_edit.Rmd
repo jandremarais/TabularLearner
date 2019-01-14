@@ -95,7 +95,7 @@ Ensemble methods based upon trees are currently viewed as the most effective mac
 As mentioned above, a possible reason for this may be their robustness to different feature scales and data types, linked with their ability to effectively model interactions among features with different data types.
 
 Indeed, in the context of tabular data, classical neural network approaches are no match for tree ensembles.
-Although the deep learning field has advanced and matured a lot in recent years, it is not yet clear how to leverage these modern techniques to effectively build and train deep neural networks on tabular datasets.
+Although the deep learning field has advanced and matured a lot in recent years, it is not yet clear how to leverage these modern techniques to effectively build and train deep neural networks (DNNs) on tabular datasets.
 In this thesis we explore ways of doing so.
 By reviewing the most recent literature on the topic, and through empirical work, we aim to summarise best practices when using deep learning for tabular data.
 

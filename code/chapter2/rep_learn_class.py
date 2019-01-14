@@ -71,7 +71,6 @@ preds_bg = F.softmax(preds_bg, 1)
 preds_bg = preds_bg.cpu().numpy()[:,1]
 
 fig, ax = plt.subplots(figsize=(10,6))
-# ax.scatter(X_bg[:,0], X_bg[:,1], color=plt.cm.viridis(preds_bg>0.5), alpha=0.3)
 ax.scatter(X_bg[preds_bg<0.5,0], X_bg[preds_bg<0.5,1], alpha=0.2, color=plt.cm.viridis(0.001), label='Class 1')
 ax.scatter(X_bg[preds_bg>=0.5,0],X_bg[preds_bg>0.5,1], alpha=0.2, color=plt.cm.viridis(0.999), label='Class 2')
 ax.scatter(X[:,0], X[:,1], color=plt.cm.viridis(np.clip(y, 0.001, 0.999)))
@@ -93,7 +92,6 @@ preds_bg = F.softmax(preds_bg, 1)
 preds_bg = preds_bg.cpu().numpy()[:,1]
 
 fig, ax = plt.subplots(figsize=(10,6))
-# ax.scatter(X_bg[:,0], X_bg[:,1], color=plt.cm.viridis(preds_bg>0.5), alpha=0.3)
 ax.scatter(X_bg[preds_bg<0.5,0], X_bg[preds_bg<0.5,1], alpha=0.2, color=plt.cm.viridis(0.001), label='Class 1')
 ax.scatter(X_bg[preds_bg>=0.5,0],X_bg[preds_bg>0.5,1], alpha=0.2, color=plt.cm.viridis(0.999), label='Class 2')
 ax.scatter(X[:,0], X[:,1], color=plt.cm.viridis(np.clip(y, 0.001, 0.999)))

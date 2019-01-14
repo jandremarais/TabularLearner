@@ -28,6 +28,15 @@ In \Sref{sec:rep_exp} we compare the performance of various entity embedding siz
 In this chapter we aim for good empiricism by exploring many hyperparamters in various data scenarios and by performing cross-validation in order to obtain unbiased performance measures along with standard errors.
 Our goal is not necessarily to beat the benchmark, but instead consists of simple experiments designed to aid in understanding techniques.
 
+The code for developing the models and running the experiments were written in Python.
+The deep learning library, Pytorch, was used to build the different neural networks.
+Many of the common layers, like the linear layer or the ReLU activation, for example, are provided by the library and we are left with combining these layers to form the models we required.
+However, some of the more modern layers/modules, like the attention mechanism or the SELU activation for example, are not yet provided by the library and therefore we wrote our own implementations thereof.
+
+The optimisation of the neural networks were done with the help of the Fastai library which provides convenient utility functions for training with the 1Cycle policy.
+We wrote code that builds on this library to perform various tasks required for these experiments, for example: cross-validation, hyperparameter selection, pretraining, data augmentation, transfer learning and visualising results.
+One may refer to \autoref{app:code} for more detail on the code and where to access it.
+
 ## The Dataset \label{sec:datasets}
 
 We chose to conduct our empricial work on the Adult dataset. This was done for the following reasons:
@@ -38,7 +47,57 @@ We chose to conduct our empricial work on the Adult dataset. This was done for t
 + **Good size**: We have seen that fitting deep neural networks requires large datasets. Hence in order to yield optimal performance we prefer at least a medium sized dataset. If one wants to test models using smaller datasets, one may simply run the experiments on a subset of the data.
 + **Strong baselines**: The Adult dataset has been used in other deep neural network studies, and therefore the performance of several methods on this dataset have been reported in the literature. In order to know how well we are doing, we need to be able to compare our performances with those of others.
 
-For more specifics regarding the Adult dataset, the reader is referred to \autoref{app:data}
+The Adult dataset, originally used in @Kohavi1996, is data that was extracted from the census bureau database[^cens] and can be accessed from this link[^adult_dl].
+The task here is to predict whether or a not a certain person's income exceeds $50,000 per year.
+Thus it is posed as a binary classifcation problem.
+
+[^cens]: http://www.census.gov/en.html
+[^adult_dl]: http://archive.ics.uci.edu/ml/datasets/Adult
+
+In total there are 14 features and 48,842 observations.
+Two-thirds of the observations were randomly selected to form the training set and the rest allocated to the test set.
+Note, that we will not use any of the observations in the test set during our experiments.
+Hyperparemeter and model selection decisions are made based on the valdiation dataset performace and then if we wish we can evaluate the selected models on the test set for the most accuracte estimation of the generalisation ability of the models.
+
+The details for each of the features are listed below.
+We indicate the continuous features and the classes for the categorical features.
+
++ *age*: continuous
+
++ *workclass*: Private, Self-emp-not-inc, Self-emp-inc, Federal-gov, Local-gov, State-gov, Without-pay, Never-worked
+
++ *fnlwgt*: continuous
+
++ *education*: Bachelors, Some-college, 11th, HS-grad, Prof-school, Assoc-acdm, Assoc-voc, 9th, 7th-8th, 12th, Masters, 1st-4th, 10th, Doctorate, 5th-6th, Preschool
+
++ *education-num*: continuous
+
++ *marital-status*: Married-civ-spouse, Divorced, Never-married, Separated, Widowed, Married-spouse-absent, Married-AF-spouse
+
++ *occupation*: Tech-support, Craft-repair, Other-service, Sales, Exec-managerial, Prof-specialty, Handlers-cleaners, Machine-op-inspct, Adm-clerical, Farming-fishing, Transport-moving, Priv-house-serv, Protective-serv, Armed-Forces
+
++ *relationship*: Wife, Own-child, Husband, Not-in-family, Other-relative, Unmarried
+
++ *race*: White, Asian-Pac-Islander, Amer-Indian-Eskimo, Other, Black
+
++ *sex*: Female, Male
+
++ *capital-gain*: continuous
+
++ *capital-loss*: continuous
+
++ *hours-per-week*: continuous
+
++ *native-country*: United-States, Cambodia, England, Puerto-Rico, Canada, Germany, Outlying-US(Guam-USVI-etc), India, Japan, Greece, South, China, Cuba, Iran, Honduras, Philippines, Italy, Poland, Jamaica, Vietnam, Mexico, Portugal, Ireland, France, Dominican-Republic, Laos, Ecuador, Taiwan, Haiti, Columbia, Hungary, Guatemala, Nicaragua, Scotland, Thailand, Yugoslavia, El-Salvador, Trinadad&Tobago, Peru, Hong, Holand-Netherlands
+
+The distributions of the continuous features are plotted in \autoref{fig:ad_cont} and the counts of the categories for each of the categorical features can be found in \autoref{fig:ad_cat}.
+The highest reported accuracy in the original paper [@Kohavi1996] was 85.9% by the NBTree algorithm and in an unpublished experiment[^kag_exp] one researcher achieve ~88% accuracy with boosted trees.
+
+[^kag_exp]: https://www.kaggle.com/kanav0183/catboost-and-other-class-algos-with-88-accuracy
+
+![Histograms for each of the continuous features in the Adult dataset.\label{fig:ad_cont}](figures/adult_conts.png)
+
+![Bar plot for each of the categorical features in the Adult dataset.\label{fig:ad_cat}](figures/adult_cat.png)
 
 ## General Methodology \label{sec:eval}
 
@@ -62,6 +121,7 @@ Each data part takes turns to be used for validation, while the remaining four p
 Note that in this way, five model performance measurements are obtained.
 We may subsequently compute the average over these five measurements, thereby obtaining a less biased estimate of the performance of a model.
 The partitioning and training steps in five-fold cross-validation are depicted in \autoref{fig:cv}.
+
 ![5-Fold Cross-validation dataset split schematic.\label{fig:cv}](figures/cv.pdf)
 
 Another advantage of cross-validation is that it yields a standard error associated with the performance estimate.
@@ -69,7 +129,7 @@ In our results, standard errors will be displayed on figures, thereby providing 
 This should be helpful in terms of determining the significance of reported differences in performance.
 
 One may ask why we make use of cross-validation while in deep learning research it is common practice to estimate performances using the validation set approach. 
-See for example [@Klambauer2017, @Song2018, @Zhang2016].
+See for example @Klambauer2017, @Song2018 and @Zhang2016.
 In the validation set approach, a dataset is partitioned into a training-, validation- and (sometimes) also into a test dataset.
 In contrast to cross-validation, partitioning is performed only once.
 The problem with a once-off split is that it provides only a single estimate of the performance of a model.
@@ -102,7 +162,7 @@ Therefore we make use of the @Smith2018 approach only during the first experimen
 These parameter values are then used in all empirical work to follow.
 This initial search for appropriate training hyperparameter values is reported in \autoref{app:B}.
 Note that in the second and third experiments, the parameter selection process was rerun in cases where the fitted model changed significantly from the previous experiment to the next.
-Also, whenever we encountered instability during training, the parameter selection process was redone.
+Also, whenever we encountered instability of the loss function during training, the parameter selection process was redone.
 
 Following the above hyperparameter specification methodology, note that in each experiment we definitely do not expect to find the optimal model.
 The hyperparameter selection approach should however prove sufficient for comparing performances.
@@ -147,14 +207,15 @@ In datasets where categorical features contain more information, one may however
 ### Attention
 
 Since attention is so effectively used in other data domains, we believe it to be the most promising approach towards modelling high-order interactions between features for tabular data.
-In order to test this hypothesis, we implemented a multi-head attention module, as described in [@Song2018].
+In order to test this hypothesis, we implemented our own multi-head attention module, as described in @Song2018.
 In this way, our results are comparable to those of produced by a standard neural network.
 We did not have the computing power to try different configurations for this module and thus we went with the largest possible configuration that could be run in reasonable time.
 We chose the number of head, $H$, to be 3, and made use of embedding sizes of 3 throughout.
 Moreover, we only made use of a single multi-head attention layer, and connected its output to a single hidden layer of size 200, which in turn was connected to the output layer.
 The performance of the above architecture was then compared to the performance of simple MLP with a similar number of total parameters.
 The results of this experiment are reported in \autoref{fig:exp_att5}.
-Surprisingly, the model with the attention mechanism performed worse than the MLP on its own; its predictions exhibiting higher variance than the MLP.
+The lefthandside panel plots the average loss on the validation set over each of the five epochs and the righthandside panel, the average accuracy.
+Surprisingly, the model with the attention mechanism (blue line, "*attention*=True") performed worse than the MLP (orange line, "*attention*=False") on its own; its predictions exhibiting higher variance than the MLP.
 A possible explanation is that the hyperparameter specification in the attention layers was inadequate, or that the single attention layer is not complex enough.
 In the future therefore, we would like to experiment with more of the hyperparameters of the multi-head attention module and also try out stacked attention layers.
 Moreover, one wonders in which way the above results would have changed if a dataset with more features were used. 
@@ -168,8 +229,9 @@ The SeLU activation function is supposed to help us train deeper neural networks
 Therefore we compare use of SeLUs to use of the ReLU activation using two networks.
 The first network was specified to have two layers, whereas the second network had eight layers in total.
 The SeLU activation function was implemented using its customised weight intitialisation method, but no dropout was used.
-In \autoref{fig:selu_all} and \autoref{fig:selu_best} we observe that in terms of validation loss, the model with eight layers using SeLU activations performed the best overall; whereas in terms of accuracy, the model with two layers using ReLU activatios emerged as the winner.
-However, the differences are so minor that, in the absence of more evidence, we tend to still recommend the use of shallow ReLU networks .
+In \autoref{fig:selu_all} we plot the average (over each fold) loss and accuracy on the validation set for each of the epochs for the different models and in \autoref{fig:selu_best} we plot the average loss and accuracy on the validation set of the final models.
+We observe that in terms of validation loss, the model with eight layers using SeLU activations performed the best overall; whereas in terms of accuracy, the model with two layers using ReLU activatios emerged as the winner.
+However, the differences are so minor that, in the absence of more evidence, we tend to still recommend the use of shallow ReLU networks.
 
 ![The average performance of ReLU and SeLU activation functions for shallow and deep networks as a function of the number of training epochs.\label{fig:selu_all}](../data/adult/results/activation_depth/all_epochs2.png)
 
@@ -181,13 +243,13 @@ Another mechanism which have contributed to the successful implementation of dee
 Apart from facilitating more efficient neural network training, skip connections have been found to alleviate the degradation problem, thereby improving the prediction performance of deep neural networks.
 Skip connections are often also used to combine different orders of feature interactions.
 Using this mechanism, elementwise addition (or other concatenation functions) may be use in order to combine input and output before and afer a linear layer.
-In our empirical work, we investigate the performances of both a shallow and a deep network using skip connections.
-The results are summarised in \autoref{fig:resid_epoch} and in \autoref{fig:resid_best}.
-On average, the deep neural network performed slightly better in terms of validation loss, whereas... 
-Once again, performances are very similar.
+In our empirical work, we investigate the performances of both a shallow (with 2 hidden layers) and a deep network (with 6 hidden layers) using skip connections.
+The results are summarised in \autoref{fig:resid_epoch} and in \autoref{fig:resid_best}, where the average (over each fold) loss and accuracy is plotted for each epoch and for the final model, respectively.
+The models with skip-connections are indicated by "*residual*=True" in the figure legend and "*residual*=False" otherwise.
+On average, the deeper neural network with skip-connections performed slightly better on the validation data, but once again, performances of the different networks are very similar.
 At this stage we therefore recommend the simpler design of not using skip connections.
 
-![Average performance at each epoch for shallow and deep neural networks, with and without skip connections.\label{fig:resid_epoch}](../data/adult/results/residual_depth/all_epochs.png)
+![Average performance at each epoch for shallow and deep neural networks, with and without skip connections.\label{fig:resid_epoch}](../data/adult/results/residual_depth/all_epochs2.png)
 
 ![Overall performance of the skip connections used in a shallow and deep neural network.\label{fig:resid_best}](../data/adult/results/residual_depth/best.png)
 
@@ -203,7 +265,7 @@ As expected, the network performs better with an increase in the training set si
 ### Data Augmentation
 
 From the literature review in Chapter 3, mixup augmentation emerged as seemingly the most promising form of data augmentation.
-In this experiment we wanted to investigate the way in which the application of mixup, using various mixup ratios, influences the performance neural networks on the Adult dataset.
+In this experiment we wanted to investigate the way in which the application of mixup (own implementation), using various mixup ratios, influences the performance neural networks on the Adult dataset.
 Since data augmentation also acts as a form of regularisation, we also wanted to investigate the interaction between weight decay and mixup ratios.
 We experimented with mixup $\alpha$-ratios of 0 and 0.4, and with weight decays of [$10^{-5}$, $10^{-3}$] in a neural network with 3 hidden layers, consisting of 200 units each.
 The results of the experiment are displayed in \autoref{fig:exp_mix_best} and in \autoref{fig:exp_mix_epoch}.
@@ -220,8 +282,8 @@ Our suggestion would be that for tabular data, mixup should only be used when in
 
 ### Unsupervised Pretraining
 
-In our final experiment, we investigated whether or not the use of DAEs in unsupervised pretraining yield output which may be  beneficial to a (supervised) neural network for tabular data.
-Therefore we trained a DAE with swap noise for 15 epochs on the Adult dataset.
+In our final experiment, we investigated whether or not the use of DAEs in unsupervised pretraining yield output which may be beneficial to a (supervised) neural network for tabular data.
+Therefore we trained a DAE with swap noise (own implementation) for 15 epochs on the Adult dataset.
 We set the swap noise proportion equal to 15%, and the DAE had 3 hidden layers consisting of 500 units each.
 The learned weights were subsequently carried over to a supervised learning network, where the latter also comprised 3 hidden layers consisting of 500 units each.
 Note that the supervised network had a different output layer than that of the DAE.
@@ -230,13 +292,13 @@ This is done in order to initialise the network weights.
 Otherwise, if we simultaneously trained all the weights from the start, random weights to the output layer might have interfered with learned weights in the hidden layers.
 Once the output layer is initialised with this process, we may train all layers of the network simultaneously.
 This final stage of training is showed in \autoref{fig:exp_pretr}, where we compare it to the final stage of training of a model without pretraining.
-in terms of both accuracy and validation loss, we see that that the pretrained model has an advantage over the classifier that was trained-from-scratch.
+Un terms of both accuracy and validation loss, we see that that the pretrained model has an advantage over the classifier that was trained-from-scratch.
 The above result makes sense, since the pretrained model does not have to start from a random initialisation.
 However as expected, as training continues, this gaps gradually decreases.
 
 Since there are still so many avenues to explore for unsupervised pretraining with DAEs, we do not believe these results to be conclusive.
-We do not yet know how to design DAEs in terms of their network architectures, the amount of noise injected, and the lengths of training cycles.
-Furthermore, investigation into the preferred way of transferring the learned knowledge from a DAE to the supervised classifier,  remains outstanding.
+We do not yet know the best way to design DAEs in terms of their network architectures, the amount of noise injected, and the lengths of training cycles.
+Furthermore, investigation into the preferred way of transferring the learned knowledge from a DAE to the supervised classifier, remains outstanding.
 The results of this basic implementation seems to indicate that the use of unsupervised pretraining in the context of tabular data warrants further exploration.
 
 ![The effect of unsupervised pretraining on supervised classification for tabular data.\label{fig:exp_pretr}](../data/adult/results/pretraining/all_epochs3.png)
