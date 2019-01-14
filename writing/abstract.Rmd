@@ -1,6 +1,22 @@
 \begin{abstract}[UKenglish]
 
-English abstract.
+In this thesis we set out to investigate an area of deep learning, \textit{viz}. the application of deep learning approaches to tabular datasets.
+The deep learning field is an extention of the class of machine learning algorithms called \textit{Artificial Neural Networks}.
+Currently, deep learning is receiving a remarkable amount of attention, both in research and in practice.
+Deep learning models excel in tasks processing unstructured data, especially in the domains of computer vision, natural language processing and audio processing.
+
+A data domain in which deep learning have not yet been very successful, is that of tabular data.
+Many important machine learning applications make use of tabular data and currently the best machine learning models for tabular data are tree-based models.
+Therefore it is of our opinion that this direction warrants further research.
+This work is an exploratory study, evaluating the current state of the field and what is needed for it to progress.
+The contribution made by this work is 2-fold.
+The first part constitutes a literature review of the latest developments in deep learning.
+We highlight all the major developments in field and specifically evaluate them through the lense of aiding in the endeavour of improving deep learning for tabular data.
+From this research we also identify the major challenges of applying deep learning to tabular data and suggest ways of improving on this front.
+
+The second major contribution is an empirical study of the most promosing deep learning developments highlighted in the literature review.
+We build a code base for implementing the latest deep learning techniques and doing comparitive experiments for model selection.
+Through various experiments we evaluate the validity of the findings in the literature and comment on the effectiveness of the proposed methods.
 
 \end{abstract}
 
