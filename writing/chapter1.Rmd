@@ -18,8 +18,8 @@ Examples of the application of deep learning in commercial applications include 
 ![The exponential growth of published papers and Google search terms containing the term *Deep Learning*\label{fig:dlpapers}. Sources: Google Trends[^googletrend], Semantic Scholar[^semschol]](figures/trends.pdf)
 
 [^jeffdeantalk]: https://www.slideshare.net/AIFrontiers/jeff-dean-trends-and-developments-in-deep-learning-research
-[^googletrend]: https://trends.google.com/trends/explore?date=all&q=deep%20learning
-[^semschol]: https://www.semanticscholar.org/search?year%5B0%5D=2000&year%5B1%5D=2019&q=%22deep%20learning%22&sort=relevance
+[^googletrend]: https://trends.google.com/trends/
+[^semschol]: https://www.semanticscholar.org/
 
 One of the most attractive attributes of deep learning is its ability to model almost any input-output relationship. 
 This has lead to the use of deep learning in a very wide array of applications.  
@@ -102,11 +102,11 @@ By reviewing the most recent literature on the topic, and through empirical work
 ## Challenges of Deep Learning for Tabular Data \label{sec:tabchal}
 
 Some of the challenges of deep learning for tabular data have been alluded to in earlier sections of this chapter.
-These will form the framework for our literature review later on. Therefore some of the important questions to ask when applying deep learning for tabular data (which relates to these challenges), are summarised below.
+These will form the framework for our literature review later on. Therefore, some of the important questions to ask when applying deep learning for tabular data (which relates to these challenges), are summarised below.
 
 - **How should input features be represented numerically?** We have mentioned that tabular data consist of mixed feature data types, *i.e.* a combination of categorical and continuous features. The question here relates to how these heterogeneous features should be processed and presented to the model during training.
 - **How can we exploit feature interactions?** Once we have found the optimal feature representation for all feature data types, we will need a way to effectively learn the interactions among them, and also a way to learn how they relate to the target. This is a crucial step towards the effective application of deep learning models to tabular data.
-- **How can we be more sample efficient?**  Tabular datasets are typically smaller than datasets used in computer vision and in NLP. Moreover, no general large dataset with universal properties exists to be used by a model to learn from (as is the case in for example in transfer learning for image classification). Thus a key challenge is to facilitate learning from less data.
+- **How can we be more sample efficient?**  Tabular datasets are typically smaller than datasets used in computer vision and in NLP. Moreover, no general large dataset with universal properties exists to be used by a model to learn from (as is the case in for example in transfer learning for image classification). Thus, a key challenge is to facilitate learning from less data.
 - **How do we interpret model decisions?** The use of deep learning is often restricted by its perceived lack of interpretability. Therefore we need ways of explaining the model output in order for it to be useful in a wider array of applications.
 
 Clearly there are several considerations when it comes to using deep learning for tabular data. 
@@ -127,7 +127,7 @@ Empirical studies should involve more than simply attempting to beat the benchma
 
 In addition, we want the empirical work in this study to be as reproducible as possible. 
 This aspect is often overlooked. 
-However it is a crucial aspect, ensuring transparent and accountable reporting of results.
+However, it is a crucial aspect, ensuring transparent and accountable reporting of results.
 Reproducibility add to the value of research, since without it, researchers are not able to build on each other's work.
 Hence all code, data and necessary documentation in order to reproduce the experiments done in this study are available [^git]. 
 
@@ -139,7 +139,7 @@ This is followed by a more detailed overview of the thesis.
 ## Overview of Statistical Learning Theory \label{sec:SLT}
 
 Machine- or statistical learning algorithms (here used interchangeably) are used to perform certain tasks that are too difficult to solve with fixed rule-based programs. 
-Hence statistical learning algorithms are able to use data in order to learn how to perform difficult tasks. 
+Hence, statistical learning algorithms are able to use data in order to learn how to perform difficult tasks. 
 For an algorithm to learn from data means that it can improve its ability to perform an assigned *task* with respect to some *performance measure*, by processing *data*.
 In this section we discuss some of the important types of tasks, data and performance measures in the statistical learning field.
 
@@ -196,7 +196,7 @@ Therefore, both classification and regression are considered to be supervised le
 In order to evaluate the ability of a learning algorithm to perform its assigned task, we have to construct a quantitative performance measure. 
 For example, in a classification task we are usually interested in the accuracy of the algorithm, *i.e.* the percentage of times that the algorithm assigns the correct classification. 
 We are mostly interested in how well the learning algorithm performs on data that it has not seen before, since this demonstrates how well it will perform in real-world situations. 
-Thus we typically evaluate the algorithm on a *test set* of data points. 
+Thus, we typically evaluate the algorithm on a *test set* of data points. 
 This dataset is independent of the *training set* of data points that was used during the learning process.
 
 For a more concrete example of supervised learning, and keeping in mind that the linear model is one of the main building blocks of neural networks, consider the learning task underlying *linear regression*. 
@@ -274,10 +274,10 @@ Although the values sum to 1, they do not lie in the interval [0,1].
 A way to overcome this problem is to estimate posterior probabilities using the *logit transform* of $\hat{f}_{k}(\boldsymbol{x})$. 
 That is,
 $$
-P(G=k|\boldsymbol{X}=\boldsymbol{x})\approx\frac{e^{\hat{f}_{k}(\boldsymbol{x})}}{\sum_{l=1}e^{\hat{f}_{l}(\boldsymbol{x})}}.
+P(G=k|\boldsymbol{X}=\boldsymbol{x})\approx\frac{e^{\hat{f}_{k}(\boldsymbol{x})}}{\sum_{l=1}^{K}e^{\hat{f}_{l}(\boldsymbol{x})}}.
 $$
 Through this transformation, the estimates of the posterior probabilities sum to 1 and are contained in [0,1]. 
-The above model is the wellknown *logistic regression* model [@Hastie2009, p. 119]. 
+The above model is the well-known *logistic regression* model [@Hastie2009, p. 119]. 
 With this formulation there is no closed form solution for the weights. 
 Instead, the weight estimates may be searched for by maximising the log-likelihood function. 
 One way of doing this is by minimising the negative log-likelihood using gradient descent, which will be discussed in the next chapter.
@@ -304,7 +304,7 @@ Using the perspective of representation learning, we then attempt to gain insigh
 
 \Cref{chp:dl} continues the discussion by focusing on the key advances in neural networks in recent times.
 The idea is that all concepts introduced in this chapter should potentially be able to facilitate the construction of improved deep neural networks on tabular data.
-Improved ways of preventing overfitting, such as data augmentation, the use of dropout and transfer learning, as well as the SotA training policy called *1Cycle* are analysed here.
+Improved ways of preventing overfitting, such as data augmentation, the use of dropout and transfer learning, as well as the SotA training policy called *1cycle* are analysed here.
 New developments in architectural design are also highlighted.
 The chapter concludes with approaches towards interpreting neural networks and their predictions.
 

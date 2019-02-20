@@ -19,7 +19,7 @@ A useful byproduct of the study is the development of a code base that may be us
 
 Vanaf ongeveer 2006 is die sukses van diepleer-tegnieke in toespassings-areas soos rekenaarvisie, taalprosessering, spraak- en klankherkenning, masjienvertaling, bio-informatika, en om sosiale netwerk te filtreer, alombekend.
 Die sukses van diepleer-metodes is ongetwyfeld aangehelp deur baie ontwikkelings rondom die argitektuur van neurale netwerke.
-Nogtans is bevind dat diep neural netwerke tot dusver nie goed vaar in die konteks van die gebruik van 'gewone matriksvorm data' nie.
+Nogtans is bevind dat diep neural netwerke tot dusver nie goed vaar in die konteks van die gebruik van gewone matriksvorm data nie.
 
 Verskeie belangrike masjienleer take maak gebruik van matriksvorm data, waar die beste masjienleer modelle in hierdie konteks klassifikasie- of regressiebome gebruik as basis.
 Derhalwe is die doelwit van hierdie studie om onlangse ontwikkelings in diepleer (wat gebruik kan word om die akkuraatheid van diep neural netwerke te verbeter in die konteks van matriksvorm-data), te identifiseer, te bespreek, en empiries te ondersoek.
