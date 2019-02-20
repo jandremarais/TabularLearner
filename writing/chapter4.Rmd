@@ -63,7 +63,7 @@ Consequently, we apply the power distribution transformation in @haldar2018, and
 Of course the downside of the above approach is that it involves a manual process and very cumbersome in high-dimensional data setups.
 
 ```{r, out.width="33%", fig.cap='The effect of normalisation on continuous variables.\\label{fig:contnorm}', fig.subcap=c('Original', 'Gaussian Norm', 'Power Norm'), fig.show='hold'}
-knitr::include_graphics(c('figures/cont_vars.pdf', 'figures/gaus_norm.pdf', 'figures/power_norm.pdf'))
+knitr::include_graphics(c('figures/cont_vars.png', 'figures/gaus_norm.png', 'figures/power_norm.png'))
 ```
 With a view to reduce potential high variances exhibited by numeric features, @Song2018 suggests transforming a numeric feature via $\log^{2}(x)$ if $x>2$.
 This was successful in their use-case, but it is hard to imagine that this solution will generalise to many other applications.
