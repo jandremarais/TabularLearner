@@ -81,7 +81,7 @@ One way to evaluate the representation is to use the features extracted by the e
 
 An alternative way of imposing constraints in autoencoders, is to add noise to the inputs before passing it to the encoder.
 This is the strategy implemented by *denoising autoencoders* (DAEs) [@Vincent2008].
-Thus in order to minimise the reconstruction loss, DAEs are required to learn how to reconstruct the original inputs from a corrupted version of themselves. 
+Thus, in order to minimise the reconstruction loss, DAEs are required to learn how to reconstruct the original inputs from a corrupted version of themselves. 
 The choice of the type of noise added to the inputs depends on the available data types.
 One may block out inputs with zeros if zeros have no other meaning in the data, or one might want to add Gaussian noise to continuous outputs as long as it falls within the true range of the features.
 The type and amount of noise to be used are factors that practitioners typically experiment with.
@@ -170,7 +170,7 @@ Let $\boldsymbol{z}^{(l)}$ and $\boldsymbol{z}^{(l+1)}$ denote the vector of inp
 $W^{(l)}$ and $\boldsymbol{b}^{(l)}$ are the weights and biases at layer $l$.
 Then the feed-forward operation for any hidden unit $i$ can be expressed as
 $$
-z_{i}^{(l+1)}=a\left(\boldsymbol{w_{i}}^{(l+1)}\boldsymbol{z}^{(l)}+b_{i}^{(l+1)}\right),
+z_{i}^{(l+1)}=a\left(\boldsymbol{w}_{i}^{(l+1)}\boldsymbol{z}^{(l)}+b_{i}^{(l+1)}\right),
 $$
 where $a(\cdot)$ is any activation function.
 With dropout, this operation becomes
@@ -178,7 +178,7 @@ $$
 \begin{aligned}
 r_{j}^{(l)}&\sim \text{Bernoulli}(p)\\
 \tilde{\boldsymbol{z}}^{(l)}&=\boldsymbol{r}^{(l)}*\boldsymbol{z}^{(l)}\\
-z_{i}^{(l+1)}&=a\left(\boldsymbol{w_{i}}^{(l+1)}\tilde{\boldsymbol{z}}^{(l)}+b_{i}^{(l+1)}\right)
+z_{i}^{(l+1)}&=a\left(\boldsymbol{w}_{i}^{(l+1)}\tilde{\boldsymbol{z}}^{(l)}+b_{i}^{(l+1)}\right)
 \end{aligned}
 $$
 $\boldsymbol{r}^{(l)}$ is a vector of independent Bernoulli random variables each of which has probability $p$ of being 1.
@@ -213,7 +213,7 @@ Such a dataset is not available and would be infinitely large.
 Of course if it were available, machine learning would be unnecessary, since all possible observations would be available and one could simply use a lookup in order to predict outcomes.
 
 In reality we have a finite subset of the full data distribution to train on.
-Any new samples with unique feature combinations will likely improve the model's generalisablity.
+Any new samples with unique feature combinations will likely improve the model's ability to generalise.
 If the collection of new samples is not available, we can try to artificially create these through data augmentation.
 This is a standard approach followed especially in computer vision applications. 
 For example, a single image can be rotated, flipped horizontally or vertically, shifted in any direction, and cropped.
@@ -263,7 +263,7 @@ In more detail, the normalising transform over a batch of univariate inputs, $x_
     $$
     \begin{aligned}
     \mu &= \frac{1}{n}\sum_{i=1}^{n}x_{i}\\
-    \sigma^{2}&=\frac{1}{n}\sum_{i=1}^{n}(x_{i}-u)^{2}
+    \sigma^{2}&=\frac{1}{n}\sum_{i=1}^{n}(x_{i}-\mu)^{2}
     \end{aligned}
     $$
 
@@ -334,7 +334,7 @@ knitr::include_graphics('figures/embeds.png')
 
 Initially, mappings were configured independenty of neural networks using approaches based upon co-occurences [@Mikolov2013].
 The real breakthrough came when mappings were defined as learnable layers in the network [@Howard2018, @Devlin2018].
-Thus embeddings may now be tuned just like any other parameter in the network.
+Thus, embeddings may now be tuned just like any other parameter in the network.
 Of course the parameters of the embedding function (or layer) first needs to be (randomly) initialised.
 Thereafter during training, they are tuned along with the rest of the neural network weights.
 
@@ -447,7 +447,7 @@ For example, since large learning rates also act as a form of regularisation (Sm
 
 In the 2018 paper, specification of batch size and of weight decay is also considered.
 It is shown that larger batch sizes allow for training with larger learning rates, thus convergence can be reached quicker.
-Therefore when setting the batch size, the recommendation is to select the largest possible size that fits into memory.
+Therefore, when setting the batch size, the recommendation is to select the largest possible size that fits into memory.
 
 The weight decay parameter is another important value that needs to be properly specified during the 1cycle policy.
 Since it is a regularisation parameter it should be in balance with the learning rate.
@@ -456,7 +456,7 @@ A few short training runs are performed at different weight decay values.
 The validation loss function is then inspected for any hints with regard to a preferred choice. 
 Alternatively, various weight decay values may be used during the learning rate range test and their behaviour compared.
 The preferred weight decay value is the one which produces the most stable loss and which allows the use of the largest learning rate.
-Note that in our experiments we follow the abobve suggestions in order to tune the hyperparameter values specific to each different model.
+Note that in our experiments we follow the above suggestions in order to tune the hyperparameter values specific to each different model.
 
 ## Model Interpretation \label{sec:interp}
 
@@ -519,7 +519,7 @@ These graphs may be used to visualise relationships between a target and input f
 Once a neural network is trained, we may evaluate the effect of a change in any input feature on a single prediction by observing the change in the prediction.
 Suppose for example we evaluate the way in which a feature $X_{1}$ influences predictions.
 By taking a single observation from the data we can evaluate how the model prediction changes by means of changing the value of $X_{1}$ to other possible values of $X_{1}$.
-And since this behaviour will most likely vary for different observations, the above process should be repeated for a subset of observations from the dataset.
+Since this behaviour will most likely vary for different observations, the above process should be repeated for a subset of observations from the dataset.
 The average effect on the predictions at different values of $X_{1}$ can subsequently be obtained, along with standard errors of these effects.
 
 For more model agnostic interpretation tools (for instance the use of so-called *SHAP values*), the reader is referred to @Lundberg2017.

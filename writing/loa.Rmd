@@ -15,6 +15,7 @@
 \acro{MLP}{Multi-layer Perceptron}
 \acro{NLP}{Natural Language Processing}
 \acro{NN}{Neural Network}
+\acro{OLS}{Ordinary Least Squares}
 \acro{RNN}{Recurrent Neural Network}
 \acro{SGD}{Stochastic Gradient Descent}
 \acro{SotA}{State-of-the-Art}

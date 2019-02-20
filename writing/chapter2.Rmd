@@ -77,7 +77,7 @@ This is the topic of the next section.
 Often a linear model will be too rigid to model a certain response of interest. 
 In order to fit a more flexible model, we may add more neurons.
 Consider the use of two neurons, $z{1}$ and $z{2}$, where the second neuron ($z{2}$) accepts the same input as the first neuron ($z{1}$), but uses a different set of weights.
-Thus we have two different outputs produced by the two neurons, *i.e.* $z_{1}=\boldsymbol{w}_{1}^{\intercal}\boldsymbol{x}$ and $z_{2}=\boldsymbol{w}_{2}^{\intercal}\boldsymbol{x}$.
+Thus, we have two different outputs produced by the two neurons, *i.e.* $z_{1}=\boldsymbol{w}_{1}^{\intercal}\boldsymbol{x}$ and $z_{2}=\boldsymbol{w}_{2}^{\intercal}\boldsymbol{x}$.
 In order to produce a final estimate from the initial two estimates, *viz.* $z_{1}$ and $z_{2}$, they are passed to a third neuron.
 That is, $y=\boldsymbol{w}_{3}^{\intercal}\boldsymbol{z}$, where $\boldsymbol{z}=[z_{1}\quad z_{2}]^{\intercal}$.
 \autoref{fig:simple_nn} illustrates this pipepline in network form.
@@ -120,13 +120,13 @@ Next, we briefly discuss various activation functions.
 
 ### Activation Functions
 
-Since any simple non-linear and differentiable function can be used as activation function, there are plenty of activation functions to choose from.  
+Since any simple non-linear and differentiable function can be used as activation function, there are plenty of activation functions to choose from.
 Originally, the *sigmoid* activation function, *viz.* $\text{sigmoid}(x)=\frac{1}{1+e^{-x}}$, was a common choice [@Rumelhart1988].
 The S-shape of the sigmoid activation function, and its range between 0 an 1 is illustrated in \autoref{fig:activation_functions} (a).
 Note that the reason why the sigmoid function fell out of favour in terms of its use as activation function in neural networks is because of issues related to the gradient based optimisation procedure of NNs. For example, gradient weight updates that veer to far in different directions are caused by the values of sigmoid activations that are not centered around zero. 
 Some other issues with the sigmoid activiation function are discussed in more detail in \Cref{sec:training}. 
 
-```{r, fig.cap="Activations.\\label{fig:activation_functions}", fig.subcap=c('Function','Local Derivative'), out.width='50%', fig.show='hold'}
+```{r, fig.cap="Activation functions.\\label{fig:activation_functions}", fig.subcap=c('Function','Local Derivative'), out.width='50%', fig.show='hold'}
 knitr::include_graphics(c('figures/activation_functions.pdf', 'figures/activation_functions_derivative.pdf'))
 ```
 
@@ -135,8 +135,10 @@ It takes the form $\text{tanh}(x)=\frac{e^{x}-e^{-x}}{e^{x}+e^{-x}}$ and its sha
 However, the problem with both the sigmoid and tanh activation functions is that they may lead to saturated gradients during training.
 To see this, consider the tails of the sigmoid and tanh functions, which indicate that the gradients of both these functions tend to zero as $|x|\to\infty$. 
 During training, this may cause weight updates to be nearly zero, resulting in the network getting stuck at a certain point in the parameter space.
-Furthermore, the maximum gradient of the sigmoid activation function turns out to be only 0.25 (at $x=0.5$). The nature of the chain rule therefore causes lower layers in the network to train much slower than higher layers.
-The tanh activation function typically have larger derivatives than the sigmoid function. Thus it is not as susceptible to this vanishing gradient problem. However, it is still not immune to it.
+Furthermore, the maximum gradient of the sigmoid activation function turns out to be only 0.25 (at $x=0.5$).
+The nature of the chain rule therefore causes lower layers in the network to train much slower than higher layers.
+The tanh activation function typically have larger derivatives than the sigmoid function. 
+Thus, it is not as susceptible to this vanishing gradient problem. However, it is still not immune to it.
 The local derivatives of the activation functions discussed in this section are illustrated in \autoref{fig:activation_functions} (b). The form of these functions will become more apparent in \Cref{sec:training}.
 
 To date, the most popular choice in activation function is the *Rectified Linear Units* (ReLU) non-linearity.
@@ -187,7 +189,7 @@ We also analyse why networks used in the case of tabular data are typically much
 Note, that there also exists other classes of neural networks besides the basic feed-forward network focussed on thus far.
 The *convolutional neural network* (CNN) is a very common choice in computer vision [@Krizhevsky2012] and only recently in NLP applications [@Devlin2018].
 Its main difference to standard NNs is the use of a convolutional layer that performs a cross-correlation operation on its inputs with a set of learnable filters.
-The *recurrent neural network* (RNN) [@Mikolov2010] is a class of neural networks that are helpful for modelling variable lenght inputs or outputs, for example in machine translation or video classification.
+The *recurrent neural network* (RNN) [@Mikolov2010] is a class of neural networks that are helpful for modelling variable length inputs or outputs, for example in machine translation or video classification.
 A RNN has loops in them, allowing information to persist.
 It can also be thought of as multiple copies of the same network, each passing a message to its successor, if one were to "unfold" the loops.
 These classes of neural networks are not within the scope of this work since they have no clear benefit for using with tabular data.
@@ -198,7 +200,7 @@ Briefly, basic training of a neural network entails the following four steps:
 
 1. Initialisation: random numbers are assigned to the network parameters.
 2. Forward propagation: the input is passed through the network layers in order to produce an output.
-3. Error calculation: the predicted output is compared to the true output, and the difference measures by means of an appropriate objective function.
+3. Error calculation: the predicted output is compared to the true output, and the difference measured by means of an appropriate objective function.
 4. Backward propagation: the gradients of the objective function with respect to the weights are obtained, and the network weights are updated accordingly.
 
 The above steps are typically repeated until the loss function is found to converge. Note however that convergence may require many training epochs. The following four subsections are each devoted to a discussion of one of the aforementioned steps.
@@ -260,7 +262,7 @@ $$
 where $\gamma$ determines the size of the step taken towards the optimal direction and is called the *learning rate*. Of course $\gamma$ needs to be specified by the user. One typically would like to set the learning rate small enough so that one does not overshoot the minimum, but large enough to limit the number of iterations before convergence. 
 The learning rate is a crucial parameter when training neural networks. Its significance is discussed in \Sref{sec:lr}.
 
-The procedure of repeatedly evaluating the gradient of the objective function, followed by a parameter update, forms the basis of the optimisation procedure for neural networks and is called *gradient descent* (Cauchy, 1847). 
+The procedure of repeatedly evaluating the gradient of the objective function, followed by a parameter update, forms the basis of the optimisation procedure for neural networks and is called *gradient descent* [@Cauchy1847]. 
 
 Note that a weight update is made by evaluating the gradient over a subset of the training observations, *viz.* 
 $\{\boldsymbol{x}_{i},i=1,\dots,n\}$. 
@@ -278,14 +280,14 @@ This is called *Stochastic Gradient Descent* (SGD).
 Recently SGD has been used much less, since it is more efficient to calculate the gradient in larger batches of training data cases.
 However, note that it remains common to use the term SGD when actually referring to mini-batch gradient descent.
 The use of gradient descent in general has often been regarded as slow or unreliable. SGD will most probably not even find a local minimum of the objective function, however it typically finds a very low value of the cost function quickly enough to be useful.
-Thus gradient descent has been proven to be efficient for optimising neural networks.
+Thus, gradient descent has been proven to be efficient for optimising neural networks.
 
 ### Optimisation Example
 
 In order to illustrate the SGD algorithm, we consider the linear model in a binary classification context, *i.e.* $K=2$.
 Also in our example, suppose the training data are generated in the way described in [@Hastie2009, pp. 16-17], where
 the inputs are two-dimensional, *i.e.* $p=2$. Suppose we want to fit a linear regression model to the training data and classify an observation to the class with the highest predicted score. 
-Of course in the binary classification it is only necessary to model one class probability: an observation is then assigned to the corresponding class if the score exceeds some threshold (usually 0.5).
+Of course in the binary classification case it is only necessary to model one class probability: an observation is then assigned to the corresponding class if the score exceeds some threshold (usually 0.5).
 Therefore the decision boundary is given by $\{\boldsymbol{x}:\boldsymbol{x}^{T}\hat{\boldsymbol{w}}=0.5\}$.
 
 Optimisation of the regression weights by means of gradient descent is illustrated in \autoref{fig:sgd}. 
@@ -295,7 +297,7 @@ Note that the learning rate was set equal to 0.001.
 The decision boundaries defined by the gradient descent parameter estimates at different iterations are represented by the dashed lines in \autoref{fig:sgd}.
 Initially the estimated decision boundary lies far from the OLS solution. However, after convergence (29 iterations later), the gradient descent line matches the OLS line. 
 
-```{r, cache=TRUE,eval=TRUE, fig.cap = "Plots of the gradient descent example. (a) The training data points in input space. The shades in the background represent the class division in input space, with the decision boundary determined by linear least squares estimation. The dashed lines represent the gradient descent decision boundaries at different iterations. (b) The loss function at each iteration. \\label{fig:sgd}"}
+```{r, cache=TRUE,eval=TRUE, fig.cap = "Plots of the gradient descent example. (a) The training data points in input space. The shades in the background represent the class division in input space, with the decision boundary determined by least squares estimation. The dashed lines represent the gradient descent decision boundaries at different iterations. (b) The loss function at each iteration. \\label{fig:sgd}"}
 library(MASS)
 library(cowplot)
 # generate the data
@@ -441,7 +443,8 @@ $$
 
 with the corresponding classifier denoted by $G(\boldsymbol{x})=\arg\max_{k}f_{k}(\boldsymbol{x})$.
 Since a neural network for classification takes the form of a linear logistic regression model in the hidden units, note that the parameters may be estimated using maximum likelihood. 
-According to @Hastie2009 [p. 395] however, the global minimiser of $L(\theta)$ is most likely an overfit solution. Therefore we require regularisation techniques when minimising $L(\theta)$.
+According to @Hastie2009 [p. 395] however, the global minimiser of $L(\theta)$ is most likely an overfit solution. 
+Therefore, we require regularisation techniques when minimising $L(\theta)$.
 Furthermore, as the size of the network increases, MLE soon becomes intractable.
 
 Therefore, one rather uses gradient descent and the *backpropagation* algorithm [@Rumelhart1988] to minimise $L(\theta)$.
@@ -500,7 +503,7 @@ Having discussed basic NN training, we now turn to a discussion of two component
 ## Basic Regularisation \label{sec:basicreg}
 
 In \Sref{sec:netsize} the importance of selecting an appropriate size for a neural network was emphasised. It may seem that smaller networks should generally be preferred in order to prevent an overfit.
-However smaller networks are harder to train with local methods such as gradient descent because their loss functions have poor local minima that are easy to converge to. In contrast, local minima of larger networks are typically smaller [@Choromanska2014].
+However, smaller networks are harder to train with local methods such as gradient descent because their loss functions have poor local minima that are easy to converge to. In contrast, local minima of larger networks are typically smaller [@Choromanska2014].
 
 There are indeed more effective ways of regularising neural networks. We briefly discuss these methods in the remainder of this section, and in Chapter 3. One of the preferred ways of preventing overfitting in neural networks is by using L1 or L2 regularisation, *i.e.* by adding a penalty term to the objective function, where the penalty term is proportional to the magnitude of the NN weights.
 The role of the penalty term is to encourage the weight estimates to be small.
@@ -521,12 +524,14 @@ More advanced regularisation techniques are discussed in \Cref{chp:dl}.
 
 ## Adaptive Learning Rates \label{sec:lr}
 
-Although in the neural network literature it is known that a more optimal learning rate may reduce the time to train the network and improve its test performance, optimal specification of this parameter is not such an easy task. 
-A small learning rate slows downs the training time, but is safer against overfitting and overshooting the optimal solution.
-With a large learning rate, convergence may be reached quicker, but the optimal solution may not have been found. 
-Toward appropriate specification of the learning rate one may consider doing a line search over a range of possible values. However in the case of large networks such an approach is typically too time consuming. 
+Although in the neural network literature it is known that a more optimal learning rate may reduce the time to train the network and improve its test performance, optimal specification of this parameter is not such an easy task.
+A small learning rate slows down the training time, but is safer against overfitting and overshooting the optimal solution.
+With a large learning rate, convergence may be reached quicker, but the optimal solution may not have been found.
+Toward appropriate specification of the learning rate one may consider doing a line search over a range of possible values.
+However, in the case of large networks such an approach is typically too time consuming. 
 
-In contrast to a once off specification of the learning rate, an alternative approach is to allow the learning rate to be adapted during the training process. A popular approach is to decrease the learning rate by a fraction after a fixed number of epochs, or as soon as the validation loss starts to converge (*cf.* for example He *et al.*, 2015a). The intuition is that larger steps may be afforded while the weight estimates are still far away from an optimal position on the loss surface, while smaller steps need to gradually be taken once closer to the optimal weight vector value in order to take care not to overshoot it.
+In contrast to a once-off specification of the learning rate, an alternative approach is to allow the learning rate to be adapted during the training process. 
+A popular approach is to decrease the learning rate by a fraction after a fixed number of epochs, or as soon as the validation loss starts to converge (*cf.* for example He *et al.*, 2015a). The intuition is that larger steps may be afforded while the weight estimates are still far away from an optimal position on the loss surface, while smaller steps need to gradually be taken once closer to the optimal weight vector value in order to take care not to overshoot it.
 Note that an adaptive learning rate requires one to also tune the rate of decrease and the time steps of each decrease during training.
 Fortunately it is believed that neural network learning algorithms are not very sensitive to these choices.
 
@@ -561,7 +566,7 @@ The central idea is that of a *data representation* [@Bengio2013] and that at ea
 Understanding and interpreting neural networks remains a challenge [@Frosst2017], but the notion of learning an optimal data representation allows us to gain a deeper intuition of the inner mechanics of neural networks.
 
 Machine learning models are very sensitive to the form and properties of the input it is presented with.
-Thus a large part of constructing machine learning models is to find the best way of representing the raw data in order to simplify the extraction of useful information.
+Thus, a large part of constructing machine learning models is to find the best way of representing the raw data in order to simplify the extraction of useful information.
 This *feature engineering* process typically is a laborious manual task which entails creating, analyzing, evaluating and selecting appropriate features[^feature_engineering]. There is therefore unfortunately no systematic recipe for feature engineering. Instead, it is a trial-and-error process which requires practitioner expertise and domain-specific knowledge. 
 In representation learning, the idea is to find a way of effectively automating the feature engineering process. That is, the goal is to automatically learn representations of the data that make it easier to extract useful information for classifiers or other predictors [@Bengio2013]. Such automation seems to have the potential of saving a lot of time and raising the performance ceiling of machine learning models.
 
@@ -570,7 +575,7 @@ In representation learning, the idea is to find a way of effectively automating 
 Importantly, a neural network may be viewed from the perspective of representation learning.
 To see this, consider a classification task.
 Since the final layer of a neural network is a linear model, in order for the network to produce accuracte predictions, the previous layers should be able to project the data into a space where the classes are linearly separable.
-Thus the network needs to learn a representation of the data that is optimal for classification.
+Thus, the network needs to learn a representation of the data that is optimal for classification.
 
 Starting with the raw input, each of the simple (but non-linear) modules of a neural network transforms the data representation at one level into a representation at a higher, slightly more abstract level. Each transformation may create and/or emphasise features that are important for discrimination, and drop those which are redundant. When a sufficient number of such transformations are combined, very complex functions may be learned by a neural network [@Lecun2015].
 
@@ -598,9 +603,3 @@ Without the aforementioned, it is likely that the network will get stuck in a su
 In the chapters to follow we explore the approaches available to find optimal representations for tabular data in regression and classification contexts.
 
 [^colah]: http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/
-
-
-
-
-
-
