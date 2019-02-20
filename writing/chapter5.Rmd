@@ -25,7 +25,7 @@ The experiments may be found in \Sref{sec:rep_exp}, \Sref{sec:exp_int} and \Sref
 In \Sref{sec:rep_exp} we compare the performance of various entity embedding sizes.
 \Sref{sec:exp_int} is devoted to an investigation of the use of several approaches towards modelling high-order feature interactions, whereas in \Sref{sec:exp_samp} we evaluate the different approaches to avoid overfitting in constrained data environments.
 
-In this chapter we aim for good empiricism by exploring many hyperparamters in various data scenarios and by performing cross-validation in order to obtain unbiased performance measures along with standard errors.
+In this chapter we aim for good empiricism by exploring many hyperparameters in various data scenarios and by performing cross-validation in order to obtain unbiased performance measures along with standard errors.
 Our goal is not necessarily to beat the benchmark, but instead consists of simple experiments designed to aid in understanding techniques.
 
 The code for developing the models and running the experiments were written in Python.
@@ -33,7 +33,7 @@ The deep learning library, Pytorch, was used to build the different neural netwo
 Many of the common layers, like the linear layer or the ReLU activation, for example, are provided by the library and we are left with combining these layers to form the models we required.
 However, some of the more modern layers/modules, like the attention mechanism or the SELU activation for example, are not yet provided by the library and therefore we wrote our own implementations thereof.
 
-The optimisation of the neural networks were done with the help of the Fastai library which provides convenient utility functions for training with the 1Cycle policy.
+The optimisation of the neural networks were done with the help of the Fastai library which provides convenient utility functions for training with the 1cycle policy.
 We wrote code that builds on this library to perform various tasks required for these experiments, for example: cross-validation, hyperparameter selection, pretraining, data augmentation, transfer learning and visualising results.
 One may refer to \autoref{app:code} for more detail on the code and where to access it.
 
@@ -41,15 +41,15 @@ One may refer to \autoref{app:code} for more detail on the code and where to acc
 
 We chose to conduct our empricial work on the Adult dataset. This was done for the following reasons:
 
-+ **Simplicity**: The Adult dataset is representative of a real-world scenario, while not having specific modelling challenges (such as plenty of missing values or highly imbalanced classes). This fits in with our goal of evaluating models on a generic tabular dataset (as opposed to one that requires special attention or the skills of a domain expert). Thus when in terms of prediction performance, a specific network architecture is found to fall short, we may know that this may be attributed to the model, and not to some peculiarity inherent in the data.
++ **Simplicity**: The Adult dataset is representative of a real-world scenario, while not having specific modelling challenges (such as plenty of missing values or highly imbalanced classes). This fits in with our goal of evaluating models on a generic tabular dataset (as opposed to one that requires special attention or the skills of a domain expert). Thus, when in terms of prediction performance, a specific network architecture is found to fall short, we may know that this may be attributed to the model, and not to some peculiarity inherent in the data.
 + **Minimal preprocessing**: We want to focus our time on training the algorithms and not on preprocessing the data. The Adult dataset is a relatively 'clean' dataset.
 + **Open access**: Since we want our work to be reproducible, we want the dataset that we use to be accessible to everyone.
-+ **Good size**: We have seen that fitting deep neural networks requires large datasets. Hence in order to yield optimal performance we prefer at least a medium sized dataset. If one wants to test models using smaller datasets, one may simply run the experiments on a subset of the data.
++ **Good size**: We have seen that fitting deep neural networks requires large datasets. Hence, in order to yield optimal performance we prefer at least a medium sized dataset. If one wants to test models using smaller datasets, one may simply run the experiments on a subset of the data.
 + **Strong baselines**: The Adult dataset has been used in other deep neural network studies, and therefore the performance of several methods on this dataset have been reported in the literature. In order to know how well we are doing, we need to be able to compare our performances with those of others.
 
 The Adult dataset, originally used in @Kohavi1996, is data that was extracted from the census bureau database[^cens] and can be accessed from this link[^adult_dl].
 The task here is to predict whether or a not a certain person's income exceeds $50,000 per year.
-Thus it is posed as a binary classifcation problem.
+Thus, it is posed as a binary classifcation problem.
 
 [^cens]: http://www.census.gov/en.html
 [^adult_dl]: http://archive.ics.uci.edu/ml/datasets/Adult
@@ -57,7 +57,7 @@ Thus it is posed as a binary classifcation problem.
 In total there are 14 features and 48,842 observations.
 Two-thirds of the observations were randomly selected to form the training set and the rest allocated to the test set.
 Note, that we will not use any of the observations in the test set during our experiments.
-Hyperparemeter and model selection decisions are made based on the valdiation dataset performace and then if we wish we can evaluate the selected models on the test set for the most accuracte estimation of the generalisation ability of the models.
+Hyperparemeter and model selection decisions are made based on the validation dataset performance and then if we wish we can evaluate the selected models on the test set for the most accuracte estimation of the generalisation ability of the models.
 
 The details for each of the features are listed below.
 We indicate the continuous features and the classes for the categorical features.
@@ -105,7 +105,7 @@ The highest reported accuracy in the original paper [@Kohavi1996] was 85.9% by t
 
 Recall the learning problem associated with the Adult dataset, *viz*. to predict whether or not an indivdual earns more than $50,000 a year. 
 Since this is a binary classification task, we train a neural network to optimise the binary cross-entropy loss function, as defined in \Sref{sec:backprop} (where of course we set $K=2$).
-This is the standard loss function typically optimised when fitting NNs for binary classification [@Song2018, @Wang2017b, @Zhang2016, @Qu2016].
+This is the standard loss function typically optimised when fitting NNs for binary classification (@Song2018, @Wang2017b, @Zhang2016, @Qu2016).
 Note that during training, the accuracy of the neural network will also be monitored.
 Accuracy is used when monitoring the training process since this measure is often simpler to interpret.
 Note however that the neural network is not trained to optimise its accuracy. 
@@ -145,7 +145,7 @@ In deep learning, the validation set method is practical and sufficient, since t
 
 ### Preprocessing
 
-As mentioned in \label{sec:datasets}, in our empirical analyses we aim to avoid feature engineering and preprocessing.
+As mentioned in \Sref{sec:datasets}, in our empirical analyses we aim to avoid feature engineering and preprocessing.
 We therefore did not create any new feature combinations.
 The only mandatory preprocessing steps involved:
 - mapping the text in categorical features to integer values (this was of course necessary to be able to apply entity embeddings);
@@ -158,7 +158,7 @@ Note that we did not perform any *a priori* feature selection steps since we wan
 If not stated otherwise, we made us of simple MLPs to map input representations to income predictions.
 Based on our findings in \Sref{sec:hs_tb}, we decided to train all networks using the 1cycle policy (and the Adam optimiser).
 Note that the hyperparameter selection process suggested by @Smith2018 in this context is a manual process.
-Therefore we make use of the @Smith2018 approach only during the first experiment, thereby finding appropriate values for the learning rate, for the number of epochs, and for weight decay (called 'training hyperparameters' in this section).
+Therefore, we make use of the @Smith2018 approach only during the first experiment, thereby finding appropriate values for the learning rate, for the number of epochs, and for weight decay (called 'training hyperparameters' in this section).
 These parameter values are then used in all empirical work to follow.
 This initial search for appropriate training hyperparameter values is reported in \autoref{app:B}.
 Note that in the second and third experiments, the parameter selection process was rerun in cases where the fitted model changed significantly from the previous experiment to the next.
@@ -190,7 +190,7 @@ In the lefthandside panel, note that the loss function value, obtained for the v
 Shaded areas indicate standard errors.
 From this figure, since at epoch 5, the blue line lies below the red and green lines, it is clear that an embedding size of 2 is preferred. 
 One reason for this may be that for these data, categorical features are not that important in terms of enhancing prediction accuracy. 
-Therefore a smaller representation may assist in reducing noise.
+Therefore, a smaller representation may assist in reducing noise.
 
 ![Effect of the embedding size if all categorical features are mapped to the same number of dimensions.\label{fig:exp_emb_f}](../data/adult/results/embeddingsize/all_epochs.png)
 
@@ -208,7 +208,7 @@ In datasets where categorical features contain more information, one may however
 
 Since attention is so effectively used in other data domains, we believe it to be the most promising approach towards modelling high-order interactions between features for tabular data.
 In order to test this hypothesis, we implemented our own multi-head attention module, as described in @Song2018.
-In this way, our results are comparable to those of produced by a standard neural network.
+In this way, our results are comparable to those produced by a standard neural network.
 We did not have the computing power to try different configurations for this module and thus we went with the largest possible configuration that could be run in reasonable time.
 We chose the number of head, $H$, to be 3, and made use of embedding sizes of 3 throughout.
 Moreover, we only made use of a single multi-head attention layer, and connected its output to a single hidden layer of size 200, which in turn was connected to the output layer.
@@ -226,11 +226,11 @@ Moreover, one wonders in which way the above results would have changed if a dat
 
 In Chapter 3 we have seen that deeper networks can help us learn higher-order feature interactions.
 The SeLU activation function is supposed to help us train deeper neural networks.
-Therefore we compare use of SeLUs to use of the ReLU activation using two networks.
+Therefore, we compare use of SeLUs to use of the ReLU activation using two networks.
 The first network was specified to have two layers, whereas the second network had eight layers in total.
-The SeLU activation function was implemented using its customised weight intitialisation method, but no dropout was used.
+The SeLU activation function was implemented using its customised weight initialisation method, but no dropout was used.
 In \autoref{fig:selu_all} we plot the average (over each fold) loss and accuracy on the validation set for each of the epochs for the different models and in \autoref{fig:selu_best} we plot the average loss and accuracy on the validation set of the final models.
-We observe that in terms of validation loss, the model with eight layers using SeLU activations performed the best overall; whereas in terms of accuracy, the model with two layers using ReLU activatios emerged as the winner.
+We observe that in terms of validation loss, the model with eight layers using SeLU activations performed the best overall; whereas in terms of accuracy, the model with two layers using ReLU activations emerged as the winner.
 However, the differences are so minor that, in the absence of more evidence, we tend to still recommend the use of shallow ReLU networks.
 
 ![The average performance of ReLU and SeLU activation functions for shallow and deep networks as a function of the number of training epochs.\label{fig:selu_all}](../data/adult/results/activation_depth/all_epochs2.png)
@@ -239,14 +239,14 @@ However, the differences are so minor that, in the absence of more evidence, we 
 
 ### Skip Connections
 
-Another mechanism which have contributed to the successful implementation of deeper networks is skip connection.  
+Another mechanism which have contributed to the successful implementation of deeper networks is skip connection.
 Apart from facilitating more efficient neural network training, skip connections have been found to alleviate the degradation problem, thereby improving the prediction performance of deep neural networks.
 Skip connections are often also used to combine different orders of feature interactions.
-Using this mechanism, elementwise addition (or other concatenation functions) may be use in order to combine input and output before and afer a linear layer.
+Using this mechanism, elementwise addition (or other concatenation functions) may be used in order to combine input and output before and after a linear layer.
 In our empirical work, we investigate the performances of both a shallow (with 2 hidden layers) and a deep network (with 6 hidden layers) using skip connections.
 The results are summarised in \autoref{fig:resid_epoch} and in \autoref{fig:resid_best}, where the average (over each fold) loss and accuracy is plotted for each epoch and for the final model, respectively.
-The models with skip-connections are indicated by "*residual*=True" in the figure legend and "*residual*=False" otherwise.
-On average, the deeper neural network with skip-connections performed slightly better on the validation data, but once again, performances of the different networks are very similar.
+The models with skip connections are indicated by "*residual*=True" in the figure legend and "*residual*=False" otherwise.
+On average, the deeper neural network with skip connections performed slightly better on the validation data, but once again, performances of the different networks are very similar.
 At this stage we therefore recommend the simpler design of not using skip connections.
 
 ![Average performance at each epoch for shallow and deep neural networks, with and without skip connections.\label{fig:resid_epoch}](../data/adult/results/residual_depth/all_epochs2.png)
@@ -256,7 +256,7 @@ At this stage we therefore recommend the simpler design of not using skip connec
 ## Sample Efficiency \label{sec:exp_samp}
 
 In the next experiment we investigate the effect of the number of samples on the prediction performance of a neural network.
-Therefore the network was optimised using training dataset of sizes of 1000, 2000, 4000, 8000, 16000 and 32000.
+Therefore, the network was optimised using training dataset of sizes of 1000, 2000, 4000, 8000, 16000 and 32000.
 The results are reported in \autoref{fig:sampsize}.
 As expected, the network performs better with an increase in the training set size, where the enhancements in performance diminishes in the case of higher sample size values.
 
@@ -265,7 +265,7 @@ As expected, the network performs better with an increase in the training set si
 ### Data Augmentation
 
 From the literature review in Chapter 3, mixup augmentation emerged as seemingly the most promising form of data augmentation.
-In this experiment we wanted to investigate the way in which the application of mixup (own implementation), using various mixup ratios, influences the performance neural networks on the Adult dataset.
+In this experiment we wanted to investigate the way in which the application of mixup (own implementation), using various mixup ratios, influences the performance of neural networks on the Adult dataset.
 Since data augmentation also acts as a form of regularisation, we also wanted to investigate the interaction between weight decay and mixup ratios.
 We experimented with mixup $\alpha$-ratios of 0 and 0.4, and with weight decays of [$10^{-5}$, $10^{-3}$] in a neural network with 3 hidden layers, consisting of 200 units each.
 The results of the experiment are displayed in \autoref{fig:exp_mix_best} and in \autoref{fig:exp_mix_epoch}.
@@ -283,16 +283,16 @@ Our suggestion would be that for tabular data, mixup should only be used when in
 ### Unsupervised Pretraining
 
 In our final experiment, we investigated whether or not the use of DAEs in unsupervised pretraining yield output which may be beneficial to a (supervised) neural network for tabular data.
-Therefore we trained a DAE with swap noise (own implementation) for 15 epochs on the Adult dataset.
+Therefore, we trained a DAE with swap noise (own implementation) for 15 epochs on the Adult dataset.
 We set the swap noise proportion equal to 15%, and the DAE had 3 hidden layers consisting of 500 units each.
 The learned weights were subsequently carried over to a supervised learning network, where the latter also comprised 3 hidden layers consisting of 500 units each.
 Note that the supervised network had a different output layer than that of the DAE.
-Therefore we first kept the transferred weights fixed, and trained only the last layer of the supervised learning network.
+Therefore, we first kept the transferred weights fixed, and trained only the last layer of the supervised learning network.
 This is done in order to initialise the network weights.
 Otherwise, if we simultaneously trained all the weights from the start, random weights to the output layer might have interfered with learned weights in the hidden layers.
 Once the output layer is initialised with this process, we may train all layers of the network simultaneously.
 This final stage of training is showed in \autoref{fig:exp_pretr}, where we compare it to the final stage of training of a model without pretraining.
-Un terms of both accuracy and validation loss, we see that that the pretrained model has an advantage over the classifier that was trained-from-scratch.
+In terms of both accuracy and validation loss, we see that the pretrained model has an advantage over the classifier that was trained-from-scratch.
 The above result makes sense, since the pretrained model does not have to start from a random initialisation.
 However as expected, as training continues, this gaps gradually decreases.
 
@@ -313,8 +313,6 @@ Therefore, regarding preferences with respect to methodologies for appropriate i
 
 Our one hypothesis is that the Adult dataset does not lend itself to more advanced modelling techniques and that the basic neural network is close to the best one can get.
 Our other concern is that the greedy fashion of our hyperparameter selection has limited the various approaches.
-Since it was not feasible to tune the required paramters for all models in all folds, we selected a set of paramters from initial experiments and used them for most of the experiments.
-But since these parameters are so inter-connected, chaning one already means that the others are not optimal anymore.
+Since it was not feasible to tune the required parameters for all models in all folds, we selected a set of parameters from initial experiments and used them for most of the experiments.
+But since these parameters are so inter-connected, changing one already means that the others are not optimal anymore.
 We were aware of this limitation from the start, but we still do not know however to what extent it influenced our results.
-
-
