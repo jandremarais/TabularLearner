@@ -15,7 +15,7 @@ We conclude the thesis with a section on promising future directions for researc
 In \Cref{chp:intro}, the motivation and the objectives of the study were described.
 It was stated that deep learning for tabular data is an important topic, but in our opinion, also one that has not yet received sufficient attention in the literature.
 Hence the main issues that need to be addressed in order to make progress in the field, were highlighted.
-The chapter also provided an overview of the fundamentals of Statistical Leaning Theory, including various learning paradigms and loss functions; as well as aspects of optimisation and overfitting.
+The chapter also provided an overview of the fundamentals of Statistical Leaning Theory (SLT), including various learning paradigms and loss functions; as well as aspects of optimisation and overfitting.
 The SLT framework served as background for the problems we aimed to solve.
 
 The focus in \Cref{chp:nn} included the core concepts in neural networks, and neural network training.
@@ -28,7 +28,7 @@ In summary therefore, the contribution of the chapter was to equip us with the f
 The topic in \Cref{chp:dl} was deep learning. 
 The aim of the chapter was to provide insight into the methodologies enabling deep learning to be successful in the NLP and computer vision fields.
 This provided a good starting point for contemplating ways of improving deep learning for tabular data.
-The chapter started with an introduction to autoencoders and the concept of using them for unsupervised pretraining in transfer leaning.
+The chapter started with an introduction to autoencoders and the concept of using them for unsupervised pretraining in transfer learning.
 We also discussed the use of data augmentation and dropout as highly effective regularisation techniques.
 This was followed by a review of the more modern layers and architecture designs in deep learning, which included normalisation layers, skip connections, embeddings and the attention mechanism.
 The chapter included a section on the concept of superconvergence.
@@ -46,13 +46,13 @@ Subsequently, we described several approaches towards making deep neural network
 In this section we focused on denoising autoencoders, and on data augmentation techniques such as swap noise and mixup augmentation.
 The penultimate section described ways of interpreting neural networks for tabular data, and provided an illustration of interpretation by means of knowledge distillation.
 We concluded with an empirical investigation of superconvergence in the context of tabular data.
-Hence \Cref{chp:td} contributed to the technical understanding necessary for tackling challenges in deep learning for tabular data.
+Hence, \Cref{chp:td} contributed to the technical understanding necessary for tackling challenges in deep learning for tabular data.
 
 Our empirical work is summarised in \Cref{chp:exp}.
 The experiments reported on, complement the exploratory study of deep learning for tabular data.
 We attempted to answer three main questions, *viz.* which approach to use for input representation, for inferring feature interactions, and for enhancing sample efficiency.
 In the input representation experiments, we evaluated the effect of entity embedding sizes on the performance of neural networks.
-with regard to feature interactions, we experimented with the attention mechanism, along with use of the SeLU activation function, and of skip connections. 
+With regard to feature interactions, we experimented with the attention mechanism, along with use of the SeLU activation function, and of skip connections. 
 Finally, in the sample efficiency section, we attempted to gage the sensitivity of neural networks to the number of training samples.
 We tested the use of unsupervised pretraining towards alleviating this sensitivity, and investigated the use of mixup- and swap noise data augmentation as a means to prevent overfitting.
 
@@ -63,7 +63,7 @@ In this regard, there were two main obstacles which we needed to overcome:
 
 + **Access to large compute**: Deep learning techniques are notorious for the computing power they require. 
 We had limited access to cloud computing providers on which some of the experiments were done. 
-Therefore most experiments were conducted on a small personal machine without a graphical processing unit (GPU).
+Therefore, most experiments were conducted on a small personal machine without a graphical processing unit (GPU).
 This significantly increased the running time of the experiments, and hindered rapid execution of the various approaches. 
 In future one would want to ensure sufficient computing power to be available, enabling higher quality empirical work.
   
@@ -91,18 +91,18 @@ Although we tried to keep up with the deluge of publications that are currently 
 With a view to future research directions, in this final section we would like to point the reader to the potential of using *generative models* in the context of deep learning for tabular data.
 More specifically, it might be worthwhile to study variational autoencoders [@Kingma2013] and *Generative Adversarial Networks* (GANs) [@Goodfellow2014].
 We propose studying VAEs as a means to perform more effective unsupervised pretraining, and we believe GANs to offer a good alternative to generating new training samples.
-In conclusion, therefore, a brief over of VAEs and GANs follows below.
+In conclusion, therefore, a brief overview of VAEs and GANs follows below.
 
 VAEs provide a probabilistic manner of describing observations in a latent space.
 That is, instead of using a single value to describe an attribute in the latent space, as is the cases with standard autoencoders, VAEs use probability distributions to describe a latent space attribute.
 When using DAEs for unsupervised pretraining, we have seen that they need to be injected with some noise.
 However, we have seen that neither of the two best noise schemes that we could find (*viz.* swap noise and blank-out), makes complete sense in the tabular dataset environment.
 We postulate that VAEs may provide a more robust way of doing unsupervised pretraining, since its decoding function learns probabilistic output. 
-Thus it is not reliant on noise injection.
+Thus, it is not reliant on noise injection.
 In addition, once trained, the latent probabilistic distribution of VAE can be used to generate additional training samples.
 
 GANs consist of two neural networks, *viz.* a generator ($G$) and a discriminator ($D$).
 Given random noise as input, the task given to $G$ is to generate artificial samples of the data that are indistinguishable from a set of genuine training samples.
 The task assigned to $D$ is to attempt to discriminate between the artificial and genuine samples.
-GANs have shown tremendous value in data synthesis, especial in the domains of computer vision and speech synthesis, producing lifelike faces [@Karras2017] and voices [@Donahue2018].
+GANs have shown tremendous value in data synthesis, especially in the domains of computer vision and speech synthesis, producing lifelike faces [@Karras2017] and voices [@Donahue2018].
 We postulate that GANs may be able to achieve similar successes in data synthesis for tabular data, which may be used to artificially enlarge training datasets for supervised learning.

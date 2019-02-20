@@ -9,7 +9,7 @@ Larger networks are more flexible and therefore we expect it to act similarly to
 Increasing the network size will be beneficial up until a certrain point until it becomes too big and be more prone to overfitting.
 We also want to get a feel for how important these hyperparameters are.
 On the Adult dataset we experimented with layer depths of 1, 3, 6 and 12, and layer widths of 32, 128, 512, 2048.
-Note give all layers the same width as this is found to work good enough in practice [@Guo2017, @Qu2016, @Zhang2016].
+Note, we give all layers the same width as this is found to work good enough in practice [@Guo2017, @Qu2016, @Zhang2016].
 The results of the experiment are displayed in \autoref{fig:widthdepth}.
 The results are mixed between the accuracy and the validation loss and there is not much separating any of the models.
 Except for the very wide network that had a diverging validation loss.
