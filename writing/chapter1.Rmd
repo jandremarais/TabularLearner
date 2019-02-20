@@ -205,12 +205,12 @@ In the case of linear regression, we assume the output to be a linear function o
 Let $\hat{y}$ be the predicted response. We define the output to be 
 
 $$
-\hat{y}=\hat{\boldsymbol{w}}^{T}\boldsymbol{x},
+\hat{y}=\hat{\boldsymbol{w}}^{\intercal}\boldsymbol{x},
 $$
 where $\hat{\boldsymbol{w}}=[w_{0},w_{1},\dots,w_{p}]$ denotes a vector of parameters and where $\boldsymbol{x}=[1,x_{1},x_{2},\dots,x_{p}]$. 
 Note that an intercept is included in the model (also known as a *bias* in machine learning). 
 The parameters are values that control the behaviour of the system. We can think of them as a set of *weights* that determine how each feature affects the prediction. 
-Hence the learning task can be defined as predicting $y$ from $\boldsymbol{x}$ through $\hat{y}=\hat{\boldsymbol{w}}^{T}\boldsymbol{x}$.
+Hence the learning task can be defined as predicting $y$ from $\boldsymbol{x}$ through $\hat{y}=\hat{\boldsymbol{w}}^{\intercal}\boldsymbol{x}$.
 
 We of course need to define a performance measure to evaluate the linear predictions. 
 For a set of observations, an evaluation metric tells us how (dis)similar the predicted output is to the actual response values. 
@@ -230,11 +230,11 @@ To be able to fit a model that generalises well to new unseen data cases is the 
 One way of improving the generalisation ability of a linear regression model is to modify the optimisation criterion $J$, to include a *weight decay* (or *regularisation*) term. 
 That is, we want to minimise
 $$
-J(\boldsymbol{w})=MSE_{\text{train}} +\lambda\boldsymbol{w}^{T}\boldsymbol{w},
+J(\boldsymbol{w})=MSE_{\text{train}} +\lambda\boldsymbol{w}^{\intercal}\boldsymbol{w},
 $$
 where $J(\boldsymbol{w})$ now expresses preference for smaller weights. 
 The parameter $\lambda$ is non-negative and needs to be specified ahead of time. 
-It controls the strength of the preference by determining how much influence the penalty term, $\boldsymbol{w}^{T}\boldsymbol{w}$, has on the optimisation criterion. 
+It controls the strength of the preference by determining how much influence the penalty term, $\boldsymbol{w}^{\intercal}\boldsymbol{w}$, has on the optimisation criterion. 
 If $\lambda=0$, no preference is imposed, and the solution is equivalent to the OLS solution. Larger values of $\lambda$ force the weights to decrease, and thus referred to as a so-called *shrinkage* method ([*cf*. for example @Hastie2009, pp. 61-79] and [@Goodfellow2016]. 
 
 We may further generalise linear regression to the classification scenario. 
@@ -256,7 +256,7 @@ $$
 \hat{Y}_{k}=\hat{f}_{k}(\boldsymbol{X}),
 $$
 for $k=1,\dots, K$. Here $\hat{f}_{k}$ is an estimate of the true function, $f_{k}$, which is meant to capture the relationship between the inputs and output of class $k$. 
-As with the linear regression case described above, we may use a linear model $\hat{f}_{k}(\boldsymbol{X})=\hat{\boldsymbol{w}}_{k}^{T}\boldsymbol{X}$ to approximate the true function. 
+As with the linear regression case described above, we may use a linear model $\hat{f}_{k}(\boldsymbol{X})=\hat{\boldsymbol{w}}_{k}^{\intercal}\boldsymbol{X}$ to approximate the true function. 
 The linear model for classification partitions the input space into a collection of regions labelled according to the predicted classification, where regions are created by linear *decision boundaries* (see \autoref{fig:lin_bound} for an illustration). 
 The decision boundary between classes $k$ and $l$ is the set of points for which $\hat{f}_{k}(\boldsymbol{x})=\hat{f}_{l}(\boldsymbol{x})$. 
 These set of points form an affine set or hyperplane in the input space.
@@ -265,7 +265,7 @@ These set of points form an affine set or hyperplane in the input space.
 
 After the weights are estimated from the data, an observation represented by $\boldsymbol{x}$ (including the unit element) may be classified as follows:
 
-- Compute $\hat{f}_{k}(\boldsymbol{x})=\hat{\boldsymbol{w}}_{k}^{T}\boldsymbol{x}$ for $k=1,\dots,K$.
+- Compute $\hat{f}_{k}(\boldsymbol{x})=\hat{\boldsymbol{w}}_{k}^{\intercal}\boldsymbol{x}$ for $k=1,\dots,K$.
 - Identify the largest component and classify to the corresponding class, *i.e.* $\hat{G}=\arg\max_{k\in\{1,\dots,K\}}\hat{f}_{k}(\boldsymbol{x})$.
 
 One may view the predicted class scores as estimates of the conditional class probabilities (or posterior probabilities), *i.e.* $P(G=k|\boldsymbol{X}=\boldsymbol{x})\approx \hat{f}_{k}(\boldsymbol{x})$. 

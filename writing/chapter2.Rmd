@@ -236,7 +236,7 @@ $$
 \begin{aligned}
 L&=\sum_{i=1}^{N}L_{i}\\
 &=\sum_{i=1}^{N}\sum_{k=1}^{K}(y_{ik}-f_{k}(\boldsymbol{x}_{i}))^{2}\\
-&=\sum_{i=1}^{N}\sum_{k=1}^{K}(y_{ik}-\boldsymbol{w}_{k}^{T}\boldsymbol{x}_{i})^{2},
+&=\sum_{i=1}^{N}\sum_{k=1}^{K}(y_{ik}-\boldsymbol{w}_{k}^{\intercal}\boldsymbol{x}_{i})^{2},
 \end{aligned}
 $$
 where in this case $f_{k}(\cdot)$ denotes the linear model used to predict the $k$-th class posterior probability. 
@@ -251,7 +251,7 @@ Once we have determined this direction, we can update the weights by a step in t
 
 The gradient of $L_{i}$ is computed by obtaining the partial derivative of $L_{i}$ with respect to $\boldsymbol{w}_{k}$, *i.e.*:
 $$
-\frac{\partial L_{i}}{\partial\boldsymbol{w_{k}}}=-2(y_{ik}-\boldsymbol{w}_{k}^{T}\boldsymbol{x}_{i})\boldsymbol{x}_{i}.
+\frac{\partial L_{i}}{\partial\boldsymbol{w_{k}}}=-2(y_{ik}-\boldsymbol{w}_{k}^{\intercal}\boldsymbol{x}_{i})\boldsymbol{x}_{i}.
 $$
 
 The above gradient is obtained for the loss at each data point, whereafter an update of the weight vector at the $(r+1)$-th iteration may be obtained as
@@ -288,7 +288,7 @@ In order to illustrate the SGD algorithm, we consider the linear model in a bina
 Also in our example, suppose the training data are generated in the way described in [@Hastie2009, pp. 16-17], where
 the inputs are two-dimensional, *i.e.* $p=2$. Suppose we want to fit a linear regression model to the training data and classify an observation to the class with the highest predicted score. 
 Of course in the binary classification case it is only necessary to model one class probability: an observation is then assigned to the corresponding class if the score exceeds some threshold (usually 0.5).
-Therefore the decision boundary is given by $\{\boldsymbol{x}:\boldsymbol{x}^{T}\hat{\boldsymbol{w}}=0.5\}$.
+Therefore the decision boundary is given by $\{\boldsymbol{x}:\boldsymbol{x}^{\intercal}\hat{\boldsymbol{w}}=0.5\}$.
 
 Optimisation of the regression weights by means of gradient descent is illustrated in \autoref{fig:sgd}. 
 The colour-shaded regions represent the regions of the input space classified to the respective classes, as determined by the decision boundary based upon the OLS parameter estimates.
@@ -462,8 +462,8 @@ We start by obtaining the derivatives required in order to implement gradient de
 
 $$
 \begin{aligned}
-\frac{\partial L_{i}}{\partial \beta_{km}}&=-2(y_{ik}-f_{k}(\boldsymbol{x}_{i}))g_{k}'(\boldsymbol{\beta}_{k}^{T}\boldsymbol{z}_{i})z_{mi},\\
-\frac{\partial L_{i}}{\partial \alpha_{ml}}&=-\sum_{k=1}^{K}2(y_{ik}-f_{k}(\boldsymbol{x}_{i}))g_{k}'(\boldsymbol{\beta}_{k}^{T}\boldsymbol{z}_{i})\beta_{km}\sigma'(\boldsymbol{\alpha}_{m}^{T}\boldsymbol{x}_{i})x_{il}.
+\frac{\partial L_{i}}{\partial \beta_{km}}&=-2(y_{ik}-f_{k}(\boldsymbol{x}_{i}))g_{k}'(\boldsymbol{\beta}_{k}^{\intercal}\boldsymbol{z}_{i})z_{mi},\\
+\frac{\partial L_{i}}{\partial \alpha_{ml}}&=-\sum_{k=1}^{K}2(y_{ik}-f_{k}(\boldsymbol{x}_{i}))g_{k}'(\boldsymbol{\beta}_{k}^{\intercal}\boldsymbol{z}_{i})\beta_{km}\sigma'(\boldsymbol{\alpha}_{m}^{\intercal}\boldsymbol{x}_{i})x_{il}.
 \end{aligned}
 $$
 
@@ -485,7 +485,7 @@ $$
 Note that the quantities $\delta_{ki}$ and $s_{mi}$ are errors from the current model at the output and hidden layer units respectively. 
 From their definitions it can be seen that
 $$
-s_{mi}=\sigma'(\boldsymbol{\alpha}_{m}^{T}\boldsymbol{x}_{i})\sum_{k=1}^{K}\beta_{km}\delta_{ki},
+s_{mi}=\sigma'(\boldsymbol{\alpha}_{m}^{\intercal}\boldsymbol{x}_{i})\sum_{k=1}^{K}\beta_{km}\delta_{ki},
 $$
 which is known as the so-called *backpropagation equations*.
 Using the above set of equations, weight updates proceed by means of an algortihm consisting of a forward and a backward pass over the network. 
@@ -541,7 +541,7 @@ However, one may wish to maintain individual learning rates for different weight
 *Adagrad* [@Duchi2011] is an adaptive learning rate method which magnifies the learning rate at neurons with small gradients and shrinks the learning rate at neurons with large gradients. 
 *Adam* [@Kingma2014] is the most commonly used weight update approach and builds on Adagrad by incorporating momentum [@Bengio2012].
 It also uses the magnitude of the gradient to control each weight update, in addition to the previous iteration's gradients and it combines them in a smooth fashion.
-The algorithm updates exponential moving averages of the gradient, $m_{t}$, and the squared gradient, $v_{t}$, where the exponential decay rates of these moving averages are controlled by the hyperparamters $\beta_{1},\beta_{2}\in [0,1)$.
+The algorithm updates exponential moving averages of the gradient, $m_{t}$, and the squared gradient, $v_{t}$, where the exponential decay rates of these moving averages are controlled by the hyperparameters $\beta_{1},\beta_{2}\in [0,1)$.
 Since the moving averages are initialised as zero, the gradient and the squared gradient moving averages are biased corrected ($\hat{m}_{t}, \hat{v}_{t}$).
 The weight update for Adam is given by the following equations:
 $$

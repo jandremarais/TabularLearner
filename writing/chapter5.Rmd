@@ -186,7 +186,7 @@ Recall that in \Sref{sec:cat_inp} a set of rules for representation of categoric
 In addition to experimenting with embedding sizes, we would therefore also like to see whether these rules are able to, also in our data setup, provide reasonable performances.
 
 The results of the first experiment (in which we compared three pre-specified embedding sizes) are displayed in \autoref{fig:exp_emb_f}.
-In the lefthandside panel, note that the loss function value, obtained for the validation data is plotted against the number of epochs; whereas in the righthandside panel the validation accuracy is plotted on the y-axis.
+In the left panel, note that the loss function value, obtained for the validation data is plotted against the number of epochs; whereas in the right panel the validation accuracy is plotted on the y-axis.
 Shaded areas indicate standard errors.
 From this figure, since at epoch 5, the blue line lies below the red and green lines, it is clear that an embedding size of 2 is preferred. 
 One reason for this may be that for these data, categorical features are not that important in terms of enhancing prediction accuracy. 
@@ -214,7 +214,7 @@ We chose the number of head, $H$, to be 3, and made use of embedding sizes of 3 
 Moreover, we only made use of a single multi-head attention layer, and connected its output to a single hidden layer of size 200, which in turn was connected to the output layer.
 The performance of the above architecture was then compared to the performance of simple MLP with a similar number of total parameters.
 The results of this experiment are reported in \autoref{fig:exp_att5}.
-The lefthandside panel plots the average loss on the validation set over each of the five epochs and the righthandside panel, the average accuracy.
+The left panel plots the average loss on the validation set over each of the five epochs and the right panel, the average accuracy.
 Surprisingly, the model with the attention mechanism (blue line, "*attention*=True") performed worse than the MLP (orange line, "*attention*=False") on its own; its predictions exhibiting higher variance than the MLP.
 A possible explanation is that the hyperparameter specification in the attention layers was inadequate, or that the single attention layer is not complex enough.
 In the future therefore, we would like to experiment with more of the hyperparameters of the multi-head attention module and also try out stacked attention layers.
