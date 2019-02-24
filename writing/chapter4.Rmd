@@ -25,6 +25,10 @@ In the final section, the 1cycle policy and hyperparameter selection in DLTD are
 
 ## Input Representation \label{sec:inp_rep}
 
+Recall in \Sref{sec:tabdat} that each row of a tabular dataset represents a single observation and that each column is a feature describing the observations.
+The features may consist of continuous or categorical measurements.
+In this study, we ignore the scenarios of repeated measurements but the reader may refer to @Brebisson2015 for an example of how such cases can be treated.
+
 One of the key design considerations when constructing a deep neural network for tabular data is the input representation, *i.e.* the way in which one should numerically represent each feature.
 This choice may heavily influence the ability of the neural net to extract patterns from the input, as well as optimisation efficiency during training.
 This is a more difficult decision in the case of tabular data, since here features are typically highly heterogeneous [@Shavitt2018].
@@ -98,6 +102,7 @@ The presence of categorical features with many levels also increases size requir
 The other problem with one-hot encodings of categorical features is that there is no notion of similarity and distances between categories.
 In this representation, all categories lies equally far apart, no matter how semantically similar or dissimilar they are.
 This makes it harder for the model to learn useful patterns.
+In the case of truly nominal categorical data, the need for a representation with intrinsic similarty between categories seems unecessary.
 
 An alternative to one-hot encodings as representations of categorical features for neural networks is the use of *entity embeddings*.
 The first publication on entity embeddings in the context of deep learning followed as a result of a taxi destination prediction challenge [@Brebisson2015].
@@ -165,14 +170,14 @@ Using some pooling operation, the list of embeddings are subsequently projected 
 
 ### Combining Features
 
-Once all continuous and categorical features have been processed and embedded, we need a way to combine them before their input may be transmitted to the rest of the network.
-The standard approach is to concatenate each categorical variable embedding to the continuous variables, as was done in @haldar2018 and @Wang2017b for example. 
+Once all continuous and categorical features have been processed and embedded, since the continuous and categorical features were processed separately, we need a way to combine them before their input may be transmitted to the rest of the network.
+The standard approach is to create one long vector by concatenating all categorical variable embeddings in addition to the continuous variables, as was done in @haldar2018 and @Wang2017b for example. 
 This is illustrated in \autoref{fig:comb_rep}.
-The potential problem with this approach, however, is that some features might be over-represented in the resulting vector.
-Suppose for example that one of the continuous features are very important for prediction.
-When the continuous feature is concatenated with the entity embeddings, since all entity embeddings each take up more space in the combined representation, it may happen that the contribution of the continuous predictor may be diluted.
+The potential problem with this approach, however, is that the categorical features might be over-represented in the resulting vector, since the embedding vectors take up more space than the continuous features that each just get one unit in the vector and the categorical embeddings, potentially more than one.
+Suppose for example that one of the continuous features is very important for prediction.
+When the continuous feature is concatenated with the entity embeddings, since all entity embeddings each take up more space in the combined representation, it may happen that the contribution of the continuous predictor may be diluted by the greater dimensional categorical representations.
 
-In @Song2018 the authors embed both numerical and categorical features into the same embedded space.
+In @Song2018 the authors embed both numerical and categorical features into the same embedded space so that the representation of a continuous feature is of the same dimension as each of the categorical feature representations.
 Mapping both types of features into the same feature space facilitates more effective learning of interactions between the mixed set of features.
 Here the embedding for the $j$-th numerical features is obtained by
 $$
@@ -347,7 +352,7 @@ In the original 'denoising autoencoders' paper [@Vincent2008], note that a so-ca
 Blank-out corruption entails the random selection of a subset of the input features, and masking their values with zeros.
 This resembles dropout regularisation, but applied to the inputs.
 The only problem with this approach is that for some features a zero value actually carries some meaning.
-Hence, features should be 'blanked out' using some unique value that does not belong to the range of their distributions. 
+Hence, features should be 'blanked out' using some unique value that does not belong to the range of their distributions.
 
 Another input corruption approach that has empirically been shown to work well[^portoseg], is the technique called *swap noise* [@kasar2018].
 The swap noise procedure corrupts inputs by randomly swapping input values with those of other samples in the datasets, thereby ensuring that the corrupted input at least assume valid feature values.
@@ -377,6 +382,13 @@ kable(df, 'latex', caption = 'Swap Noise Example.\\label{tab:swpns}', booktabs=T
   group_rows('Original Dataset', 1,6) %>% 
   group_rows('Sample with swap noise', 7,7)
 ```
+
+A novel alternative approach for data augmentation for tabular data is based on the methodology of *multiple imputations* (MI) [@Schafer2002].
+The approach can be divided into two steps.
+The first is to randomly inject missing values for an input observation - identical to the blank-out corruption explained previously.
+However, instead of assigning zero values to the features selected to be missing, one can use simple statistical imputation methods, *e.g.* mean imputation or hot-deck imputation (see above reference).
+At each sampling step, one can choose an imputation method at random.
+In this way we can create multiple copies of the same observation, with slight random variations and possibly with more valid feature values.
 
 Finally in this section, we consider the mixup augmentation approach [@Zhang2017].
 Here artifical samples are created by means of the following formulation:

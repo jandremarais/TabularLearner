@@ -11,6 +11,7 @@
 \acro{GAN}{Generative Adversarial Network}
 \acro{kNN}{$k$-Nearest Neighbour}
 \acro{mAP}{Mean Average Precision}
+\acro{MI}{Multiple Imputations}
 \acro{ML}{Machine Learning}
 \acro{MLP}{Multi-layer Perceptron}
 \acro{NLP}{Natural Language Processing}
