@@ -9,7 +9,7 @@ def prepare_data(path):
 
         dep_var = '>=50k'
         num_vars = [
-            'age', 'fnlwgt', 'education-num', 
+            'age', #'fnlwgt', 'education-num', 
             'hours-per-week', 'capital-gain', 'capital-loss']
         cat_vars = [
             'workclass', 'education', 'marital-status', 'occupation', 

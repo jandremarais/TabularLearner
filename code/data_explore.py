@@ -8,7 +8,7 @@ path = Path('../data/adult')
 df = pd.read_csv(path/'adult.csv')
 
 dep_var = '>=50k'
-num_vars = ['age', 'fnlwgt', 'education-num', 'hours-per-week', 'capital-gain', 'capital-loss']
+num_vars = ['age', 'hours-per-week', 'capital-gain', 'capital-loss'] #, 'fnlwgt', 'education-num'
 cat_vars = ['workclass', 'education', 'marital-status', 'occupation', 'relationship', 'race', 'sex', 'native-country']
 
 print(df.head())
@@ -36,5 +36,6 @@ sns.countplot(df['education'],hue=df[dep_var],ax=g)
 sns.countplot(df['occupation'],hue=df[dep_var],ax=h)
 # a.set_xticks(rotation=45)
 # a.xaxis.set_tick_params(rotation=45)
-# plt.show()
-plt.savefig('adult_cat2.png')
+print('is this still working?')
+plt.show()
+#plt.savefig('adult_cat2.png')
