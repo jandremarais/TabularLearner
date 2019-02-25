@@ -572,17 +572,17 @@ Training with the smaller constant learning rate (blue line) works better in thi
 The 1cycle learning rate update policy (orange line) shows the best validation loss and accuracy of the three methods.
 This proves that the 1cycle policy is also effective when working with tabular data.
 
-![Constant learning rate vs the 1cycle schedule.\label{fig:cyc_test}](../data/adult/results/sgd_1cyc/all_epochs2.png)
+![Constant learning rate vs the 1cycle schedule.\label{fig:cyc_test}](../data/adult/results/sgd_1cyc/all_epochs.png)
 
 Since the weight decay plays and important part in the super-convergence phenomena, we do an experiment to find the optimal value and to see how it influences the performance.
 By the suggestion of @Smith2018 we try weight decay values for $10^{-3}$, $10^{-5}$ and 0.
 First we do a learning rate range test with the different weight decays to identify the best value.
 The results are displayed in \autoref{fig:wd_range}.
-From the range test it seems that a weight decay of $10^{-5}$ gives the best performance.
+From the range test it seems that a weight decay of $10^{-4}$ gives the best performance.
 To check that this result holds during a full training run, we do an experiment to compare the full training runs with the different weight decays.
 The results are displayed in \autoref{fig:wd_test}.
-From the results it shows that the learning rate range test is a good indicator of the optimal weight decay, since in the full training run, the model with weight decay of $10^{-5}$ performed the best.
-Note that the differences between the training runs are small, and thus if we were to choose one of the other weight decays for this task, we would have only performed slightly worse.
+From the results it shows that the learning rate range test is a good indicator of the optimal weight decay, since in the full training run, the model with weight decay of $10^{-4}$ performed the best in terms of accuracy.
+Note that the differences between the training runs are very small, and thus if we were to choose one of the other weight decays for this task, we would have only performed slightly worse.
 
 ![A learning rate range test with different weight decays.\label{fig:wd_range}](figures/wd_lr_range.pdf)
 
