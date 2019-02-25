@@ -111,6 +111,17 @@ Accuracy is used when monitoring the training process since this measure is ofte
 Note however that the neural network is not trained to optimise its accuracy. 
 In this sense the binary cross-entropy may be seen to act as differentiable proxy to the accuracy.
 
+Another common way of representing classification results of models are with the use of Receiver Operating Characteristic (ROC) curves.
+This is a 2-dimensional plot of the sensitivity and specificity of the classification model. 
+It thus presents an extra dimension of the classification.
+We computed the ROC curve along with its (area under the curve) AUC score for one of the better performing networks on the Adult dataset in \autoref{fig:roc}.
+The network had three layers of 512 neurons each, ReLU activations, network-wide dropout of 0.2 and trained with the 1cycle policy.
+We also followed the cross-validation approach explained in the next section.
+This network and training configuration was chosen after evaluating the results of this chapter.
+Although the ROC curve is useful in general, we found very little variation between the curves of different models and therefore decided to exclude it from the results of the other experiments, since it added no clear value to the interpretation thereof.
+
+![An example of an ROC curve related to one of the best models on the Adult dataset.\label{fig:roc}](figures/roc_curves.pdf)
+
 ### Cross-validation
 
 We made use of five-fold cross validation [@Hastie2009, p. 241] to estimate the performance of a model. 
@@ -188,17 +199,16 @@ In addition to experimenting with embedding sizes, we would therefore also like 
 The results of the first experiment (in which we compared three pre-specified embedding sizes) are displayed in \autoref{fig:exp_emb_f}.
 In the left panel, note that the loss function value, obtained for the validation data is plotted against the number of epochs; whereas in the right panel the validation accuracy is plotted on the y-axis.
 Shaded areas indicate standard errors.
-From this figure, since at epoch 5, the blue line lies below the red and green lines, it is clear that an embedding size of 2 is preferred. 
-One reason for this may be that for these data, categorical features are not that important in terms of enhancing prediction accuracy. 
-Therefore, a smaller representation may assist in reducing noise.
+From this figure, since the green line lies mostly below the red and blue lines in the left panel and mostly above them in the right panel, it is clear that an embedding size of 8 is preferred. 
+One reason for this may be that for these data, categorical features are quite important in terms of enhancing prediction accuracy and that a relatively large vector is needed to describe the categories.
 
 ![Effect of the embedding size if all categorical features are mapped to the same number of dimensions.\label{fig:exp_emb_f}](../data/adult/results/embeddingsize/all_epochs.png)
 
 In order to investigate the effect of cardinality dependence, we compared the constant size 2 embeddings with the rules from @Wang2017b and @Brebisson2015.
 The results from this experiment are shown in \autoref{fig:exp_emb_r}.
 From the figure we infer there to be almost no difference between the three approaches.
-With respect to validation loss, de Brebisson's method performed sightly better, whereas in terms of accuracy, the fixed size of 2 performed the best. 
-In datasets where categorical features contain more information, one may however expect this result to be different.
+In terms of accuracy, the fixed size of 2 performed the best. 
+In datasets where categorical features contain more information and vary substantially in terms of its properties, one may however expect this result to be different.
 
 ![Effect of variable sizes on the performance of the NN model.\label{fig:exp_emb_r}](../data/adult/results/embeddingsize_rule/all_epochs.png)
 
@@ -230,12 +240,12 @@ Therefore, we compare use of SeLUs to use of the ReLU activation using two netwo
 The first network was specified to have two layers, whereas the second network had eight layers in total.
 The SeLU activation function was implemented using its customised weight initialisation method, but no dropout was used.
 In \autoref{fig:selu_all} we plot the average (over each fold) loss and accuracy on the validation set for each of the epochs for the different models and in \autoref{fig:selu_best} we plot the average loss and accuracy on the validation set of the final models.
-We observe that in terms of validation loss, the model with eight layers using SeLU activations performed the best overall; whereas in terms of accuracy, the model with two layers using ReLU activations emerged as the winner.
+We observe that in terms of validation loss and accuracy, the model with eight layers using ReLU activations emerged as the winner.
 However, the differences are so minor that, in the absence of more evidence, we tend to still recommend the use of shallow ReLU networks.
 
-![The average performance of ReLU and SeLU activation functions for shallow and deep networks as a function of the number of training epochs.\label{fig:selu_all}](../data/adult/results/activation_depth/all_epochs2.png)
+![The average performance of ReLU and SeLU activation functions for shallow and deep networks as a function of the number of training epochs.\label{fig:selu_all}](../data/adult/results/activation_depth/all_epochs.png)
 
-![The average performance of ReLU and SeLU activation functions for shallow and deep networks.\label{fig:selu_best}](../data/adult/results/activation_depth/best2.png)
+![The average performance of ReLU and SeLU activation functions for shallow and deep networks.\label{fig:selu_best}](../data/adult/results/activation_depth/best.png)
 
 ### Skip Connections
 
@@ -249,7 +259,7 @@ The models with skip connections are indicated by "*residual*=True" in the figur
 On average, the deeper neural network with skip connections performed slightly better on the validation data, but once again, performances of the different networks are very similar.
 At this stage we therefore recommend the simpler design of not using skip connections.
 
-![Average performance at each epoch for shallow and deep neural networks, with and without skip connections.\label{fig:resid_epoch}](../data/adult/results/residual_depth/all_epochs2.png)
+![Average performance at each epoch for shallow and deep neural networks, with and without skip connections.\label{fig:resid_epoch}](../data/adult/results/residual_depth/all_epochs.png)
 
 ![Overall performance of the skip connections used in a shallow and deep neural network.\label{fig:resid_best}](../data/adult/results/residual_depth/best.png)
 

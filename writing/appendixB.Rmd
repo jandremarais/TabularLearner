@@ -12,8 +12,9 @@ On the Adult dataset we experimented with layer depths of 1, 3, 6 and 12, and la
 Note, we give all layers the same width as this is found to work good enough in practice [@Guo2017, @Qu2016, @Zhang2016].
 The results of the experiment are displayed in \autoref{fig:widthdepth}.
 The results are mixed between the accuracy and the validation loss and there is not much separating any of the models.
-Except for the very wide network that had a diverging validation loss.
-For the sake of simplicity we would recommend to use a 3-layer network with 128 units.
+The 3 layer network seemed consistently outperform the other networks in terms of accuracy.
+We observe that increasing layer width reaches a point of diminishing returns.
+For the sake of simplicity we would recommend to use a 3-layer network with either 128 or 512 units.
 
 ![Effect of the layer width and network depth on the performance on the Adult dataset.\label{fig:widthdepth}](../data/adult/results/width_depth/best.png)
 
@@ -21,10 +22,10 @@ For the sake of simplicity we would recommend to use a 3-layer network with 128 
 
 Dropout is almost always used in deep learning and it is a typical parameter to tune before modelling.
 We wanted to find out what the best dropout ratio is for our models and how the performance varies over different values.
-We tested dropout proportions of [0.1,0.2,...,0.8] on a wide and narrow network respectively.
+We tested dropout proportions of [0.1,0.3,0.5,0.7,0.9] on a wide and narrow network respectively.
 The results are given in \autoref{fig:exp_drop}.
 From these results we see that any dropout ratio between 0.2 and 0.5 will suffice for both types of networks.
 
-![The effect of dropout on wide and narrow neural networks.\label{fig:exp_drop}](../data/adult/results/size_dropout/best2.png)
+![The effect of dropout on wide and narrow neural networks.\label{fig:exp_drop}](../data/adult/results/size_dropout/best.png)
 
 

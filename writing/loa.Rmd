@@ -3,6 +3,7 @@
 \begin{acronym}[ML-KNN]
 
 \acro{ANN}{Artificial Neural Network}
+\acro{AUC}{Area Under a Curve}
 \acro{CNN}{Convolutional Neural Network}
 \acro{CTR}{Click-through Rate}
 \acro{CV}{Computer Vision}
@@ -18,6 +19,7 @@
 \acro{NN}{Neural Network}
 \acro{OLS}{Ordinary Least Squares}
 \acro{RNN}{Recurrent Neural Network}
+\acro{ROC}{Receiver Operating Characteristic}
 \acro{SGD}{Stochastic Gradient Descent}
 \acro{SLT}{Statistical Learning Theory}
 \acro{SotA}{State-of-the-Art}
