@@ -31,7 +31,7 @@ kf = KFold(5, random_state=42, shuffle=True)
 # data = (src.split_by_idx(valid_ids).label_from_df(cols=dep_var).databunch(bs=512))
 # learn = tabular_learner(data, layers=[200,200], metrics=accuracy)
 
-# plt.rcParams.update({'font.size': 20})
+# plt.rcParams.update({'font.size': 15})
 
 # _, ax = plt.subplots(1,1)
 # ax.set_ylabel("Loss")
