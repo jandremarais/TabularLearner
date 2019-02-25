@@ -537,11 +537,10 @@ The obtained feature importance values are displayed in \autoref{fig:imp_xgb}.
 
 ![Feature importance values obtained from a boosted model trained on NN predictions.\label{fig:imp_xgb}](figures/xgb_importance.png)
 
-In the two approaches, the variable rankings are more or less the same.
-The only exceptions are the rankings obtained in the case of the 'marital-status' and 'fnlwgt' features.
+In the two approaches, the variable rankings are quite different.
+The big exception is the rankings obtained in the case of the 'marital-status' feature.
 This difference might be caused by the permutation importance method not picking up on multivariate feature interactions.
 Therefore, it incorrectly perceives 'marital-status' to be an important feature, although in reality the performance drop is actually caused by another feature dependent on 'marital-status'.
-The other explanation we can give is that decision trees are more likely to split on features with more splitting points, and since the 'fnlwgt' feature is the feature with most unique values in the dataset, this might have contributed to the reason 'fnlwgt' was considered to be so important in the case of the boosted model.
 The above differences in interpretation illustrates that one should take care when interpreting models.
 It seems to be a good idea to make use of more than one source of information when possible.
 

@@ -70,6 +70,8 @@ base_score, score_decreases = get_score_importances(score, val_x, val_y, n_iter=
 feature_importances = np.mean(score_decreases, axis=0)
 importance_errors = np.std(score_decreases, axis=0)
 
+pdb.set_trace()
+
 perm_df = pd.DataFrame({'column': learn.data.train_ds.cat_names+learn.data.train_ds.cont_names,
                         'importance': feature_importances, 'std_error': importance_errors})
 perm_df = perm_df.sort_values('importance', ascending=False)
