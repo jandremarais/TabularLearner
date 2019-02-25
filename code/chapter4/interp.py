@@ -33,10 +33,11 @@ _,valid_ids = next(kf.split(df))
 data = (src.split_by_idx(valid_ids).label_from_df(cols=dep_var).databunch(bs=512))
 learn = tabular_learner(data, layers=[200,200], metrics=accuracy)
 wd=1e-5
-lr = request_lr(learn)
+#lr = request_lr(learn)
+lr=3e-2
 learn.fit_one_cycle(10, lr)#, wd=wd)
-# learn.save('tmp')
-learn.load('tmp')
+learn.save('tmp')
+# learn.load('tmp')
 
 def nn_predict_from_df(X):
     bs=512
@@ -58,6 +59,7 @@ def nn_predict_from_df(X):
 
 def score(X, y):
     y_pred = nn_predict_from_df(X)
+    #pdb.set_trace()
     return log_loss(y, y_pred)
 
 val_x = np.concatenate([learn.data.valid_ds.codes, learn.data.valid_ds.conts],1)
@@ -74,8 +76,6 @@ perm_df = pd.DataFrame({'column': learn.data.train_ds.cat_names+learn.data.train
                         'importance': feature_importances, 'std_error': importance_errors})
 perm_df = perm_df.sort_values('importance', ascending=False)
 perm_df.to_csv('../writing/figures/perm_importance.csv', index=None)
-
-pdb.set_trace()
 
 perm_df['importance'] *= -1
 ax = perm_df.plot.barh(x='column', y='importance', color='blue', alpha=0.6, legend=False, yerr='std_error')
