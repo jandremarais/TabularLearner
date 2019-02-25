@@ -14,11 +14,14 @@ import numpy as np
 from fastai.layers import embedding
 from fastai.basic_train import Learner
 from matplotlib import pyplot as plt
-from fastai_ext.utils import request_lr
+from fastai_ext.utils import request_lr, auto_lr
 from fastai_ext.hyperparameter import create_experiment, record_experiment, get_config_df, summarise_results, load_results
 from fastai_ext.plot_utils import plot_best, plot_over_epochs, display_embs
 from fastai_ext.model import tabular_learner
 import pdb
+from fastai.core import defaults
+
+defaults.device = torch.device('cpu')
 
 
 class SelfAttention(nn.Module):
@@ -108,13 +111,14 @@ for i, params in config_df.iterrows():
         if params['attention']:
             emb_szs = data.get_emb_szs({})
             model = AttentionModel(emb_szs, n_cats=len(data.cat_names), n_conts=len(data.cont_names),
-                       act_func=nn.LeakyReLU(inplace=True), d_model=2, h=3)
+                       act_func=nn.LeakyReLU(inplace=True), d_model=3, h=3)
             learn = Learner(data, model, metrics=accuracy)
         else:
             learn = tabular_learner(data, layers=[200,200], metrics=accuracy)
         
         record_experiment(learn, f'{i}-fold_{fold+1}', exp_path.relative_to(path))
-        if fold==0: lr = request_lr(learn)
+        # if fold==0: lr = request_lr(learn)
+        lr = auto_lr(learn)
         learn.fit_one_cycle(5, lr)
         
 config_df, recorder_df, param_names, metric_names = load_results(exp_path)

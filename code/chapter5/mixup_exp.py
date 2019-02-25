@@ -12,7 +12,7 @@ from torch import tensor
 from torch.utils.data import TensorDataset
 import numpy as np
 from matplotlib import pyplot as plt
-from fastai_ext.utils import request_lr
+from fastai_ext.utils import request_lr, auto_lr
 from fastai_ext.hyperparameter import create_experiment, record_experiment, get_config_df, summarise_results, load_results
 from fastai_ext.plot_utils import plot_best, plot_over_epochs, display_embs
 from fastai_ext.model import tabular_learner
@@ -39,7 +39,8 @@ for i, params in config_df.iterrows():
 
         learn = tabular_learner(data, layers=[200,200,200], metrics=accuracy, mixup_alpha=params['mix_alpha'])
         record_experiment(learn, f'{i}-fold_{fold+1}', exp_path.relative_to(path))
-        if fold==0: lr = request_lr(learn, wd=params['weight_decay'])
+        # if fold==0: lr = request_lr(learn, wd=params['weight_decay'])
+        lr = auto_lr(learn, wd=params['weight_decay'])
         learn.fit_one_cycle(5, lr, wd=params['weight_decay'])
         
 config_df, recorder_df, param_names, metric_names = load_results(exp_path)
