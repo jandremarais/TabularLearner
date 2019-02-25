@@ -33,10 +33,10 @@ _,valid_ids = next(kf.split(df))
 data = (src.split_by_idx(valid_ids).label_from_df(cols=dep_var).databunch(bs=512))
 learn = tabular_learner(data, layers=[200,200], metrics=accuracy)
 wd=1e-5
-# lr = request_lr(learn, wd=wd)
-# learn.fit_one_cycle(10, lr, wd=wd)
-# learn.save('tmp')
-learn.load('tmp')
+lr = request_lr(learn, wd=wd)
+learn.fit_one_cycle(10, lr, wd=wd)
+learn.save('tmp')
+# learn.load('tmp')
 
 def nn_predict_from_df(X):
     bs=512
@@ -66,6 +66,8 @@ base_score, score_decreases = get_score_importances(score, val_x, val_y, n_iter=
 
 feature_importances = np.mean(score_decreases, axis=0)
 importance_errors = np.std(score_decreases, axis=0)
+
+pdb.set_trace()
 
 perm_df = pd.DataFrame({'column': learn.data.train_ds.cat_names+learn.data.train_ds.cont_names,
                         'importance': feature_importances, 'std_error': importance_errors})
